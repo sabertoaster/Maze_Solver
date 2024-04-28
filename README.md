@@ -39,17 +39,17 @@
 ### Participants:
 > **Advisor:** MR. Nguyen Tran Duy Minh & Le Thanh Tung
 <br>
-__Leader:__ Mai Duc Minh Huy
+> __Leader:__ Mai Duc Minh Huy
 <br>
-**Visualize | Concept Writer:** Nguyen Thien An | Mai Duc Minh Huy
+> **Visualize | Concept Writer:** Nguyen Thien An | Mai Duc Minh Huy
 <br>
-**Mechanic Developer:** Huynh Trung Kiet | Le Hoang Minh Huy
+> **Mechanic Developer:** Huynh Trung Kiet | Le Hoang Minh Huy
 <br>
-**Report Writer:** Nguyen Ngoc Khoa
+> **Report Writer:** Nguyen Ngoc Khoa
 
 
     
-
+Project Hiearchy
 ```
 MAZE_SOLVER
 │   GameController.py
