@@ -39,15 +39,15 @@ class Player:
         :return:
         """
         # NEED OPTIMIZE HERE
-        if key_pressed[pygame.K_RIGHT] or key_pressed[pygame.K_d]:
+        if key_pressed == pygame.K_RIGHT or key_pressed == pygame.K_d:
             self.move("right")
-        if key_pressed[pygame.K_LEFT] or key_pressed[pygame.K_a]:
+        if key_pressed == pygame.K_LEFT or key_pressed == pygame.K_a:
             self.move("left")
-        if key_pressed[pygame.K_DOWN] or key_pressed[pygame.K_s]:
+        if key_pressed == pygame.K_DOWN or key_pressed == pygame.K_s:
             self.move("down")
-        if key_pressed[pygame.K_UP] or key_pressed[pygame.K_w]:
+        if key_pressed == pygame.K_UP or key_pressed == pygame.K_w:
             self.move("up")
-        if key_pressed[pygame.K_e]:
+        if key_pressed == pygame.K_e:
             self.interact()
             return True
         return False

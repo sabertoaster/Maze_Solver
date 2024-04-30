@@ -67,13 +67,16 @@ class LoginScreen:
                     # pygame.quit()
                     return False  # Fucking transmit signal to another scene here, this is just a prototype
                 if event.type == pygame.KEYDOWN:
-                    pressed = pygame.key.get_pressed()
+                    pressed = event.key
                     if self.player.handle_event(pressed):  # Handle interact from player
                         pass
+                    if self.player.get_grid_pos() in self.door_pos:
+                        self.toggle_panel(event, self.door_pos[self.player.get_grid_pos()])
                     self.player.update(
                         self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
-                if self.player.get_grid_pos() in self.door_pos:
-                    self.toggle_panel(event, self.door_pos[self.player.get_grid_pos()])
+
+
+
             # self.screen.blit(self.frame, (0, 0))
             # pygame.display.flip()
             # for key, val in kwargs:
@@ -100,6 +103,7 @@ class LoginScreen:
                     exit()
                 if name == "Register":
                     pass
+
             elif self.panel_fl:
                 self.screenCopy = self.tempScreen.copy()
                 self.panel_fl = not self.panel_fl
@@ -108,8 +112,8 @@ class LoginScreen:
     def login(self):
         login_panel = morph_image(self.pth_re + "login_box.png", (self.resolution[1], self.resolution[1]))
         self.screen.blit(login_panel, (0, 0))
-        self.screenCopy = self.screen.copy()
         pygame.display.flip()
+        self.screenCopy = self.screen.copy()
         return "username", "password"
 
     def register(self):
