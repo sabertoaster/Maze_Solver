@@ -49,6 +49,8 @@ class Player:
             self.move("up")
         if key_pressed[pygame.K_e]:
             self.interact()
+            return True
+        return False
 
     def update(self, screenCopy):
         self.screen.blit(screenCopy, (0, 0))
@@ -73,8 +75,12 @@ class Player:
         # print(self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] + y][self.grid_pos[0] + x])
         if (0 <= self.grid_pos[0] + x < self.ratio[0]) and (0 <= self.grid_pos[1] + y < self.ratio[1]):
             return self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] + y][
-                self.grid_pos[0] + x] == Gmo.FREE
+                self.grid_pos[0] + x] == Gmo.FREE or self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] + y][
+                self.grid_pos[0] + x] == Gmo.DOOR
         return False
+
+    def get_grid_pos(self):
+        return self.grid_pos
 
     def deactivate(self):
         self.active = not self.active

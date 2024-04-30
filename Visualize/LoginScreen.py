@@ -1,4 +1,6 @@
 import pygame
+import pygame.locals as pl
+# from pygame_textinput import TextInputVisualizer, TextInputManager
 import numpy as np
 import cv2
 from Visualize.morph_image import blur_screen
@@ -28,9 +30,15 @@ def drawGrid(screen):
 
 class LoginScreen:
     def __init__(self, screen, res_cel, path_resources):
-        resolution, cell = res_cel
-        self.frame = morph_image(path_resources + FILENAME, resolution)
+        self.resolution, self.cell = res_cel
+        self.frame = morph_image(path_resources + FILENAME, self.resolution)
+        self.pth_re = path_resources
         self.screen = screen
+        self.door_pos = {
+            (4, 9): "Login",
+            (13, 4): "Exit",
+            (22, 10): "Register"
+        }
 
     def play(self, player):
         """
@@ -43,11 +51,12 @@ class LoginScreen:
         self.screen.blit(self.frame, (0, 0))
         # drawGrid(screen=self.screen)
 
+        self.player = player
         self.panel_fl = True
         self.screenCopy = self.screen.copy()
         self.tempScreen = self.screenCopy.copy()
         self.blur = blur_screen(screen=self.screen)
-        player.update(self.screenCopy)
+        self.player.update(self.screenCopy)
         pygame.display.flip()
 
         running = True
@@ -59,19 +68,12 @@ class LoginScreen:
                     return False  # Fucking transmit signal to another scene here, this is just a prototype
                 if event.type == pygame.KEYDOWN:
                     pressed = pygame.key.get_pressed()
-                    player.handle_event(pressed)
-                    if event.key == pygame.K_e and self.panel_fl:
-                        self.tempScreen = self.screenCopy.copy()
-                        self.screenCopy = self.blur
-                        self.toggle_panel("Login")
-                        self.panel_fl = not self.panel_fl
-                        player.deactivate()
-                    elif event.key == pygame.K_e and not self.panel_fl:
-                        self.screenCopy = self.tempScreen.copy()
-                        self.toggle_panel("Login")
-                        self.panel_fl = not self.panel_fl
-                        player.deactivate()
-                    player.update(self.screenCopy)     # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                    if self.player.handle_event(pressed):  # Handle interact from player
+                        pass
+                    self.player.update(
+                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                if self.player.get_grid_pos() in self.door_pos:
+                    self.toggle_panel(event, self.door_pos[self.player.get_grid_pos()])
             # self.screen.blit(self.frame, (0, 0))
             # pygame.display.flip()
             # for key, val in kwargs:
@@ -79,13 +81,36 @@ class LoginScreen:
             #     pygame.display.flip()
             #     self.clock.tick(900)
 
-    def toggle_panel(self, name):
+    def toggle_panel(self, event, name):
         # self.screen.blit(blur_screen(screen=self.screen), (0, 0))
         # pygame.display.flip()
-        return
+        if name:
+            if self.panel_fl:
+                self.tempScreen = self.screenCopy.copy()
+                self.screenCopy = self.blur
+                self.screen = self.screenCopy.copy()
+                self.panel_fl = not self.panel_fl
+                self.player.deactivate()
+
+                if name == "Login":
+                    username, pwd = self.login()
+                if name == "Exit":
+                    # Play outro animation here
+                    pygame.quit()
+                    exit()
+                if name == "Register":
+                    pass
+            elif self.panel_fl:
+                self.screenCopy = self.tempScreen.copy()
+                self.panel_fl = not self.panel_fl
+                self.player.deactivate()
 
     def login(self):
-        pass
+        login_panel = morph_image(self.pth_re + "login_box.png", (self.resolution[1], self.resolution[1]))
+        self.screen.blit(login_panel, (0, 0))
+        self.screenCopy = self.screen.copy()
+        pygame.display.flip()
+        return "username", "password"
 
     def register(self):
         pass

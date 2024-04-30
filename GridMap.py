@@ -23,7 +23,7 @@ class MapManager:
         self.init_preset()
         print(self.map_grids["Login"].get_grid())
 
-    def init_preset(self):
+    def init_preset(self): # GridMap.py y, x -> LoginScreen.py x, y
         def loginScene():
             grid = self.map_grids["Login"].get_grid()
 
@@ -31,19 +31,19 @@ class MapManager:
 
             grid[:6, :] = [[GridMapObject.WALL]]
             grid[5, 12:15] = [GridMapObject.FREE]
-            grid[4, 13] = GridMapObject.DOOR
+            grid[4, 13] = GridMapObject.DOOR    # LoginScreen.py -> door_pos["Exit"]
 
 
             # LOG-IN HOUSE
 
             grid[6:11, :10] = [[GridMapObject.WALL]]
             grid[10, 4] = GridMapObject.FREE
-            grid[9, 4] = GridMapObject.DOOR
+            grid[9, 4] = GridMapObject.DOOR     # LoginScreen.py -> door_pos["Login"]
 
             # REGISTER HOUSE
 
             grid[6:11, 17:] = [[GridMapObject.WALL]]
-            grid[10, 22] = GridMapObject.DOOR
+            grid[10, 22] = GridMapObject.DOOR   # LoginScreen.py -> door_pos["Register"]
 
             # TREES
 
