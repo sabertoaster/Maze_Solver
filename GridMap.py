@@ -26,7 +26,21 @@ class MapManager:
     def init_preset(self):
         def loginScene():
             grid = self.map_grids["Login"].get_grid()
-            grid[:3, :3] = [[GridMapObject.WALL] * 3] * 3
+
+            # LOG-IN HOUSE
+
+            grid[:5, 2:9] = [[GridMapObject.WALL] * 7] * 5
+            grid[5:7, 2:6] = [[GridMapObject.WALL] * 4] * 2
+            grid[5:7, 7:9] = [[GridMapObject.WALL] * 2] * 2
+            grid[5, 6] = GridMapObject.DOOR
+
+            # REGISTER HOUSE
+
+            grid[1:6, -8:-1] = [[GridMapObject.WALL] * 7] * 5
+            grid[6, -7:-2] = [[GridMapObject.WALL] * 5]
+            grid[6, -5] = GridMapObject.DOOR
+
+            # DECORATES
             grid[2, 2] = GridMapObject.DOOR
             grid[:3, -5:] = [[GridMapObject.WALL] * 5] * 3
             grid[2, -3:-1] = [GridMapObject.DOOR] * 2

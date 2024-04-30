@@ -18,7 +18,7 @@ class Player:
         resolution, cell = res_cell
         self.ratio = (resolution[0] // cell[0], resolution[1] // cell[1])
 
-        self.grid_pos = (4, 4)  # [PROTOTYPE]
+        self.grid_pos = (12, 10)  # [PROTOTYPE]
         self.visual_pos = (self.grid_pos[0] * res_cell[1][0], self.grid_pos[1] * res_cell[1][1])
         self.grid_step = 1
         self.visual_step = self.grid_step * res_cell[1][0]
