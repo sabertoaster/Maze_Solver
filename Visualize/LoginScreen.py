@@ -1,6 +1,7 @@
 import pygame
 import numpy as np
 import cv2
+from Visualize.morph_image import blur_screen
 from Visualize.morph_image import morph_image
 
 FILENAME = "miniTown_BG.png"
@@ -40,10 +41,13 @@ class LoginScreen:
 
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
-        # drawGrid(screen=self.screen)
+        drawGrid(screen=self.screen)
 
-        screenCopy = self.screen.copy()
-        player.update(screenCopy)
+        self.panel_fl = True
+        self.screenCopy = self.screen.copy()
+        self.tempScreen = self.screenCopy.copy()
+        self.blur = blur_screen(screen=self.screen)
+        player.update(self.screenCopy)
         pygame.display.flip()
 
         running = True
@@ -56,10 +60,32 @@ class LoginScreen:
                 if event.type == pygame.KEYDOWN:
                     pressed = pygame.key.get_pressed()
                     player.handle_event(pressed)
-                    player.update(screenCopy)     # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                    if event.key == pygame.K_e and self.panel_fl:
+                        self.tempScreen = self.screenCopy.copy()
+                        self.screenCopy = self.blur
+                        self.toggle_panel("Login")
+                        self.panel_fl = not self.panel_fl
+                        player.deactivate()
+                    elif event.key == pygame.K_e and not self.panel_fl:
+                        self.screenCopy = self.tempScreen.copy()
+                        self.toggle_panel("Login")
+                        self.panel_fl = not self.panel_fl
+                        player.deactivate()
+                    player.update(self.screenCopy)     # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
             # self.screen.blit(self.frame, (0, 0))
             # pygame.display.flip()
             # for key, val in kwargs:
             #     screen.blit(val, (0, 0))
             #     pygame.display.flip()
             #     self.clock.tick(900)
+
+    def toggle_panel(self, name):
+        # self.screen.blit(blur_screen(screen=self.screen), (0, 0))
+        # pygame.display.flip()
+        return
+
+    def login(self):
+        pass
+
+    def register(self):
+        pass
