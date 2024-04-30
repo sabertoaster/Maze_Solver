@@ -10,6 +10,7 @@ AVATAR = "tom_icon_1.png"
 class Player:
     def __init__(self, screen, res_cell, grid_map, current_scene):
         self.avatar = morph_image("Visualize/Resources/" + AVATAR, res_cell[1])  # [PROTOTYPE]
+        self.active = True
         self.screen = screen
         self.grid_map = grid_map
         self.current_scene = current_scene
@@ -54,11 +55,12 @@ class Player:
         self.draw()
 
     def draw(self):
-        self.screen.blit(self.avatar, self.visual_pos)
+        if self.active:
+            self.screen.blit(self.avatar, self.visual_pos)
         pygame.display.flip()
 
     def move(self, cmd):
-        if cmd in self.movement and self.is_legal_move(cmd):
+        if cmd in self.movement and self.is_legal_move(cmd) and self.active:
             x, y = self.movement[cmd]
             self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.FREE
             self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
@@ -73,6 +75,9 @@ class Player:
             return self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] + y][
                 self.grid_pos[0] + x] == Gmo.FREE
         return False
+
+    def deactivate(self):
+        self.active = not self.active
 
     def interact(self):
         pass

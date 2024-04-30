@@ -1,6 +1,7 @@
 import cv2
 import pygame
 
+
 def morph_image(target: str, resolution) -> pygame.Surface:
     # result = cv2.imread(target, cv2.IMREAD_UNCHANGED) # [PROTOTYPE]
     # print(result.shape)
@@ -9,3 +10,13 @@ def morph_image(target: str, resolution) -> pygame.Surface:
     image = pygame.transform.scale(image, resolution)
     return image
     # return pygame.image.frombuffer(image.tobytes(), image.shape[1::-1], "RGB")
+
+
+def blur_screen(screen) -> pygame.Surface:
+    result = cv2.blur(pygame.surfarray.array3d(screen.copy()).swapaxes(0, 1), (10, 10))
+    return pygame.image.frombuffer(result.tobytes(), result.shape[1::-1], "RGB")
+
+
+def za_warudo(screen) -> pygame.Surface:
+    result = cv2.blur(pygame.surfarray.array3d(screen.copy()).swapaxes(0, 1), (10, 10))
+    return pygame.image.frombuffer(result.tobytes(), result.shape[1::-1], "BGR")
