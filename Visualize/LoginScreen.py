@@ -110,8 +110,11 @@ class LoginScreen:
                 self.player.deactivate()
 
     def login(self):
-        login_panel = morph_image(self.pth_re + "login_box.png", (self.resolution[1], self.resolution[1]))
-        self.screen.blit(login_panel, (0, 0))
+        ratio = 0.6
+        panel_shape = self.resolution[0] * ratio, self.resolution[1] * ratio
+        login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
+        self.screen.blit(login_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
+        self.screenCopy = self.screen.copy()
         pygame.display.flip()
         self.screenCopy = self.screen.copy()
         return "username", "password"
