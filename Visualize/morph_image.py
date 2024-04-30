@@ -2,7 +2,7 @@ import cv2
 import pygame
 
 
-def morph_image(target: str, resolution) -> pygame.Surface:
+def morph_image(target: str, resolution=(40,40)) -> pygame.Surface:
     # result = cv2.imread(target, cv2.IMREAD_UNCHANGED) # [PROTOTYPE]
     # print(result.shape)
     # result = cv2.resize(result, resolution)

@@ -4,12 +4,12 @@ import cv2
 from GridMapObject import GridMapObject as Gmo
 from Visualize.morph_image import morph_image
 
-AVATAR = "tom_icon_1.png"
+AVATAR = ["tom_icon_1.png", "tom_icon_2.png", "tom_icon_3.png", "tom_icon_4.png"]
 
 
 class Player:
     def __init__(self, screen, res_cell, grid_map, current_scene):
-        self.avatar = morph_image("Visualize/Resources/" + AVATAR, res_cell[1])  # [PROTOTYPE]
+        self.avatar = morph_image("Visualize/Resources/" + AVATAR[0], res_cell[1])  # [PROTOTYPE]
         self.active = True
         self.screen = screen
         self.grid_map = grid_map
@@ -41,12 +41,16 @@ class Player:
         # NEED OPTIMIZE HERE
         if key_pressed[pygame.K_RIGHT] or key_pressed[pygame.K_d]:
             self.move("right")
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR[1])
         if key_pressed[pygame.K_LEFT] or key_pressed[pygame.K_a]:
             self.move("left")
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR[2])
         if key_pressed[pygame.K_DOWN] or key_pressed[pygame.K_s]:
             self.move("down")
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR[0])
         if key_pressed[pygame.K_UP] or key_pressed[pygame.K_w]:
             self.move("up")
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR[3])
         if key_pressed[pygame.K_e]:
             self.interact()
 
