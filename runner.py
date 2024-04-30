@@ -1,5 +1,7 @@
 from GameController import GameController
 
+# init hyperparameters here
+
 def main():
     game = GameController()
     game.run()
