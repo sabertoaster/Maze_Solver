@@ -41,7 +41,7 @@ class LoginScreen:
 
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
-        drawGrid(screen=self.screen)
+        # drawGrid(screen=self.screen)
 
         self.panel_fl = True
         self.screenCopy = self.screen.copy()
