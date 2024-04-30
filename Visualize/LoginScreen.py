@@ -9,7 +9,7 @@ FILENAME = "miniTown_BG.png"
 PARAMS = {
     "resources": "Visualize/Resources/",
     "resolution": (1200, 800),  # ratio 3:2
-    "cell": (20, 20)  # 12 cells column, 8 cells row
+    "cell": (40, 40)  # 12 cells column, 8 cells row
 }
 # [PROTOTYPE]
 WHITE = (200, 200, 200)
