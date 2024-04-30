@@ -49,7 +49,7 @@
 
 
     
-Project Hiearchy
+Project Hierarchy 
 ```
 MAZE_SOLVER
 │   GameController.py
