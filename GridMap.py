@@ -63,13 +63,12 @@ class MapManager:
             # REGISTER HOUSE
 
             grid[6:11, 17:] = [[GridMapObject.WALL]]
-            grid[10, 22] = GridMapObject.DOOR  # LoginScreen.py -> door_pos["Register"]
+            grid[10, 22] = GridMapObject.DOOR   # LoginScreen.py -> door_pos["Register"]
 
             # TREES
 
-            grid[:, :3] = [[GridMapObject.WALL]]  # LEFT
-            grid[:, -3:] = [[GridMapObject.WALL]]  # RIGHT
-
+            grid[:, :3] = [[GridMapObject.WALL]] #LEFT
+            grid[:, -3:] = [[GridMapObject.WALL]] #RIGHT
 
             # BEACH
             
