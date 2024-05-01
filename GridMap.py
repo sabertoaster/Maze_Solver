@@ -1,7 +1,6 @@
 import pygame
 import numpy as np
-from GridMapObject import GridMapObject 
-
+from GridMapObject import GridMapObject
 
 class GridMap:
     """
@@ -49,24 +48,23 @@ class MapManager:
 
             grid[:6, :] = [[GridMapObject.WALL]]
             grid[5, 12:15] = [GridMapObject.FREE]
-
-            grid[5, 9] = GridMapObject.FREE
-            grid[5, 17] = GridMapObject.FREE
             grid[4, 13] = GridMapObject.DOOR    # LoginScreen.py -> door_pos["Exit"]
 
             # LOG-IN HOUSE
 
-            grid[6:11, :10] = [[GridMapObject.WALL]]
+            grid[6:11, :9] = [[GridMapObject.WALL]]
             grid[10, 4] = GridMapObject.FREE
             grid[9, 4] = GridMapObject.DOOR  # LoginScreen.py -> door_pos["Login"]
 
             # REGISTER HOUSE
 
-            grid[6:11, 17:] = [[GridMapObject.WALL]]
+            grid[6:11, 18:] = [[GridMapObject.WALL]]
             grid[10, 22] = GridMapObject.DOOR   # LoginScreen.py -> door_pos["Register"]
 
             # TREES
-
+            
+            grid[14, 3] = GridMapObject.WALL
+            grid[13, -5] = GridMapObject.WALL
             grid[:, :3] = [[GridMapObject.WALL]] #LEFT
             grid[:, -3:] = [[GridMapObject.WALL]] #RIGHT
 
