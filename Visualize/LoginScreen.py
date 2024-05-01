@@ -1,10 +1,11 @@
 import pygame
 import pygame.locals as pl
-# from pygame_textinput import TextInputVisualizer, TextInputManager
+from pygame_textinput import TextInputVisualizer, TextInputManager
 import numpy as np
 import cv2
 from Visualize.morph_image import blur_screen
 from Visualize.morph_image import morph_image
+from Visualize.morph_image import add_element
 
 FILENAME = "miniTown_BG.png"
 
@@ -47,6 +48,7 @@ class LoginScreen:
         self.resolution, self.cell = res_cel
         self.frame = morph_image(path_resources + FILENAME, self.resolution)
         self.pth_re = path_resources
+        print(self.pth_re)
         self.screen = screen
         self.door_pos = {
             (4, 9): "Login",
@@ -63,19 +65,27 @@ class LoginScreen:
 
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
+        pygame.display.flip()
         # drawGrid(screen=self.screen)
 
         self.player = player
-        self.panel_fl = True
+        self.panel_fl = True  # CÁI NI Bị DOWN
         self.screenCopy = self.screen.copy()
-        self.tempScreen = self.screenCopy.copy()
-        self.blur = blur_screen(screen=self.screen)
         self.player.update(self.screenCopy)
-        pygame.display.flip()
+        # Add login panel background
+        self.blur = blur_screen(screen=self.screen.copy())
+
+        ratio = 0.6
+        panel_shape = self.resolution[0] * ratio, self.resolution[1] * ratio
+        login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
+        self.login_panel = add_element(self.blur, login_panel, (
+            (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
+        self.create_font()  # Create font for text input
 
         running = True
         while running:
-            for event in pygame.event.get():
+            events = pygame.event.get()
+            for event in events:
                 if event.type == pygame.QUIT:
                     running = False
                     # pygame.quit()
@@ -85,7 +95,9 @@ class LoginScreen:
                     if self.player.handle_event(pressed):  # Handle interact from player
                         pass
                     if self.player.get_grid_pos() in self.door_pos:
+                        self.textinput_custom.update(events)
                         self.toggle_panel(event, self.door_pos[self.player.get_grid_pos()])
+                        continue
                     self.player.update(
                         self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
@@ -102,43 +114,31 @@ class LoginScreen:
         :param name: to know whether if the player step into which door
         :return:
         """
-        # self.screen.blit(blur_screen(screen=self.screen), (0, 0))
-        # pygame.display.flip()
         if name:
-            if self.panel_fl:
-                self.tempScreen = self.screenCopy.copy()
-                self.screenCopy = self.blur
-                self.screen = self.screenCopy.copy()
-                self.panel_fl = not self.panel_fl
-                self.player.deactivate()
+            self.player.deactivate(active=False)
 
-                if name == "Login":
-                    username, pwd = self.login()
-                if name == "Exit":
-                    # Play outro animation here
-                    pygame.quit()
-                    exit()
-                if name == "Register":
-                    pass
-
-            elif self.panel_fl:
-                self.screenCopy = self.tempScreen.copy()
-                self.panel_fl = not self.panel_fl
-                self.player.deactivate()
+            if name == "Login":
+                username, pwd = self.login()
+            if name == "Exit":
+                # Play outro animation here
+                pygame.quit()
+                exit()
+            if name == "Register":
+                pass
 
     def login(self):
         """
         Login panel
-        :return: username and password
         """
-        ratio = 0.6
-        panel_shape = self.resolution[0] * ratio, self.resolution[1] * ratio
-        login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
-        self.screen.blit(login_panel,
-                         ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
-        self.screenCopy = self.screen.copy()
+        if self.panel_fl == True:
+            self.textinput_custom.value = ""  # SUSSY FIRST TIME REMOVE CHARACTER FROM TEXT TO FUCKING AVOID INCONVENIENCE
+            self.panel_fl = False
+        self.player.update(self.login_panel)
+        self.screen.blit(self.textinput_custom.surface, (self.resolution[0] // 2, self.resolution[1] // 2 + 20))
         pygame.display.flip()
-        self.screenCopy = self.screen.copy()
+        # self.player.update(self.screen.copy())
+        # self.login_panel = self.screen.copy()
+        print(self.textinput_custom.value)
         return "username", "password"
 
     def register(self):
@@ -147,3 +147,18 @@ class LoginScreen:
         :return: username and password
         """
         pass
+
+    def create_font(self):
+        # But more customization possible: Pass your own font object
+        font = pygame.font.Font(self.pth_re + "Fonts/PixeloidSans.ttf", 23)
+        # Create own manager with custom input validator
+        manager = TextInputManager(validator=lambda input: len(input) <= 10)
+        # Pass these to constructor
+        textinput_custom = TextInputVisualizer(manager=manager, font_object=font)
+
+        # Customize much more
+        textinput_custom.cursor_width = 4
+        textinput_custom.cursor_blink_interval = 400  # blinking interval in ms
+        textinput_custom.antialias = False
+        textinput_custom.font_color = (0, 85, 170)
+        self.textinput_custom = textinput_custom

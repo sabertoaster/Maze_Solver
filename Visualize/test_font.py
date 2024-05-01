@@ -152,11 +152,11 @@ import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
 pygame.init()
 
-# No arguments needed to get started
+# No arguments needed to get start
 textinput = TextInputVisualizer()
 
 # But more customization possible: Pass your own font object
-font = pygame.font.SysFont("Consolas", 55)
+font = pygame.font.Font("Resources/Fonts/PixeloidSans.ttf", 55)
 # Create own manager with custom input validator
 manager = TextInputManager(validator=lambda input: len(input) <= 10)
 # Pass these to constructor

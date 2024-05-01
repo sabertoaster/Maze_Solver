@@ -72,7 +72,7 @@ class Player:
         :param screenCopy:
         :return:
         """
-        self.screen.blit(screenCopy, (0, 0))
+        self.screen.blit(screenCopy.copy(), (0, 0))
         self.draw()
 
     def draw(self):
@@ -119,12 +119,12 @@ class Player:
         """
         return self.grid_pos
 
-    def deactivate(self):
+    def deactivate(self, active):
         """
         Deactivate player movement and stuff
         :return:
         """
-        self.active = not self.active
+        self.active = active
 
     def interact(self):
         """
