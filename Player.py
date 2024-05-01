@@ -41,12 +41,16 @@ class Player:
         # NEED OPTIMIZE HERE
         if key_pressed == pygame.K_RIGHT or key_pressed == pygame.K_d:
             self.move("right")
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR[1])
         if key_pressed == pygame.K_LEFT or key_pressed == pygame.K_a:
             self.move("left")
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR[2])
         if key_pressed == pygame.K_DOWN or key_pressed == pygame.K_s:
             self.move("down")
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR[0])
         if key_pressed == pygame.K_UP or key_pressed == pygame.K_w:
             self.move("up")
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR[3])
         if key_pressed == pygame.K_e:
             self.interact()
             return True
