@@ -19,7 +19,7 @@ class Player:
         :param grid_map:
         :param current_scene:
         """
-        self.avatar = morph_image("Visualize/Resources/" + AVATAR, res_cell[1])  # [PROTOTYPE]
+        self.avatar = morph_image("Visualize/Resources/" + AVATAR[0], res_cell[1])  # [PROTOTYPE]
         self.active = True
         self.screen = screen
         self.grid_map = grid_map
