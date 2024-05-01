@@ -19,6 +19,11 @@ WHITE = (200, 200, 200)
 
 
 def drawGrid(screen):
+    """
+    FOR FUCKING DEBUG THE GRID MAP
+    :param screen:
+    :return:
+    """
     blockSize = PARAMS["cell"][0]  # Set the size of the grid block
     for x in range(0, PARAMS["resolution"][0], blockSize):
         for y in range(0, PARAMS["resolution"][1], blockSize):
@@ -29,7 +34,16 @@ def drawGrid(screen):
 # [PROTOTYPE]
 
 class LoginScreen:
+    """
+    This is a class to manage Login Screen Instance, (Pokémon theme)
+    """
+
     def __init__(self, screen, res_cel, path_resources):
+        """
+        :param screen:
+        :param res_cel:
+        :param path_resources:
+        """
         self.resolution, self.cell = res_cel
         self.frame = morph_image(path_resources + FILENAME, self.resolution)
         self.pth_re = path_resources
@@ -75,8 +89,6 @@ class LoginScreen:
                     self.player.update(
                         self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
-
-
             # self.screen.blit(self.frame, (0, 0))
             # pygame.display.flip()
             # for key, val in kwargs:
@@ -85,6 +97,11 @@ class LoginScreen:
             #     self.clock.tick(900)
 
     def toggle_panel(self, event, name):
+        """
+        :param event:
+        :param name: to know whether if the player step into which door
+        :return:
+        """
         # self.screen.blit(blur_screen(screen=self.screen), (0, 0))
         # pygame.display.flip()
         if name:
@@ -110,14 +127,23 @@ class LoginScreen:
                 self.player.deactivate()
 
     def login(self):
+        """
+        Login panel
+        :return: username and password
+        """
         ratio = 0.6
         panel_shape = self.resolution[0] * ratio, self.resolution[1] * ratio
         login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
-        self.screen.blit(login_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
+        self.screen.blit(login_panel,
+                         ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
         self.screenCopy = self.screen.copy()
         pygame.display.flip()
         self.screenCopy = self.screen.copy()
         return "username", "password"
 
     def register(self):
+        """
+        Register panel
+        :return: username and password
+        """
         pass

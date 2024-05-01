@@ -2,7 +2,12 @@ import pygame
 import numpy as np
 from GridMapObject import GridMapObject 
 
+
 class GridMap:
+    """
+    This is a class to represent Grid Map Instance
+    """
+
     def __init__(self, name, resolution, cell):
         self.name = name
         self.grid_map = np.full(
@@ -14,6 +19,10 @@ class GridMap:
 
 
 class MapManager:
+    """
+    This is a class to manage Grid Map Instances
+    """
+
     def __init__(self, **kwargs):
         # Create a grid path in order to move character
         self.list_maps = kwargs["list_maps"]
@@ -23,51 +32,75 @@ class MapManager:
         self.init_preset()
         print(self.map_grids["Login"].get_grid())
 
-    def init_preset(self): # GridMap.py y, x -> LoginScreen.py x, y
+    def init_preset(self):  # GridMap.py y, x -> LoginScreen.py x, y
+        """
+        Initialize preset grid map
+        :return:
+        """
+
         def loginScene():
+            """
+            Initialize Login Scene
+            :return:
+            """
             grid = self.map_grids["Login"].get_grid()
 
             # EXIT CAVE
 
             grid[:6, :] = [[GridMapObject.WALL]]
             grid[5, 12:15] = [GridMapObject.FREE]
+
             grid[5, 9] = GridMapObject.FREE
             grid[5, 17] = GridMapObject.FREE
             grid[4, 13] = GridMapObject.DOOR    # LoginScreen.py -> door_pos["Exit"]
 
-
             # LOG-IN HOUSE
 
-            grid[6:11, :9] = [[GridMapObject.WALL]]
+            grid[6:11, :10] = [[GridMapObject.WALL]]
             grid[10, 4] = GridMapObject.FREE
-            grid[9, 4] = GridMapObject.DOOR     # LoginScreen.py -> door_pos["Login"]
+            grid[9, 4] = GridMapObject.DOOR  # LoginScreen.py -> door_pos["Login"]
 
             # REGISTER HOUSE
 
-            grid[6:11, 18:] = [[GridMapObject.WALL]]
-            grid[10, 22] = GridMapObject.DOOR   # LoginScreen.py -> door_pos["Register"]
+            grid[6:11, 17:] = [[GridMapObject.WALL]]
+            grid[10, 22] = GridMapObject.DOOR  # LoginScreen.py -> door_pos["Register"]
 
             # TREES
-            
-            grid[14, 3] = GridMapObject.WALL
-            grid[13, -5] = GridMapObject.WALL
-            grid[:, :3] = [[GridMapObject.WALL]] #LEFT
-            grid[:, -3:] = [[GridMapObject.WALL]] #RIGHT
+
+            grid[:, :3] = [[GridMapObject.WALL]]  # LEFT
+            grid[:, -3:] = [[GridMapObject.WALL]]  # RIGHT
+
 
             # BEACH
             
             grid[-4, :] = [GridMapObject.WALL]
 
         def menuScene():
+            """
+            Initialize Menu Scene
+            :return:
+            """
             pass
 
         def playScene():
+            """
+            Initialize Play Scene
+            :return:
+            """
             pass
 
         def leaderBoardScene():
+            """
+            Initialize Leaderboard Scene
+            :return:
+            """
             pass
 
         def settingsScene():
+            """
+            Initialize Settings Scene
+            :return:
+            """
             pass
 
         loginScene()
@@ -77,4 +110,9 @@ class MapManager:
         settingsScene()
 
     def get_map(self, name):
+        """
+        Get grid map by name
+        :param name:
+        :return:
+        """
         return self.map_grids[name]

@@ -8,8 +8,18 @@ AVATAR = ["tom_icon_1.png", "tom_icon_2.png", "tom_icon_3.png", "tom_icon_4.png"
 
 
 class Player:
+    """
+    This is a class to represent Player Instance
+    """
     def __init__(self, screen, res_cell, grid_map, current_scene):
-        self.avatar = morph_image("Visualize/Resources/" + AVATAR[0], res_cell[1])  # [PROTOTYPE]
+
+        """
+        :param screen:
+        :param res_cell:
+        :param grid_map:
+        :param current_scene:
+        """
+        self.avatar = morph_image("Visualize/Resources/" + AVATAR, res_cell[1])  # [PROTOTYPE]
         self.active = True
         self.screen = screen
         self.grid_map = grid_map
@@ -57,15 +67,29 @@ class Player:
         return False
 
     def update(self, screenCopy):
+        """
+        Update player position
+        :param screenCopy:
+        :return:
+        """
         self.screen.blit(screenCopy, (0, 0))
         self.draw()
 
     def draw(self):
+        """
+        Draw player
+        :return:
+        """
         if self.active:
             self.screen.blit(self.avatar, self.visual_pos)
         pygame.display.flip()
 
     def move(self, cmd):
+        """
+        Move player
+        :param cmd:
+        :return:
+        """
         if cmd in self.movement and self.is_legal_move(cmd) and self.active:
             x, y = self.movement[cmd]
             self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.FREE
@@ -74,6 +98,11 @@ class Player:
             self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
 
     def is_legal_move(self, cmd):
+        """
+        Check if the move is legal
+        :param cmd:
+        :return:
+        """
         x, y = self.movement[cmd]
         # print(self.grid_pos[0] + x, self.grid_pos[1] + y)
         # print(self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] + y][self.grid_pos[0] + x])
@@ -84,10 +113,22 @@ class Player:
         return False
 
     def get_grid_pos(self):
+        """
+        Get self grid position
+        :return:
+        """
         return self.grid_pos
 
     def deactivate(self):
+        """
+        Deactivate player movement and stuff
+        :return:
+        """
         self.active = not self.active
 
     def interact(self):
+        """
+        Interact with the environment
+        :return:
+        """
         pass

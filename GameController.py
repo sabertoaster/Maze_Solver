@@ -23,6 +23,9 @@ FPS = 60
 
 
 class GameController:
+    """
+    This is a class to represent Game Controller Instance
+    """
     def __init__(self):
         pygame.init()
         pygame.key.set_repeat(200, 125)
