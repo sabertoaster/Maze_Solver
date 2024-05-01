@@ -127,6 +127,9 @@ class Player:
         :return:
         """
         self.active = active
+        
+    def get_click_pos(self):
+        pass
 
     def interact(self):
         """

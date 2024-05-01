@@ -2,6 +2,7 @@ import pygame
 import numpy as np
 from GridMapObject import GridMapObject
 
+
 class GridMap:
     """
     This is a class to represent Grid Map Instance
@@ -29,7 +30,7 @@ class MapManager:
         for item in self.list_maps:
             self.map_grids[item] = GridMap(name=item, resolution=kwargs["resolution"], cell=kwargs["cell"][item])
         self.init_preset()
-        print(self.map_grids["Login"].get_grid())
+        # print(self.map_grids["Login"].get_grid())
 
     def init_preset(self):  # GridMap.py y, x -> LoginScreen.py x, y
         """

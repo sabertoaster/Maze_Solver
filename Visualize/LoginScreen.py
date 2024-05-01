@@ -3,9 +3,9 @@ import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
 import numpy as np
 import cv2
-from Visualize.morph_image import blur_screen
 from Visualize.morph_image import morph_image
 from Visualize.morph_image import add_element
+from Visualize.morph_image import blur_screen
 
 FILENAME = "miniTown_BG.png"
 
@@ -14,6 +14,12 @@ PARAMS = {
     "resources": "Visualize/Resources/",
     "resolution": (1200, 800),  # ratio 3:2
     "cell": (40, 40)  # 12 cells column, 8 cells row
+}
+
+OBJECTS = {
+    "Login" : [[x, y] for x in range(6, 10) for y in range(3, 9)],
+    "Register" : [[x, y] for x in range(6, 11) for y in range(18, 27)],
+    "Exit" : [[4,13]]
 }
 # [PROTOTYPE]
 WHITE = (200, 200, 200)
@@ -67,6 +73,7 @@ class LoginScreen:
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
         # drawGrid(screen=self.screen)
+        drawGrid(screen=self.screen)
 
         self.player = player
         self.panel_fl = True  # CÁI NI Bị DOWN
@@ -100,6 +107,10 @@ class LoginScreen:
                         continue
                     self.player.update(
                         self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if pygame.mouse.get_pressed()[0]:
+                        pos = pygame.mouse.get_pos() 
+                        x, y = (pos[1] // PARAMS["cell"][0]), (pos[0] // PARAMS["cell"][1])
 
             # self.screen.blit(self.frame, (0, 0))
             # pygame.display.flip()
