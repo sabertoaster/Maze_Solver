@@ -2,6 +2,7 @@ from typing import Tuple, List
 import pygame
 import cv2
 from Visualize.LoginScreen import LoginScreen as login
+from Visualize.MenuScreen import MenuScreen as menu
 
 class Visualizer:
     def __init__(self, params, screen, player):
@@ -28,7 +29,7 @@ class Visualizer:
         self.scenes_collection = {
             "Login": login(self.screen, (self.resolution, self.cell), self.pth_re),
             "Register": None,   # Chung với Login
-            "Menu": None,
+            "Menu": menu(self.screen, (self.resolution, self.cell), self.pth_re),
             "Play": None,   # Chọn mode
             "Leaderboard": None,
             "Settings": None,

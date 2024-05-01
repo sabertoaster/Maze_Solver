@@ -16,8 +16,9 @@ from enum import Enum
 PARAMS = {
     "resources": "Visualize/Resources/",
     "resolution": (1200, 800),  # ratio 3:2
-    "cell": (40, 40),  # 12 cells column, 8 cells row
-    "scenes": ["Welcome", "Login", "Menu", "Play", "Leaderboard", "Settings"]
+    "cell": {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80)}, # 12 cells column, 8 cells row
+    "scenes": ["Login", "Menu", "Play", "Leaderboard", "Settings"],
+    "initial_pos": {"Login": (12, 12), "Menu": (11, 2), "Play": (0, 0), "Leaderboard": (0, 0), "Settings": (0, 0)}  # need adjusting
 }
 FPS = 60
 
@@ -29,7 +30,8 @@ class GameController:
     def __init__(self):
         pygame.init()
         pygame.key.set_repeat(200, 125)
-        initial_scene = "Login"
+        # initial_scene = "Login"
+        initial_scene = "Menu"
         self.game_state_manager = GameStateManager(initial_scene)  # [PROTOTYPE]
         self.clock = pygame.time.Clock()  # Define a variable to control the main loop
         self.screen = pygame.display.set_mode(
@@ -40,7 +42,7 @@ class GameController:
                                    list_maps=PARAMS["scenes"])  # [PROTOTYPE]
 
         # INSTANTIATE PLAYER
-        self.player = Player(self.screen, (PARAMS["resolution"], PARAMS["cell"]), grid_map=self.grid_map, current_scene=initial_scene)  # [PROTOTYPE]
+        self.player = Player(self.screen, (PARAMS["resolution"], PARAMS["cell"]), grid_map=self.grid_map, current_scene=initial_scene, initial_pos=PARAMS["initial_pos"][initial_scene])  # [PROTOTYPE]
 
         # INSTANTIATE VISUALIZER
         self.visualizer = Visualizer(PARAMS, self.screen, self.player)  # [PROTOTYPE]
