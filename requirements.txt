@@ -1,0 +1,5 @@
+python3 -m pip install
+numpy
+opencv-python
+pygame
+pygame-textinput

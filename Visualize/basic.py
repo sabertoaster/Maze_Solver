@@ -4,16 +4,13 @@
 import pygame
 import cv2
 
-SCREEN_WIDTH = 1300
-SCREEN_HEIGHT = 900
-
 class Visualizer():
     def __init__(self, path_resources):
         self.path_resources = path_resources
         self.logo = pygame.image.load(path_resources + "logo.png")
 
         # create a surface on screen that has the size of 240 x 180
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH,  SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode((1300,  900))
 
         # define a variable to control the main loop
         running = True
@@ -25,9 +22,9 @@ class Visualizer():
         pygame.display.set_caption("Loading")
 
         img = cv2.imread(self.path_resources + "intro_1.png")
-        img = cv2.resize(img, (SCREEN_WIDTH,  SCREEN_HEIGHT))
+        img = cv2.resize(img, (1300, 900))
         img_2 = cv2.imread(self.path_resources + "intro_2.png")
-        img_2 = cv2.resize(img_2, (SCREEN_WIDTH,  SCREEN_HEIGHT))
+        img_2 = cv2.resize(img_2, (1300, 900))
         # loading_1 = pygame.image.load(self.path_resources + "intro_1_scaled_7x_pngcrushed.png").convert()
         # loading_2 = pygame.image.load(self.path_resources + "intro_2_scaled_7x_pngcrushed.png").convert()
         loading_1 = pygame.image.frombuffer(img.tobytes(), img.shape[1::-1], "BGR")

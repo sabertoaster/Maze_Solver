@@ -39,20 +39,18 @@ class Player:
         :return:
         """
         # NEED OPTIMIZE HERE
-        if key_pressed[pygame.K_RIGHT] or key_pressed[pygame.K_d]:
+        if key_pressed == pygame.K_RIGHT or key_pressed == pygame.K_d:
             self.move("right")
-            self.avatar = morph_image("Visualize/Resources/" + AVATAR[1])
-        if key_pressed[pygame.K_LEFT] or key_pressed[pygame.K_a]:
+        if key_pressed == pygame.K_LEFT or key_pressed == pygame.K_a:
             self.move("left")
-            self.avatar = morph_image("Visualize/Resources/" + AVATAR[2])
-        if key_pressed[pygame.K_DOWN] or key_pressed[pygame.K_s]:
+        if key_pressed == pygame.K_DOWN or key_pressed == pygame.K_s:
             self.move("down")
-            self.avatar = morph_image("Visualize/Resources/" + AVATAR[0])
-        if key_pressed[pygame.K_UP] or key_pressed[pygame.K_w]:
+        if key_pressed == pygame.K_UP or key_pressed == pygame.K_w:
             self.move("up")
-            self.avatar = morph_image("Visualize/Resources/" + AVATAR[3])
-        if key_pressed[pygame.K_e]:
+        if key_pressed == pygame.K_e:
             self.interact()
+            return True
+        return False
 
     def update(self, screenCopy):
         self.screen.blit(screenCopy, (0, 0))
@@ -77,8 +75,12 @@ class Player:
         # print(self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] + y][self.grid_pos[0] + x])
         if (0 <= self.grid_pos[0] + x < self.ratio[0]) and (0 <= self.grid_pos[1] + y < self.ratio[1]):
             return self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] + y][
-                self.grid_pos[0] + x] == Gmo.FREE
+                self.grid_pos[0] + x] == Gmo.FREE or self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] + y][
+                self.grid_pos[0] + x] == Gmo.DOOR
         return False
+
+    def get_grid_pos(self):
+        return self.grid_pos
 
     def deactivate(self):
         self.active = not self.active
