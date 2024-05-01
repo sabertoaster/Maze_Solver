@@ -135,6 +135,11 @@ class LoginScreen:
             self.panel_fl = False
         self.player.update(self.login_panel)
         self.screen.blit(self.textinput_custom.surface, (self.resolution[0] // 2, self.resolution[1] // 2 + 20))
+        panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
+        login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
+        self.screen.blit(login_panel,
+                         ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
+        self.screenCopy = self.screen.copy()
         pygame.display.flip()
         # self.player.update(self.screen.copy())
         # self.login_panel = self.screen.copy()
