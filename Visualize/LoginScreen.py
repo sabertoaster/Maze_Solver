@@ -131,8 +131,7 @@ class LoginScreen:
         Login panel
         :return: username and password
         """
-        ratio = 0.6
-        panel_shape = self.resolution[0] * ratio, self.resolution[1] * ratio
+        panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
         login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
         self.screen.blit(login_panel,
                          ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
