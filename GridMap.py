@@ -38,19 +38,17 @@ class MapManager:
 
             # LOG-IN HOUSE
 
-            grid[6:11, :9] = [[GridMapObject.WALL]]
+            grid[6:11, :10] = [[GridMapObject.WALL]]
             grid[10, 4] = GridMapObject.FREE
             grid[9, 4] = GridMapObject.DOOR     # LoginScreen.py -> door_pos["Login"]
 
             # REGISTER HOUSE
 
-            grid[6:11, 18:] = [[GridMapObject.WALL]]
+            grid[6:11, 17:] = [[GridMapObject.WALL]]
             grid[10, 22] = GridMapObject.DOOR   # LoginScreen.py -> door_pos["Register"]
 
             # TREES
-            
-            grid[14, 3] = GridMapObject.WALL
-            grid[13, -5] = GridMapObject.WALL
+
             grid[:, :3] = [[GridMapObject.WALL]] #LEFT
             grid[:, -3:] = [[GridMapObject.WALL]] #RIGHT
 
