@@ -177,6 +177,7 @@ while True:
     screen.fill((225, 225, 225))
 
     events = pygame.event.get()
+<<<<<<< Updated upstream
 
     # Feed it with events every frame
     textinput.update(events)
@@ -191,6 +192,15 @@ while True:
 
     # Check if user is exiting or pressed return
     for event in events:
+=======
+    my_form.draw(events)
+    for event in events:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            my_form.focus(pygame.mouse.get_pos())
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                print(f"User pressed enter! Input so far: {my_form.get_all_text()}")
+>>>>>>> Stashed changes
         if event.type == pygame.QUIT:
             exit()
 
