@@ -21,6 +21,12 @@ OBJECTS = {
     "Register" : [[x, y] for x in range(6, 11) for y in range(18, 27)],
     "Exit" : [[4,13]]
 }
+
+OBJECTS_POS_RES = {
+    "Login" : ((103, 227), (260,210)),
+    "Register" : (10, 22),
+    "Exit" : (13, 4)
+}
 # [PROTOTYPE]
 WHITE = (200, 200, 200)
 
@@ -71,9 +77,7 @@ class LoginScreen:
 
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
-        pygame.display.flip()
         # drawGrid(screen=self.screen)
-        drawGrid(screen=self.screen)
 
         self.player = player
         self.panel_fl = True  # CÁI NI Bị DOWN
@@ -89,14 +93,31 @@ class LoginScreen:
             (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
         self.create_font()  # Create font for text input
 
-        running = True
-        while running:
-            events = pygame.event.get()
-            for event in events:
+
+        # a class to handle objects
+        class House:
+            def __init__(self, name, on_hover=False):
+                self.pth_re = "Visualize/Resources/"
+                self.name = name
+                if on_hover:
+                    self.box = morph_image(self.pth_re + self.name + "_hover.png", OBJECTS_POS_RES[self.name][1])
+                else:
+                    self.box = morph_image(self.pth_re + self.name + "_unhover.png", OBJECTS_POS_RES[self.name][1])
+                self.pos = OBJECTS_POS_RES[self.name][0]
+
+            def get_box(self):
+                return self.box
+                                
+
+        self.running = True
+        while self.running:
+
+            for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     # pygame.quit()
                     return False  # Fucking transmit signal to another scene here, this is just a prototype
+                
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
                     if self.player.handle_event(pressed):  # Handle interact from player
@@ -107,10 +128,43 @@ class LoginScreen:
                         continue
                     self.player.update(
                         self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                
+                # handle click event
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    print(pos)
                     if pygame.mouse.get_pressed()[0]:
                         pos = pygame.mouse.get_pos() 
                         x, y = (pos[1] // PARAMS["cell"][0]), (pos[0] // PARAMS["cell"][1])
+                        for key in OBJECTS.keys():
+                            if [x,y] in OBJECTS[key]:
+                                self.toggle_panel(event, key)
+                                break
+                        self.player.update(self.screenCopy)            
+
+
+            # check if mouse is on object
+            pos = pygame.mouse.get_pos() 
+            x, y = (pos[1] // PARAMS["cell"][0]), (pos[0] // PARAMS["cell"][1])
+
+            cur_obj = None
+            for key in OBJECTS.keys():
+                if [x,y] in OBJECTS[key]:
+                    cur_obj = key
+                    break   
+
+            if cur_obj:
+                house = House(cur_obj, on_hover=True)
+                house_box = house.get_box()
+                self.screen.blit(house_box, (house.pos[0], house.pos[1]))
+                pygame.display.flip()
+            else:
+                for key in ["Login"]: #OBJECTS.keys(): fix later
+                    house = House(key, on_hover=False)
+                    house_box = house.get_box()
+                    self.screen.blit(house_box, (house.pos[0], house.pos[1]))
+                    pygame.display.flip()
+                
+
 
             # self.screen.blit(self.frame, (0, 0))
             # pygame.display.flip()
