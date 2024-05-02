@@ -50,23 +50,26 @@
 
     
 Project Hiearchy
+
 ```
 MAZE_SOLVER
-│   GameController.py
-│   runner.py
-│           
-├───Algorithms
-│       Algorithms.py
-│       MazeGeneration.py
-│       <More Algorithms Stuff>
-│
-├───LEGACY
-│       <Legacy_Code>
-│
-└───Visualize
-    │   <More Visualize Stuff>
-    │
-    └───Resources
-            <Images>
-            <Sounds>
+|   README.md
+|   requirements.txt
+|   runner.py
+|
++---Algorithms
+|      Algorithms.py
+|      MazeGeneration.py
+|
++---LEGACY
+|
++---Visualize
+    |
+    +---Resources
+        |
+        +---animation
+        |
+        +---file
+        |
+        \---Fonts
 ```

@@ -4,7 +4,7 @@ import numpy as np
 import pygame
 import cv2
 from GridMapObject import GridMapObject as Gmo
-from Visualize.morph_image import morph_image
+from Visualize.ImageProcess import morph_image
 
 AVATAR = {
         "down": "tom_icon_1.png",

@@ -3,9 +3,9 @@ import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
 import numpy as np
 import cv2
-from Visualize.morph_image import blur_screen
-from Visualize.morph_image import morph_image
-from Visualize.morph_image import add_element
+from Visualize.ImageProcess import blur_screen
+from Visualize.ImageProcess import morph_image
+from Visualize.ImageProcess import add_element
 
 FILENAME = "livingRoom_BG.png"
 
