@@ -2,8 +2,6 @@
 from Player import Player
 from Visualize.Visualizer import Visualizer  # [PROTOTYPE]
 from GridMap import MapManager
-from Algorithms import basicAlgo  # [PROTOTYPE]
-from Algorithms import MazeGeneration
 
 # Pre-defined imports
 import sys
