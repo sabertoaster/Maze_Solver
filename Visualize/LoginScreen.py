@@ -66,7 +66,7 @@ class LoginScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        # drawGrid(screen=self.screen)
+        drawGrid(screen=self.screen)
 
         self.player = player
         self.panel_fl = True  # CÁI NI Bị DOWN
