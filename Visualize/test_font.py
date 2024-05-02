@@ -33,7 +33,6 @@ import sys
 # exit()
 
 
-
 # class InputBox:
 #     def __init__(self, x, y, w, h, screen, text=''):
 #         self.rect = pygame.Rect(x, y, w, h)
@@ -150,49 +149,77 @@ import sys
 import pygame
 import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
+
+from TextBox import TextBox, FormManager, Color
+
+# PYGAME TEXTINPUT DEMO
+
+
+# pygame.init()
+#
+# # No arguments needed to get start
+# textinput = TextInputVisualizer()
+#
+# # But more customization possible: Pass your own font object
+# font = pygame.font.Font("Resources/Fonts/PixeloidSans.ttf", 55)
+# # Create own manager with custom input validator
+# manager = TextInputManager(validator=lambda input: len(input) <= 10)
+# # Pass these to constructor
+# textinput_custom = TextInputVisualizer(manager=manager, font_object=font)
+# # Customize much more
+# textinput_custom.cursor_width = 4
+# textinput_custom.cursor_blink_interval = 400  # blinking interval in ms
+# textinput_custom.antialias = False
+# textinput_custom.font_color = (0, 85, 170)
+#
+# screen = pygame.display.set_mode((1000, 200))
+# clock = pygame.time.Clock()
+#
+# # Pygame now allows natively to enable key repeat:
+# pygame.key.set_repeat(200, 25)
+#
+# while True:
+#     screen.fill((225, 225, 225))
+#
+#     events = pygame.event.get()
+#
+#     # Feed it with events every frame
+#     textinput.update(events)
+#     textinput_custom.update(events)
+#
+#     # Get its surface to blit onto the screen
+#     # screen.blit(textinput.surface, (10, 10))
+#     screen.blit(textinput_custom.surface, (10, 50))
+#
+#     # Modify attributes on the fly - the surface is only rerendered when .surface is accessed & if values changed
+#     # textinput_custom.font_color = [(c + 10) % 255 for c in textinput_custom.font_color]
+#
+#     # Check if user is exiting or pressed return
+#     for event in events:
+#         if event.type == pygame.QUIT:
+#             exit()
+#
+#         if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+#             print(f"User pressed enter! Input so far: {textinput_custom.value}")
+#
+#     pygame.display.update()
+#     clock.tick(30)
+
+
+# MY OWN IMPLEMENTATION
+
 pygame.init()
-
-# No arguments needed to get start
-textinput = TextInputVisualizer()
-
-# But more customization possible: Pass your own font object
-font = pygame.font.Font("Resources/Fonts/PixeloidSans.ttf", 55)
-# Create own manager with custom input validator
-manager = TextInputManager(validator=lambda input: len(input) <= 10)
-# Pass these to constructor
-textinput_custom = TextInputVisualizer(manager=manager, font_object=font)
-# Customize much more
-textinput_custom.cursor_width = 4
-textinput_custom.cursor_blink_interval = 400  # blinking interval in ms
-textinput_custom.antialias = False
-textinput_custom.font_color = (0, 85, 170)
-
 screen = pygame.display.set_mode((1000, 200))
 clock = pygame.time.Clock()
 
-# Pygame now allows natively to enable key repeat:
-pygame.key.set_repeat(200, 25)
+# Create TextBox sequences
 
+my_form = FormManager(screen, {"username": {"position": (10, 10, 200, 30), "color": Color.WHITE},
+                               "password": {"position": (10, 70, 200, 30), "color": Color.WHITE}})
+screen.fill((225, 225, 225))
 while True:
-    screen.fill((225, 225, 225))
 
     events = pygame.event.get()
-<<<<<<< Updated upstream
-
-    # Feed it with events every frame
-    textinput.update(events)
-    textinput_custom.update(events)
-
-    # Get its surface to blit onto the screen
-    # screen.blit(textinput.surface, (10, 10))
-    screen.blit(textinput_custom.surface, (10, 50))
-
-    # Modify attributes on the fly - the surface is only rerendered when .surface is accessed & if values changed
-    # textinput_custom.font_color = [(c + 10) % 255 for c in textinput_custom.font_color]
-
-    # Check if user is exiting or pressed return
-    for event in events:
-=======
     my_form.draw(events)
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -200,12 +227,8 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 print(f"User pressed enter! Input so far: {my_form.get_all_text()}")
->>>>>>> Stashed changes
         if event.type == pygame.QUIT:
             exit()
-
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-            print(f"User pressed enter! Input so far: {textinput_custom.value}")
 
     pygame.display.update()
     clock.tick(30)

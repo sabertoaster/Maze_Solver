@@ -1,10 +1,10 @@
 import pygame
-import pygame_textinput
+from pygame_textinput import TextInputManager, TextInputVisualizer
+from typing import Dict
+from enum import Enum
 import numpy
 import cv2
 
-<<<<<<< Updated upstream
-=======
 DEFAULT_FONT_PATH = 'Visualize/Resources/Fonts/PixeloidSans.ttf'
 
 
@@ -15,18 +15,39 @@ class Color(Enum):
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
 
->>>>>>> Stashed changes
 
 class TextBox:
-    def __init__(self):
-        pass
+    def __init__(self, screen, position, font_color, manager, text=''):
+        (x, y, width, height) = position
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.bg_color = (255, 255, 255)  # Background color here
+        self.rect = pygame.Rect(x, y, width, height)
+        self.active = False
+
+        font = pygame.font.Font(DEFAULT_FONT_PATH, height - 5)
+        self.text_input = TextInputVisualizer(manager=manager, font_object=font, cursor_blink_interval=400)
+        # Customize much more
+        self.text_input.value = text
+        self.text_input.cursor_width = 2
+        # self.text_input.cursor_color = font_color
+        self.text_input.antialias = True
+
+    def get_position(self):
+        return self.x, self.y, self.width, self.height
+
+    def get_current_text(self):
+        return self.text_input.value
+
+    def draw(self):
+        pygame.draw.rect(self.screen, self.bg_color, self.rect)
+        self.screen.blit(self.text_input.surface, (self.x, self.y))
 
 
 class FormManager:
-<<<<<<< Updated upstream
-    def __init__(self):
-        pass
-=======
     """
     This is a class to represent Form Manager Instance
     """
@@ -67,4 +88,3 @@ class FormManager:
 
     def get_all_text(self) -> Dict[str, str]:
         return {key: value["box"].get_current_text() for key, value in self.text_boxes.items()}
->>>>>>> Stashed changes
