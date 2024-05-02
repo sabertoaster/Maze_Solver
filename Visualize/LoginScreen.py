@@ -1,3 +1,5 @@
+import json
+
 import pygame
 import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
@@ -6,6 +8,7 @@ import cv2
 from Visualize.morph_image import blur_screen
 from Visualize.morph_image import morph_image
 from Visualize.morph_image import add_element
+from Visualize.TextBox import TextBox, FormManager, Color
 
 FILENAME = "miniTown_BG.png"
 
@@ -55,6 +58,10 @@ class LoginScreen:
             (13, 4): "Exit",
             (22, 10): "Register"
         }
+        # BROTO TAPe
+        self.my_form = FormManager(self.screen, {"username": {"position": (10, 10, 200, 30), "color": Color.WHITE},
+                                                 "password": {"position": (10, 70, 200, 30), "color": Color.WHITE}})
+
 
     def play(self, player):
         """
@@ -75,17 +82,21 @@ class LoginScreen:
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
 
-        ratio = 0.6
-        panel_shape = self.resolution[0] * ratio, self.resolution[1] * ratio
+
+        panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
         login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
         self.login_panel = add_element(self.blur, login_panel, (
             (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
-        self.create_font()  # Create font for text input
+        # self.create_font()  # Create font for text input
 
         running = True
         while running:
             events = pygame.event.get()
+            self.my_form.update(events)
             for event in events:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.my_form.focus(pygame.mouse.get_pos())
+
                 if event.type == pygame.QUIT:
                     running = False
                     # pygame.quit()
@@ -95,7 +106,7 @@ class LoginScreen:
                     if self.player.handle_event(pressed):  # Handle interact from player
                         pass
                     if self.player.get_grid_pos() in self.door_pos:
-                        self.textinput_custom.update(events)
+                        # self.textinput_custom.update(events)
                         self.toggle_panel(event, self.door_pos[self.player.get_grid_pos()])
                         continue
                     self.player.update(
@@ -118,7 +129,7 @@ class LoginScreen:
             self.player.deactivate(active=False)
 
             if name == "Login":
-                username, pwd = self.login()
+                username, pwd = self.login(event)
             if name == "Exit":
                 # Play outro animation here
                 pygame.quit()
@@ -126,23 +137,35 @@ class LoginScreen:
             if name == "Register":
                 pass
 
-    def login(self):
+    def login(self, event):
         """
         Login panel
         """
-        if self.panel_fl == True:
-            self.textinput_custom.value = ""  # SUSSY FIRST TIME REMOVE CHARACTER FROM TEXT TO FUCKING AVOID INCONVENIENCE
-            self.panel_fl = False
+        # if self.panel_fl == True:
+        #     self.textinput_custom.value = ""  # SUSSY FIRST TIME REMOVE CHARACTER FROM TEXT TO FUCKING AVOID INCONVENIENCE
+        #     self.panel_fl = False
 
-        panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
-        login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
-        self.player.update(self.login_panel)
-        self.screen.blit(self.textinput_custom.surface, (self.resolution[0] // 2, self.resolution[1] // 2 + 20))
+        # panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
+        # login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
 
-        pygame.display.flip()
+        # self.player.update(self.login_panel, ))
+        # self.screen.blit(self.textinput_custom.surface, (self.resolution[0] // 2, self.resolution[1] // 2 + 20))
+        # self.my_form.draw(event)
+
+        self.screen.blit(self.login_panel, (0, 0))
+        self.my_form.draw()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                print(self.my_form.get_all_text())
+                with open('user_profile.json', 'a+') as file:
+                    json.dump(self.my_form.get_all_text(), file)
+        pygame.display.update()
+
+
+
         # self.player.update(self.screen.copy())
         # self.login_panel = self.screen.copy()
-        print(self.textinput_custom.value)
         return "username", "password"
 
     def register(self):
@@ -152,17 +175,19 @@ class LoginScreen:
         """
         pass
 
-    def create_font(self):
-        # But more customization possible: Pass your own font object
-        font = pygame.font.Font(self.pth_re + "Fonts/PixeloidSans.ttf", 23)
-        # Create own manager with custom input validator
-        manager = TextInputManager(validator=lambda input: len(input) <= 10)
-        # Pass these to constructor
-        textinput_custom = TextInputVisualizer(manager=manager, font_object=font)
+    # def create_font(self):
+    #     # But more customization possible: Pass your own font object
+    #     font = pygame.font.Font(self.pth_re + "Fonts/PixeloidSans.ttf", 23)
+    #     # Create own manager with custom input validator
+    #     manager = TextInputManager(validator=lambda input: len(input) <= 10)
+    #     # Pass these to constructor
+    #     textinput_custom = TextInputVisualizer(manager=manager, font_object=font)
+    #
+    #     # Customize much more
+    #     textinput_custom.cursor_width = 4
+    #     textinput_custom.cursor_blink_interval = 400  # blinking interval in ms
+    #     textinput_custom.antialias = False
+    #     textinput_custom.font_color = (0, 85, 170)
+    #     self.textinput_custom = textinput_custom
 
-        # Customize much more
-        textinput_custom.cursor_width = 4
-        textinput_custom.cursor_blink_interval = 400  # blinking interval in ms
-        textinput_custom.antialias = False
-        textinput_custom.font_color = (0, 85, 170)
-        self.textinput_custom = textinput_custom
+

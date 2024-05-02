@@ -13,7 +13,7 @@ def morph_image(target: str, resolution=(40, 40)) -> pygame.Surface:
 
 
 def blur_screen(screen) -> pygame.Surface:
-    result = cv2.blur(pygame.surfarray.array3d(screen.copy()).swapaxes(0, 1), (20, 20))
+    result = cv2.blur(pygame.surfarray.array3d(screen.copy()).swapaxes(0, 1), (1, 1))
     return pygame.image.frombuffer(result.tobytes(), result.shape[1::-1], "RGB")
 
 

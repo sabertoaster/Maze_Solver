@@ -5,7 +5,7 @@ from enum import Enum
 import numpy
 import cv2
 
-DEFAULT_FONT_PATH = 'Resources/Fonts/PixeloidSans.ttf'
+DEFAULT_FONT_PATH = 'Visualize/Resources/Fonts/PixeloidSans.ttf'
 
 
 class Color(Enum):
@@ -74,10 +74,13 @@ class FormManager:
                 value["box"].active = False
                 value["box"].text_input.cursor_visible = False
 
-    def draw(self, events):
+    def update(self, events):
         for key, value in self.text_boxes.items():
             if value["box"].active:
                 value["box"].text_input.update(events)
+
+    def draw(self):
+        for key, value in self.text_boxes.items():
             value["box"].draw()
 
     def get_current_text(self) -> Dict[str, str]:

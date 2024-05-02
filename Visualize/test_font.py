@@ -209,7 +209,6 @@ from TextBox import TextBox, FormManager, Color
 # MY OWN IMPLEMENTATION
 
 pygame.init()
-pygame.key.set_repeat(200, 125)
 screen = pygame.display.set_mode((1000, 200))
 clock = pygame.time.Clock()
 
@@ -217,7 +216,6 @@ clock = pygame.time.Clock()
 
 my_form = FormManager(screen, {"username": {"position": (10, 10, 200, 30), "color": Color.WHITE},
                                "password": {"position": (10, 70, 200, 30), "color": Color.WHITE}})
-
 screen.fill((225, 225, 225))
 while True:
 
@@ -226,7 +224,6 @@ while True:
     for event in events:
         if event.type == pygame.MOUSEBUTTONDOWN:
             my_form.focus(pygame.mouse.get_pos())
-
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 print(f"User pressed enter! Input so far: {my_form.get_all_text()}")
