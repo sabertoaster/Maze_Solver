@@ -1,6 +1,8 @@
 from collections import deque
 from queue import PriorityQueue
 import copy
+import heapq
+from MazeGeneration import *
 
 class BFS():
     def __init__(self, maze):
@@ -59,6 +61,50 @@ class Dijkstra():
     def __init__(self, maze):
         pass
 
+
+def trace_path(trace: dict, goal: tuple) -> list[tuple]:
+    path = []
+    while trace[goal] != None:
+        path.append(trace)
+        goal = trace[goal]
+    return path[::-1]
+class AStarFinding:
+    def __init__(self,):
+        self.distance = {}
+        self.trace = {}       
+        
+    def Solve(self, maze : Maze, start: tuple, goal: tuple) -> list[tuple]:
+        open_list = []
+        heapq.heappush(open_list, (0, start))
+        self.distance = {start : 0}
+        self.trace = {start: None} 
+        while len(open_list) != 0:
+        
+            current_cost, current_cell = heapq.heappop(open_list)
+            
+            if current_cell == goal:
+                break
+            
+            distance_cell = [(0, -1), (-1, 0), (0, 1), (1, 0)]
+            current_wall = ['left', 'top', 'right', 'bottom']
+            next_wall = ['right', 'bottom', 'left', 'top']
+            x, y = current_cell
+            list_neighbors = [(x + dx, y + dy) for dx, dy in distance_cell
+                                if x + dx >= 0 and x + dx < maze.size[0] and y + dy >= 0 and y + dy < maze.size[1]]
+            
+            heuristic = lambda begin_point, end_point : (abs(begin_point[0] - end_point[0]) + abs(begin_point[1] - end_point[1]))
+            
+            for next_neighbor in list_neighbors:
+                iter = distance_cell.index((next_neighbor[0] - current_cell[0], next_neighbor[1] - current_cell[1]))                
+                if maze.cell[next_neighbor[0]][next_neighbor[1]].walls[next_wall[iter]] == False and maze.cell[current_cell[0]][current_cell[1]].walls[current_wall[iter]] == False:
+                    tmp_cost = self.distance[current_cell] + 1
+                    if next_neighbor not in self.distance or self.distance[next_neighbor] > tmp_cost:
+                        self.distance[next_neighbor] = tmp_cost
+                        self.trace[next_neighbor] = current_cell            
+                        heapq.heappush(open_list,(tmp_cost + heuristic(next_neighbor, goal), (next_neighbor)))
+
+        return trace_path(self.trace, goal)
+    
 class AStar():
     def __init__(self, maze):
         self.maze = maze
