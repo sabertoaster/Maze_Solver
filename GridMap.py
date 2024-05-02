@@ -28,7 +28,7 @@ class MapManager:
         self.list_maps = kwargs["list_maps"]
         self.map_grids = {}
         for item in self.list_maps:
-            self.map_grids[item] = GridMap(name=item, resolution=kwargs["resolution"], cell=kwargs["cell"])
+            self.map_grids[item] = GridMap(name=item, resolution=kwargs["resolution"], cell=kwargs["cell"][item])
         self.init_preset()
         print(self.map_grids["Login"].get_grid())
 
@@ -79,6 +79,22 @@ class MapManager:
             Initialize Menu Scene
             :return:
             """
+
+            grid = self.map_grids["Menu"].get_grid()
+            # DECORATES
+            grid[:3, :4] = [[GridMapObject.WALL]] # clock,etc
+            grid[2, -6] = GridMapObject.WALL # cloth hanger
+            grid[4, 6:9] = [GridMapObject.WALL] # TV
+            grid[5:8, 4:11] = [[GridMapObject.WALL]]
+            grid[7, 10] = GridMapObject.FREE
+
+            # WALL
+            grid[:2, :] = [[GridMapObject.WALL]]
+
+            # MAIN DOOR
+            grid[1, -4] = [GridMapObject.DOOR]
+
+
             pass
 
         def playScene():

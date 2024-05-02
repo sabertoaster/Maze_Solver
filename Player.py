@@ -4,14 +4,19 @@ import cv2
 from GridMapObject import GridMapObject as Gmo
 from Visualize.morph_image import morph_image
 
-AVATAR = ["tom_icon_1.png", "tom_icon_2.png", "tom_icon_3.png", "tom_icon_4.png"]
+AVATAR = {
+        "down": "tom_icon_1.png",
+        "right": "tom_icon_2.png",
+        "left": "tom_icon_3.png",
+        "up": "tom_icon_4.png"
+        }
 
 
 class Player:
     """
     This is a class to represent Player Instance
     """
-    def __init__(self, screen, res_cell, grid_map, current_scene):
+    def __init__(self, screen, res_cell, grid_map, current_scene, initial_pos):
 
         """
         :param screen:
@@ -19,19 +24,21 @@ class Player:
         :param grid_map:
         :param current_scene:
         """
-        self.avatar = morph_image("Visualize/Resources/" + AVATAR[0], res_cell[1])  # [PROTOTYPE]
+        self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], res_cell[1][current_scene]) # [PROTOTYPE]
         self.active = True
         self.screen = screen
         self.grid_map = grid_map
         self.current_scene = current_scene
 
         resolution, cell = res_cell
-        self.ratio = (resolution[0] // cell[0], resolution[1] // cell[1])
+        self.resolution = resolution
+        self.cell = cell[current_scene]
+        self.ratio = (resolution[0] // cell[current_scene][0], resolution[1] // cell[current_scene][1])
 
-        self.grid_pos = (12, 10)  # [PROTOTYPE]
-        self.visual_pos = (self.grid_pos[0] * res_cell[1][0], self.grid_pos[1] * res_cell[1][1])
+        self.grid_pos = initial_pos  # [PROTOTYPE]
+        self.visual_pos = (self.grid_pos[0] * cell[current_scene][0], self.grid_pos[1] * cell[current_scene][1])
         self.grid_step = 1
-        self.visual_step = self.grid_step * res_cell[1][0]
+        self.visual_step = self.grid_step * cell[current_scene][0]
 
         self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
 
@@ -51,16 +58,16 @@ class Player:
         # NEED OPTIMIZE HERE
         if key_pressed == pygame.K_RIGHT or key_pressed == pygame.K_d:
             self.move("right")
-            self.avatar = morph_image("Visualize/Resources/" + AVATAR[1])
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR["right"], resolution=self.cell)
         if key_pressed == pygame.K_LEFT or key_pressed == pygame.K_a:
             self.move("left")
-            self.avatar = morph_image("Visualize/Resources/" + AVATAR[2])
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR["left"], resolution=self.cell)
         if key_pressed == pygame.K_DOWN or key_pressed == pygame.K_s:
             self.move("down")
-            self.avatar = morph_image("Visualize/Resources/" + AVATAR[0])
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], resolution=self.cell)
         if key_pressed == pygame.K_UP or key_pressed == pygame.K_w:
             self.move("up")
-            self.avatar = morph_image("Visualize/Resources/" + AVATAR[3])
+            self.avatar = morph_image("Visualize/Resources/" + AVATAR["up"], resolution=self.cell)
         if key_pressed == pygame.K_e:
             self.interact()
             return True

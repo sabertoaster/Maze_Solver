@@ -7,7 +7,7 @@ from Visualize.morph_image import blur_screen
 from Visualize.morph_image import morph_image
 from Visualize.morph_image import add_element
 
-FILENAME = "miniTown_BG.png"
+FILENAME = "livingRoom_BG.png"
 
 # [PROTOTYPE]
 PARAMS = {
@@ -34,7 +34,7 @@ def drawGrid(screen):
 
 # [PROTOTYPE]
 
-class LoginScreen:
+class MenuScreen:
     """
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
@@ -51,9 +51,7 @@ class LoginScreen:
         print(self.pth_re)
         self.screen = screen
         self.door_pos = {
-            (4, 9): "Login",
-            (13, 4): "Exit",
-            (22, 10): "Register"
+
         }
 
     def play(self, player):
@@ -126,19 +124,15 @@ class LoginScreen:
             if name == "Register":
                 pass
 
-    def login(self):
+    def menu(self):
         """
         Login panel
         """
         if self.panel_fl == True:
             self.textinput_custom.value = ""  # SUSSY FIRST TIME REMOVE CHARACTER FROM TEXT TO FUCKING AVOID INCONVENIENCE
             self.panel_fl = False
-
-        panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
-        login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
         self.player.update(self.login_panel)
         self.screen.blit(self.textinput_custom.surface, (self.resolution[0] // 2, self.resolution[1] // 2 + 20))
-
         pygame.display.flip()
         # self.player.update(self.screen.copy())
         # self.login_panel = self.screen.copy()
