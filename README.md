@@ -38,6 +38,7 @@
 
 ### Participants:
 > **Advisor:** MR. Nguyen Tran Duy Minh & Le Thanh Tung
+
 > <br>
 > __Leader:__ Mai Duc Minh Huy
 > <br>
@@ -45,11 +46,14 @@
 > <br>
 > **Mechanic Developer:** Huynh Trung Kiet | Le Hoang Minh Huy
 > <br>
+
 > **Report Writer:** Nguyen Ngoc Khoa
 
 
     
+
 Project Hiearchy
+
 ```
 MAZE_SOLVER
 │   GameController.py
