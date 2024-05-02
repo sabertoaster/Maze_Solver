@@ -9,6 +9,7 @@ from Visualize.morph_image import blur_screen
 
 FILENAME = "miniTown_BG.png"
 
+
 # [PROTOTYPE]
 PARAMS = {
     "resources": "Visualize/Resources/",
@@ -26,6 +27,12 @@ OBJECTS_POS_RES = {
     "Login" : ((103, 227), (260,210)),
     "Register" : (10, 22),
     "Exit" : (13, 4)
+}
+
+HOVER_IMG = {
+    "Login": "miniTown_BG_login_hover.png",
+    "Register": "miniTown_BG_register_hover.png",
+    "Exit": "miniTown_BG_exit_hover.png"
 }
 # [PROTOTYPE]
 WHITE = (200, 200, 200)
@@ -58,8 +65,8 @@ class LoginScreen:
         :param path_resources:
         """
         self.resolution, self.cell = res_cel
-        self.frame = morph_image(path_resources + FILENAME, self.resolution)
         self.pth_re = path_resources
+        self.frame = morph_image(self.pth_re + FILENAME, self.resolution)
         print(self.pth_re)
         self.screen = screen
         self.door_pos = {
@@ -75,6 +82,7 @@ class LoginScreen:
         :return:
         """
 
+        
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         # drawGrid(screen=self.screen)
@@ -93,78 +101,73 @@ class LoginScreen:
             (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
         self.create_font()  # Create font for text input
 
+        #flag of getting an object
+        self.chosen_obj = None
+        self.hovered_obj = None
 
-        # a class to handle objects
-        class House:
-            def __init__(self, name, on_hover=False):
-                self.pth_re = "Visualize/Resources/"
-                self.name = name
-                if on_hover:
-                    self.box = morph_image(self.pth_re + self.name + "_hover.png", OBJECTS_POS_RES[self.name][1])
-                else:
-                    self.box = morph_image(self.pth_re + self.name + "_unhover.png", OBJECTS_POS_RES[self.name][1])
-                self.pos = OBJECTS_POS_RES[self.name][0]
-
-            def get_box(self):
-                return self.box
-                                
-
-        self.running = True
+        self.running = True 
         while self.running:
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                    # pygame.quit()
-                    return False  # Fucking transmit signal to another scene here, this is just a prototype
-                
-                if event.type == pygame.KEYDOWN:
-                    pressed = event.key
-                    if self.player.handle_event(pressed):  # Handle interact from player
-                        pass
-                    if self.player.get_grid_pos() in self.door_pos:
-                        self.textinput_custom.update(events)
-                        self.toggle_panel(event, self.door_pos[self.player.get_grid_pos()])
-                        continue
-                    self.player.update(
-                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
-                
-                # handle click event
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    print(pos)
-                    if pygame.mouse.get_pressed()[0]:
-                        pos = pygame.mouse.get_pos() 
-                        x, y = (pos[1] // PARAMS["cell"][0]), (pos[0] // PARAMS["cell"][1])
-                        for key in OBJECTS.keys():
-                            if [x,y] in OBJECTS[key]:
-                                self.toggle_panel(event, key)
-                                break
-                        self.player.update(self.screenCopy)            
-
-
-            # check if mouse is on object
+            #get mouse position
             pos = pygame.mouse.get_pos() 
             x, y = (pos[1] // PARAMS["cell"][0]), (pos[0] // PARAMS["cell"][1])
 
-            cur_obj = None
-            for key in OBJECTS.keys():
-                if [x,y] in OBJECTS[key]:
-                    cur_obj = key
-                    break   
+            # handle hover event [NEED TO OPTIMIZE]
+            if not self.chosen_obj: #if not chosen any object
+                for key in OBJECTS.keys():
+                    if [x,y] in OBJECTS[key]:
+                        self.hovered_obj = key
+                        break   
 
-            if cur_obj:
-                house = House(cur_obj, on_hover=True)
-                house_box = house.get_box()
-                self.screen.blit(house_box, (house.pos[0], house.pos[1]))
-                pygame.display.flip()
-            else:
-                for key in ["Login"]: #OBJECTS.keys(): fix later
-                    house = House(key, on_hover=False)
-                    house_box = house.get_box()
-                    self.screen.blit(house_box, (house.pos[0], house.pos[1]))
-                    pygame.display.flip()
+                if self.hovered_obj :
+                    self.frame = morph_image(self.pth_re + HOVER_IMG[self.hovered_obj], self.resolution)
+                    self.screen.blit(self.frame, (0, 0))
+                    self.screenCopy = self.screen.copy()
+                    self.player.update(self.screenCopy)
+                    self.hovered_obj = None
+                else:
+                    self.frame = morph_image(self.pth_re + FILENAME, self.resolution)
+                    self.screen.blit(self.frame, (0, 0))
+                    self.screenCopy = self.screen.copy()
+                    self.player.update(self.screenCopy)
+
+
+            events = pygame.event.get()
+            for event in events:
+
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    # pygame.quit()
+                    return False  # Fucking transmit signal to another scene here, this is just a prototype
                 
+                # handle click event
+                if event.type == pygame.MOUSEBUTTONDOWN and not self.chosen_obj:
+                    if pygame.mouse.get_pressed()[0]:
+                        for key in OBJECTS.keys():
+                            if [x,y] in OBJECTS[key]:
+                                self.chosen_obj = key
+                                self.toggle_panel(event, self.chosen_obj)
+                                break
+                
+                if event.type == pygame.KEYDOWN:  
+                    if self.chosen_obj: # if theres already a chosen object
+                        self.textinput_custom.update(events)
+                        self.toggle_panel(event, self.chosen_obj)
+                        continue  
+                    pressed = event.key
+                    if self.player.handle_event(pressed):  # Handle interact from player
+                        pass
+                    if self.player.get_grid_pos() in self.door_pos and not self.chosen_obj: #pass if there currently is a chosen object
+                        self.chosen_obj = self.door_pos[self.player.get_grid_pos()] #update chosen object
+                        self.textinput_custom.update(events)
+                        self.toggle_panel(event, self.door_pos[self.player.get_grid_pos()])
+                        continue
+                
+                    self.player.update(self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                    
 
+                        
+            
 
             # self.screen.blit(self.frame, (0, 0))
             # pygame.display.flip()
