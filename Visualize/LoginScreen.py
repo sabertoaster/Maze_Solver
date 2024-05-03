@@ -123,7 +123,7 @@ class LoginScreen:
 
         # self.trans.descending_circle(pos=(12 * 40 + 20, 12 * 40 + 20), )
         
-        self.trans.ascending_circle(pos=(12 * 40 + 20, 12 * 40 + 20), )
+        self.trans.circle_zooming_out(pos=(12 * 40 + 20, 12 * 40 + 20), )
         pygame.display.flip()
         
         #flag of getting an object
