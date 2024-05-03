@@ -4,6 +4,8 @@ import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
 import numpy as np
 import cv2
+import keyboard
+import time
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
@@ -101,8 +103,10 @@ class LoginScreen:
 
 
         running = True
-        # self.trans.descending_circle(pos=(12 * 40 + 20, 12 * 40 + 20), )
-        # self.trans.ascending_circle(pos=(12 * 40 + 20, 12 * 40 + 20), )
+
+        self.trans.circle_zooming_out(pos=(12 * 40 + 20, 12 * 40 + 20), )
+
+
         pygame.display.flip()
         while running:
             events = pygame.event.get()
