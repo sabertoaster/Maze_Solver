@@ -108,30 +108,6 @@ class LoginScreen:
         self.running = True 
         while self.running:
 
-            #get mouse position
-            pos = pygame.mouse.get_pos() 
-            x, y = (pos[1] // PARAMS["cell"][0]), (pos[0] // PARAMS["cell"][1])
-
-            # handle hover event [NEED TO OPTIMIZE]
-            if not self.chosen_obj: #if not chosen any object
-                for key in OBJECTS.keys():
-                    if [x,y] in OBJECTS[key]:
-                        self.hovered_obj = key
-                        break   
-
-                if self.hovered_obj :
-                    self.frame = morph_image(self.pth_re + HOVER_IMG[self.hovered_obj], self.resolution)
-                    self.screen.blit(self.frame, (0, 0))
-                    self.screenCopy = self.screen.copy()
-                    self.player.update(self.screenCopy)
-                    self.hovered_obj = None
-                else:
-                    self.frame = morph_image(self.pth_re + FILENAME, self.resolution)
-                    self.screen.blit(self.frame, (0, 0))
-                    self.screenCopy = self.screen.copy()
-                    self.player.update(self.screenCopy)
-
-
             events = pygame.event.get()
             for event in events:
 
@@ -140,6 +116,32 @@ class LoginScreen:
                     # pygame.quit()
                     return False  # Fucking transmit signal to another scene here, this is just a prototype
                 
+
+                #get mouse position
+                pos = pygame.mouse.get_pos() 
+                x, y = (pos[1] // PARAMS["cell"][0]), (pos[0] // PARAMS["cell"][1]) 
+
+
+                # handle hover event [NEED TO OPTIMIZE]
+                if not self.chosen_obj: #if not chosen any object
+                    for key in OBJECTS.keys():
+                        if [x,y] in OBJECTS[key]:
+                            self.hovered_obj = key
+                            break   
+
+                if self.hovered_obj and not self.chosen_obj:
+                    self.frame = morph_image(self.pth_re + HOVER_IMG[self.hovered_obj], self.resolution)
+                    self.screen.blit(self.frame, (0, 0))
+                    self.screenCopy = self.screen.copy()
+                    self.player.update(self.screenCopy)
+                    self.hovered_obj = None
+                elif not self.chosen_obj:
+                    self.frame = morph_image(self.pth_re + FILENAME, self.resolution)
+                    self.screen.blit(self.frame, (0, 0))
+                    self.screenCopy = self.screen.copy()
+                    self.player.update(self.screenCopy)
+
+
                 # handle click event
                 if event.type == pygame.MOUSEBUTTONDOWN and not self.chosen_obj:
                     if pygame.mouse.get_pressed()[0]:
