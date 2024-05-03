@@ -148,6 +148,16 @@ class Player:
         """
         return self.grid_pos
 
+    def distance_from_door(self):
+        """
+        return y, x position of grid_map
+        return position of GridMapObject.FREE from self.grid_pos (must at door)
+        """
+        cells = self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] - 1:self.grid_pos[1] + 2, self.grid_pos[0] - 1:self.grid_pos[0] + 2]# - set(self.grid_pos)
+        relative_position = tuple([val.tolist()[0] - 1 for val in list(np.where(cells == Gmo.FREE))])
+
+        return relative_position
+
     def deactivate(self, active):
         """
         Deactivate player movement and stuff

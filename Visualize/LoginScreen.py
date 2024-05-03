@@ -100,13 +100,15 @@ class LoginScreen:
                 if event.type == pygame.QUIT:
                     running = False
                     # pygame.quit()
-                    return False  # Fucking transmit signal to another scene here, this is just a prototype
+                    return None, None  # Fucking transmit signal to another scene here, this is just a prototype
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
                     if self.player.handle_event(pressed):  # Handle interact from player
                         pass
                     if self.player.get_grid_pos() in self.door_pos:
-                        self.toggle_panel(event, self.door_pos[self.player.get_grid_pos()])
+                        next_scene, next_grid_pos = self.toggle_panel(event, self.door_pos[self.player.get_grid_pos()])
+                        if next_scene:
+                            return next_scene, next_grid_pos
                         continue
                     self.player.update(self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
@@ -121,13 +123,17 @@ class LoginScreen:
             self.player.deactivate(active=False)
 
             if name == "Login":
-                username, pwd = self.login(event)
+                next_scene, next_grid_pos = self.login(event)
+                if next_scene:
+                    self.player.deactivate(active = True)
+                    return next_scene, next_grid_pos
             if name == "Exit":
                 # Play outro animation here
                 pygame.quit()
                 exit()
             if name == "Register":
                 pass
+        return None, None
 
     def login(self, event):
         """
@@ -138,13 +144,32 @@ class LoginScreen:
         self.my_form.draw()
 
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                free_pos_from_door = self.player.distance_from_door()
+                absolute_pos_of_door = [key for key, val in self.door_pos.items() if val == "Login"][0]
+                # print("Login", (absolute_pos_of_door[0] + free_pos_from_door[1], absolute_pos_of_door[1] + free_pos_from_door[0]))
+                return "Login", (absolute_pos_of_door[0] + free_pos_from_door[1], absolute_pos_of_door[1] + free_pos_from_door[0])
             if event.key == pygame.K_RETURN:
-                print(self.my_form.get_all_text())
-                with open('user_profile.json', 'a+') as file:
-                    json.dump(self.my_form.get_all_text(), file)
+                # Get the {"username", "password"} the player input
+                tmp_dic = self.my_form.get_all_text()
+
+                with open('user_profile.json', 'r') as file:
+                    data = json.load(file)
+
+                for diction in data:
+                    if diction["username"] == tmp_dic["username"]:
+                        if diction["password"] == tmp_dic["password"]:
+                            print("Login successfully")
+                            return "Menu", (0, 0) # [PROTOTYPE]
+                        else:
+                            print("Password is incorrect, please try again")
+                        break
+                else:
+                    print("The player hasn't registered yet")
+
         pygame.display.update()
 
-        return "username", "password"
+        return None, None
 
     def register(self):
         """
