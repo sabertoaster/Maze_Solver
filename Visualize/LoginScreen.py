@@ -101,7 +101,7 @@ class LoginScreen:
 
 
         running = True
-        # self.trans.descending_circle(pos=(12 * 40 + 20, 12 * 40 + 20), )
+        self.trans.circle(pos=(12 * 40 + 20, 12 * 40 + 20), zoom_in=False)
         # self.trans.ascending_circle(pos=(12 * 40 + 20, 12 * 40 + 20), )
         pygame.display.flip()
         while running:
