@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+import keyboard
 import numpy as np
 import pygame
 import cv2

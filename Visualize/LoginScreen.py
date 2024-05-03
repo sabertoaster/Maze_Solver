@@ -4,6 +4,8 @@ import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
 import numpy as np
 import cv2
+import keyboard
+import time
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element

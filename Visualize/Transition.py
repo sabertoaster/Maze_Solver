@@ -1,5 +1,6 @@
 import numpy as np
 import pygame
+import keyboard
 from Visualize.morph_image import morph_image
 
 class Transition:
@@ -76,6 +77,9 @@ class Transition:
                 
                 
     
+
+        for key in range(150):
+            keyboard.unblock_key(key)
 
 
 
