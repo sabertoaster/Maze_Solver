@@ -8,6 +8,7 @@ from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
 from Visualize.TextBox import TextBox, FormManager, Color
+from Visualize.Transition import Transition
 
 FILENAME = "miniTown_BG.png"
 
@@ -61,7 +62,7 @@ class LoginScreen:
         # Tạo textbox nhập username/password
         self.my_form = FormManager(self.screen, {"username": {"position": (10, 10, 200, 30), "color": Color.WHITE},
                                                  "password": {"position": (10, 70, 200, 30), "color": Color.WHITE}})
-
+        self.trans = Transition(screen=self.screen, resolution=self.resolution)
 
     def play(self, player):
         """
@@ -71,16 +72,21 @@ class LoginScreen:
         """
 
         # Background and stuff go here
+
+
         self.screen.blit(self.frame, (0, 0))
-        pygame.display.flip()
+
+
         # drawGrid(screen=self.screen)
 
         self.player = player
         self.panel_fl = True  # CÁI NI Bị DOWN
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
+        # pygame.display.flip()
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
+
 
 
         panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
@@ -92,7 +98,12 @@ class LoginScreen:
             (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
         # self.create_font()  # Create font for text input
 
+
+
         running = True
+        # self.trans.descending_circle(pos=(12 * 40 + 20, 12 * 40 + 20), )
+        # self.trans.ascending_circle(pos=(12 * 40 + 20, 12 * 40 + 20), )
+        pygame.display.flip()
         while running:
             events = pygame.event.get()
             self.my_form.update(events)
@@ -111,8 +122,8 @@ class LoginScreen:
                     if self.player.get_grid_pos() in self.door_pos:
                         self.toggle_panel(event, self.door_pos[self.player.get_grid_pos()])
                         continue
-                    self.player.update(self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
-
+                    self.player.update(
+                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
     def toggle_panel(self, event, name):
         """
@@ -167,4 +178,3 @@ class LoginScreen:
         pygame.display.update()
 
         pass
-

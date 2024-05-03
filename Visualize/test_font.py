@@ -209,26 +209,30 @@ from TextBox import TextBox, FormManager, Color
 # MY OWN IMPLEMENTATION
 
 pygame.init()
-screen = pygame.display.set_mode((1000, 200))
+screen = pygame.display.set_mode((1200, 800))
 clock = pygame.time.Clock()
 
 # Create TextBox sequences
 
-my_form = FormManager(screen, {"username": {"position": (10, 10, 200, 30), "color": Color.WHITE},
-                               "password": {"position": (10, 70, 200, 30), "color": Color.WHITE}})
-screen.fill((225, 225, 225))
+# my_form = FormManager(screen, {"username": {"position": (10, 10, 200, 30), "color": Color.WHITE},
+#                                "password": {"position": (10, 70, 200, 30), "color": Color.WHITE}})
+# screen.fill((225, 225, 225))
+# while True:
+#
+#     events = pygame.event.get()
+#     my_form.draw(events)
+#     for event in events:
+#         if event.type == pygame.MOUSEBUTTONDOWN:
+#             my_form.focus(pygame.mouse.get_pos())
+#         if event.type == pygame.KEYDOWN:
+#             if event.key == pygame.K_RETURN:
+#                 print(f"User pressed enter! Input so far: {my_form.get_all_text()}")
+#         if event.type == pygame.QUIT:
+#             exit()
+#
+#     pygame.display.update()
+#     clock.tick(30)
+
+screen.fill((225,225,255))
+
 while True:
-
-    events = pygame.event.get()
-    my_form.draw(events)
-    for event in events:
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            my_form.focus(pygame.mouse.get_pos())
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN:
-                print(f"User pressed enter! Input so far: {my_form.get_all_text()}")
-        if event.type == pygame.QUIT:
-            exit()
-
-    pygame.display.update()
-    clock.tick(30)
