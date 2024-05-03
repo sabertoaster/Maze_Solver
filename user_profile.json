@@ -1,7 +1,26 @@
-[{
-  "username": "admin",
-  "password": "minhbeo123"
-}, {
-  "username": "root",
-  "password": "TUNGLE231"
-}]
+[
+    {
+        "username": "a",
+        "password": ""
+    },
+    {
+        "username": "ab",
+        "password": ""
+    },
+    {
+        "username": "abc",
+        "password": ""
+    },
+    {
+        "username": "a",
+        "password": ""
+    },
+    {
+        "username": "ab",
+        "password": ""
+    },
+    {
+        "username": "abc",
+        "password": ""
+    }
+]

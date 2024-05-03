@@ -62,7 +62,6 @@ class LoginScreen:
         self.my_form = FormManager(self.screen, {"username": {"position": (10, 10, 200, 30), "color": Color.WHITE},
                                                  "password": {"position": (10, 70, 200, 30), "color": Color.WHITE}})
 
-
     def play(self, player):
         """
         Play the scene
@@ -81,7 +80,6 @@ class LoginScreen:
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
-
 
         panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
         login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
@@ -113,8 +111,8 @@ class LoginScreen:
                         if next_scene:
                             return next_scene, next_grid_pos
                         continue
-                    self.player.update(self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
-
+                    self.player.update(
+                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
     def toggle_panel(self, event, name):
         """
@@ -128,7 +126,7 @@ class LoginScreen:
             if name == "Login":
                 next_scene, next_grid_pos = self.login(event)
                 if next_scene:
-                    self.player.deactivate(active = True)
+                    self.player.deactivate(active=True)
                     return next_scene, next_grid_pos
             if name == "Exit":
                 # Play outro animation here
@@ -152,7 +150,8 @@ class LoginScreen:
                 free_pos_from_door = self.player.distance_from_door()
                 absolute_pos_of_door = [key for key, val in self.door_pos.items() if val == "Login"][0]
                 # print("Login", (absolute_pos_of_door[0] + free_pos_from_door[1], absolute_pos_of_door[1] + free_pos_from_door[0]))
-                return "Login", (absolute_pos_of_door[0] + free_pos_from_door[1], absolute_pos_of_door[1] + free_pos_from_door[0])
+                return "Login", (
+                    absolute_pos_of_door[0] + free_pos_from_door[1], absolute_pos_of_door[1] + free_pos_from_door[0])
             if event.key == pygame.K_RETURN:
                 # Get the {"username", "password"} the player input
                 tmp_dic = self.my_form.get_all_text()
@@ -164,7 +163,7 @@ class LoginScreen:
                     if diction["username"] == tmp_dic["username"]:
                         if diction["password"] == tmp_dic["password"]:
                             print("Login successfully")
-                            return "Menu", (0, 0) # [PROTOTYPE]
+                            return "Menu", (0, 0)  # [PROTOTYPE]
                         else:
                             print("Password is incorrect, please try again")
                         break
@@ -186,10 +185,18 @@ class LoginScreen:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
-                print(self.my_form.get_all_text())
-                with open('user_profile.json', 'a+') as file:
-                    json.dump(self.my_form.get_all_text(), file)
+                # print(self.my_form.get_all_text())
+                with open('user_profile.json', 'r') as file:
+                    try:
+                        data = json.load(file)
+                        data.append(self.my_form.get_all_text())
+                    except json.JSONDecodeError:
+                        data = [self.my_form.get_all_text()]
+                    print(data)
+                print(data)
+                with open('user_profile.json', 'w') as file:
+                    json.dump(data, file, indent=4)
+                file.close()
         pygame.display.update()
 
         pass
-
