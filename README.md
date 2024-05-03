@@ -38,6 +38,7 @@
 
 ### Participants:
 > **Advisor:** MR. Nguyen Tran Duy Minh & Le Thanh Tung
+
 > <br>
 > __Leader:__ Mai Duc Minh Huy
 > <br>
@@ -45,28 +46,33 @@
 > <br>
 > **Mechanic Developer:** Huynh Trung Kiet | Le Hoang Minh Huy
 > <br>
+
 > **Report Writer:** Nguyen Ngoc Khoa
 
 
     
+
 Project Hiearchy
+
 ```
 MAZE_SOLVER
-│   GameController.py
-│   runner.py
-│           
-├───Algorithms
-│       Algorithms.py
-│       MazeGeneration.py
-│       <More Algorithms Stuff>
-│
-├───LEGACY
-│       <Legacy_Code>
-│
-└───Visualize
-    │   <More Visualize Stuff>
-    │
-    └───Resources
-            <Images>
-            <Sounds>
+|   README.md
+|   requirements.txt
+|   runner.py
+|
++---Algorithms
+|      Algorithms.py
+|      MazeGeneration.py
+|
++---LEGACY
+|
++---Visualize
+    |
+    +---Resources
+        |
+        +---animation
+        |
+        +---file
+        |
+        \---Fonts
 ```

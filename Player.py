@@ -1,8 +1,10 @@
+from copy import deepcopy
+
 import numpy as np
 import pygame
 import cv2
 from GridMapObject import GridMapObject as Gmo
-from Visualize.morph_image import morph_image
+from Visualize.ImageProcess import morph_image
 
 AVATAR = {
         "down": "tom_icon_1.png",
@@ -24,6 +26,7 @@ class Player:
         :param grid_map:
         :param current_scene:
         """
+        from copy import deepcopy
         self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], res_cell[1][current_scene]) # [PROTOTYPE]
         self.active = True
         self.screen = screen
@@ -42,6 +45,7 @@ class Player:
 
         self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
 
+        self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
         self.movement = {
             "left": (-1, 0),
             "right": (1, 0),
@@ -80,16 +84,33 @@ class Player:
         :return:
         """
         self.screen.blit(screenCopy.copy(), (0, 0))
-        self.draw()
+        self.draw(screenCopy)
 
-    def draw(self):
+    def draw(self, screenCopy):
         """
         Draw player
         :return:
         """
+        copy_scr = screenCopy.copy()
         if self.active:
+            if self.visualize_direction[0] != self.visualize_direction[1]:
+                for i in range(0, 24):
+                    self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / 24,
+                                       self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / 24)
+                    self.screen.blit(self.avatar, self.visual_pos)
+                    pygame.time.delay(2)
+                    if (i % 2 == 0):
+                        pygame.display.flip()
+                        pygame.time.wait(2)
+                    self.screen.blit(copy_scr, (0, 0))
+                    # pygame.display.flip()
+                    # if ~(i % 5):
+                    #     pygame.display.flip()
+                    # pygame.time.delay(2)
+                self.visualize_direction = (self.visualize_direction[1], self.visualize_direction[1])
+                return
             self.screen.blit(self.avatar, self.visual_pos)
-        pygame.display.flip()
+            pygame.display.flip()
 
     def move(self, cmd):
         """
@@ -99,9 +120,10 @@ class Player:
         """
         if cmd in self.movement and self.is_legal_move(cmd) and self.active:
             x, y = self.movement[cmd]
+            self.visualize_direction = (deepcopy(self.visual_pos), deepcopy((self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] +  y * self.visual_step)))
             self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.FREE
             self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
-            self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
+            # self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
             self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
 
     def is_legal_move(self, cmd):
