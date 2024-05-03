@@ -3,6 +3,13 @@ import pygame
 from random import choice
 from random import shuffle
 from random import randint
+import pygame
+WIDTH, HEIGHT = 602, 602
+TILE = 60
+rows, cols = HEIGHT // TILE, WIDTH // TILE
+sc = pygame.display.set_mode((HEIGHT, WIDTH))
+pygame.display.set_caption('Generating Maze')
+fps_clock = pygame.time.Clock()
 
 
 sys.setrecursionlimit(15000)
@@ -17,7 +24,7 @@ class DepthFirstSearchGeneration:
     def __init__(self, size_maze : tuple ):
         self.size = size_maze
         self.maze = [[Cell(i,j) for i in range(size_maze[1])] for j in range(size_maze[0])]
-        self.visited = [[False for i in range(size_maze[1])] for j in range(size_maze[0])]
+        self.visited = [[False for i in range(size_maze[1] + 5)] for j in range(size_maze[0] + 5)]
     
     def run(self, current_cell: tuple):
         self.visited[current_cell[0]][current_cell[1]] = True
@@ -28,8 +35,13 @@ class DepthFirstSearchGeneration:
         next_wall = ['right', 'bottom', 'left', 'top']
         x, y = current_cell
         list_neighbors = [(x + dx, y + dy) for dx, dy in distance 
-                          if x + dx >= 0 and x + dx < self.size[0] and y + dy >= 0 and y + dy < self.size[1] ]
+                          if x + dx >= 0 and x + dx < self.size[0] 
+                          and y + dy >= 0 and y + dy < self.size[1]]
         # danh sách các ô kề với ô hiện tại
+        
+        if len(list_neighbors) == 0:
+            return
+        
         shuffle(list_neighbors)
         # trộn danh sách lên  => khỏi phải random 1 ô :))
         
@@ -146,7 +158,49 @@ class WilsonAlgorithmGeneration:
                 self.maze[next_neighbor[0]][next_neighbor[1]].walls[next_wall[iter]] = False
                 visited_cell.remove(current_cell)
 
+class PrimAlgorithmGeneration:
+    def __init__(self, size_maze):
+        self.size = size_maze
+        self.maze = [[Cell(j,i) for j in range(size_maze[1])] for i in range(size_maze[0])]
 
+    def run(self):
+        distance = [(0, -1), (-1, 0), (0, 1), (1, 0)]
+        current_wall = ['left', 'top', 'right', 'bottom']
+        next_wall = ['right', 'bottom', 'left', 'top']
+        start = randint(0, self.size[0]), randint(0, self.size[1])
+        visited = [[False for j in range(self.size[1] + 5)] for i in range(self.size[0] + 5)]
+        x, y = start
+        list_random_cell = [(x+dx, y+dy) for dx, dy in [(0, -1), (-1, 0), (0, 1), (1, 0)]
+                              if x+dx >= 0 and x+dx < self.size[0]
+                              and y+dy >= 0 and y+dy < self.size[1]
+                              and visited[x+dx][y+dy] == False]
+        visited[x][y] = True
+                
+        while len(list_random_cell) != 0:
+            current_cell = choice(list_random_cell)
+            list_random_cell.remove(current_cell)
+            x, y = current_cell
+            visited[x][y] = True
+            list_neighbors = [(x+dx, y+dy) for dx, dy in [(0, -1), (-1, 0), (0, 1), (1, 0)]
+                              if x+dx >= 0 and x+dx < self.size[0]
+                              and y+dy >= 0 and y+dy < self.size[1]
+                              and visited[x+dx][y+dy] == True]
+            
+            if len(list_neighbors) == 0:
+                continue
+            next_neighbor = choice(list_neighbors)
+            iter = distance.index((next_neighbor[0] - current_cell[0], next_neighbor[1] - current_cell[1]))
+            self.maze[current_cell[0]][current_cell[1]].walls[current_wall[iter]] = False
+            self.maze[next_neighbor[0]][next_neighbor[1]].walls[next_wall[iter]] = False
+            list_neighbors = [(x+dx, y+dy) for dx, dy in [(0, -1), (-1, 0), (0, 1), (1, 0)]
+                              if x+dx >= 0 and x+dx < self.size[0]
+                              and y+dy >= 0 and y+dy < self.size[1]
+                              and visited[x+dx][y+dy] == False]
+            
+            for next_neighbor in list_neighbors:
+                if next_neighbor not in list_random_cell:
+                    list_random_cell.append(next_neighbor)            
+        
 def random_start_end(size):
     start = randint(0, size[0]), randint(0, size[1])
     end = randint(0, size[0]), randint(0, size[1])
@@ -169,9 +223,11 @@ class Maze:
     """
     def __init__(self, type_generating_maze : str, size_maze : tuple):
         self.start, self.end = random_start_end(size_maze)
+        if type_generating_maze not in ['DFS', 'Kruskal', 'Wilson', 'Prim']:
+            type_generating_maze = choice(['DFS', 'Kruskal', 'Wilson', 'Prim'])
         if type_generating_maze == 'DFS':
             tmp = DepthFirstSearchGeneration(size_maze)
-            tmp.run(self.start)
+            tmp.run((0,0))
             self.maze = tmp.maze
             self.size = size_maze
             
@@ -182,6 +238,11 @@ class Maze:
             self.size = size_maze
         elif type_generating_maze == 'Wilson':
             tmp = WilsonAlgorithmGeneration(size_maze)
+            tmp.run()
+            self.maze = tmp.maze
+            self.size = size_maze
+        elif type_generating_maze == 'Prim':
+            tmp = PrimAlgorithmGeneration(size_maze)
             tmp.run()
             self.maze = tmp.maze
             self.size = size_maze
