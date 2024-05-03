@@ -9,7 +9,8 @@ class Transition:
         self.resolution = resolution
 
     def circle_zooming_in(self, pos): # pos: x, y
-        pygame.event.set_blocked([pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEMOTION])
+        for key in range(150):
+            keyboard.block_key(key)
         def calc_distance(pos1, pos2):
             return ((pos1[0] - pos2[0])**2 + (pos1[1] - pos2[1])**2)**0.5
 
@@ -52,7 +53,8 @@ class Transition:
             self.screen.blit(pygame.surfarray.make_surface(frame), (0, 0))
             pygame.display.flip()
             pygame.time.delay(5)
-        pygame.event.set_allowed(None)
+        for key in range(150):
+            keyboard.unblock_key(key)
 
     def circle_zooming_out(self, pos):  # pos: x, y
         for key in range(150):
@@ -100,10 +102,8 @@ class Transition:
             self.screen.blit(pygame.surfarray.make_surface(frame), (0, 0))
             pygame.display.flip()
             pygame.time.delay(2)
-
         for key in range(150):
             keyboard.unblock_key(key)
-
 
 
 
