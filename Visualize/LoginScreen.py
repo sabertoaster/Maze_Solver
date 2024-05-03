@@ -73,7 +73,7 @@ class LoginScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        drawGrid(screen=self.screen)
+        # drawGrid(screen=self.screen)
 
         self.player = player
         self.panel_fl = True  # CÁI NI Bị DOWN
@@ -85,7 +85,10 @@ class LoginScreen:
 
         panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
         login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
+        register_panel = morph_image(self.pth_re + "register_box.png", panel_shape)
         self.login_panel = add_element(self.blur, login_panel, (
+            (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
+        self.register_panel = add_element(self.blur, register_panel, (
             (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
         # self.create_font()  # Create font for text input
 
@@ -127,6 +130,7 @@ class LoginScreen:
                 pygame.quit()
                 exit()
             if name == "Register":
+                self.register(event)
                 pass
 
     def login(self, event):
@@ -146,10 +150,21 @@ class LoginScreen:
 
         return "username", "password"
 
-    def register(self):
+    def register(self, event):
         """
         Register panel
         :return: username and password
         """
+
+        self.screen.blit(self.register_panel, (0, 0))
+        self.my_form.draw()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                print(self.my_form.get_all_text())
+                with open('user_profile.json', 'a+') as file:
+                    json.dump(self.my_form.get_all_text(), file)
+        pygame.display.update()
+
         pass
 
