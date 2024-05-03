@@ -1,6 +1,5 @@
 import numpy as np
 import pygame
-import keyboard
 from Visualize.morph_image import morph_image
 
 class Transition:
@@ -96,9 +95,6 @@ class Transition:
             self.screen.blit(pygame.surfarray.make_surface(frame), (0, 0))
             pygame.display.flip()
             pygame.time.delay(2)
-
-        for key in range(150):
-            keyboard.unblock_key(key)
 
 
 
