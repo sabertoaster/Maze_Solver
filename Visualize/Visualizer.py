@@ -63,8 +63,11 @@ class Visualizer:
 
         scene = self.scenes_collection.copy()[scene_name]
 
-        if scene and scene.play(player = self.player):
-            next_scene, next_grid_pos = scene.play(player = self.player) # Chac chan co next scene, next grid_pos
+        if scene:
+            try:
+                next_scene, next_grid_pos = scene.play(player = self.player) # Chac chan co next scene, next grid_pos
+            except TypeError:
+                return None, None
 
             return next_scene, next_grid_pos
         
