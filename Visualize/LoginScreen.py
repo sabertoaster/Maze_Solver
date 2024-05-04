@@ -133,8 +133,11 @@ class LoginScreen:
                 pygame.quit()
                 exit()
             if name == "Register":
-                self.register(event)
-                pass
+                next_scene, next_grid_pos = self.register(event)
+                if next_scene:
+                    self.player.deactivate(active=True)
+                    return next_scene, next_grid_pos
+                
         return None, None
 
     def login(self, event):
@@ -184,19 +187,42 @@ class LoginScreen:
         self.my_form.draw()
 
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                free_pos_from_door = self.player.distance_from_door()
+                absolute_pos_of_door = [key for key, val in self.door_pos.items() if val == "Register"][0]
+                
+                return "Register", (
+                    absolute_pos_of_door[0] + free_pos_from_door[1], absolute_pos_of_door[1] + free_pos_from_door[0])
+            
             if event.key == pygame.K_RETURN:
                 # print(self.my_form.get_all_text())
-                with open('user_profile.json', 'r') as file:
+                with open('user_profile.json', 'r+') as file:
                     try:
                         data = json.load(file)
-                        data.append(self.my_form.get_all_text())
+
+                        cur_input = self.my_form.get_all_text()
+
+                        if cur_input["password"] == "":
+                            print("Vui long nhap mat khau")
+                            return None, None
+
+                        for dic in data:
+                            if dic["username"] == cur_input["username"]:
+                                print("Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
+                                return None, None
+
+                        data.append(cur_input)
                     except json.JSONDecodeError:
                         data = [self.my_form.get_all_text()]
-                    print(data)
-                print(data)
-                with open('user_profile.json', 'w') as file:
+                    
+                    #Rewind to top of the file
+                    file.seek(0)
+
                     json.dump(data, file, indent=4)
+
+                    print("Dang ki thanh cong")
+
                 file.close()
         pygame.display.update()
-
-        pass
+        
+        return None, None

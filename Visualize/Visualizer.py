@@ -57,18 +57,18 @@ class Visualizer:
         :param scene_name:
         :return:
         """
-        self.scenes_collection = {
-            "Login": login(self.screen, (self.resolution, self.cell), self.pth_re),
-            "Register": None,  # Chung với Login
-            "Menu": menu(self.screen, (self.resolution, self.cell), self.pth_re),
-            "Play": None,  # Chọn mode
-            "Leaderboard": None,
-            "Settings": None,
-        }
-        scene = self.scenes_collection[scene_name]
-        next_scene, next_grid_pos = scene.play(player=self.player) # Chac chan co next scene, next grid_pos
-        del scene
-        return next_scene, next_grid_pos
+
+        if scene_name == "Register":
+            scene_name = "Login"
+
+        scene = self.scenes_collection.copy()[scene_name]
+
+        if scene and scene.play(player = self.player):
+            next_scene, next_grid_pos = scene.play(player = self.player) # Chac chan co next scene, next grid_pos
+
+            return next_scene, next_grid_pos
+        
+        return None, None
 
     def apply_transition(self):
         pass
