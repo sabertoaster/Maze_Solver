@@ -25,23 +25,25 @@ class Visualizer:
         self.cell = params["cell"]
         self.screen = screen
         self.player = player
-
+        self.reset_scene_collection()
         self.logo = pygame.image.load(self.pth_re + "logo.png")  # Load logo image
-        self.scenes_collection = {
-            "Login": login(self.screen, (self.resolution, self.cell), self.pth_re),
-            "Register": None,   # Chung với Login
-            "Menu": menu(self.screen, (self.resolution, self.cell), self.pth_re),
-            "Play": None,   # Chọn mode
-            "Leaderboard": None,
-            "Settings": None,
-        }
+        print(self.cell)
+
 
         self.panel_collection = { # Pop-up panel, with buttons to choose, information presentation, sths like that
             "Pause": None,
             "GameOver": None,
             "Generic": None
         }
-
+    def reset_scene_collection(self):
+        self.scenes_collection = {
+            "Login": login(self.screen, (self.resolution, self.cell["Login"]), self.pth_re),
+            "Register": None,  # Chung với Login
+            "Menu": menu(self.screen, (self.resolution, self.cell["Menu"]), self.pth_re),
+            "Play": None,  # Chọn mode
+            "Leaderboard": None,
+            "Settings": None,
+        }
     def start_visualize(self):
         """
         This is quite useless to be honest (for now)
@@ -57,14 +59,15 @@ class Visualizer:
         :param scene_name:
         :return:
         """
-        self.scenes_collection = {
-            "Login": login(self.screen, (self.resolution, self.cell), self.pth_re),
-            "Register": None,  # Chung với Login
-            "Menu": menu(self.screen, (self.resolution, self.cell), self.pth_re),
-            "Play": None,  # Chọn mode
-            "Leaderboard": None,
-            "Settings": None,
-        }
+        # self.scenes_collection = {
+        #     "Login": login(self.screen, (self.resolution, self.cell), self.pth_re),
+        #     "Register": None,  # Chung với Login
+        #     "Menu": menu(self.screen, (self.resolution, self.cell["Menu"]), self.pth_re),
+        #     "Play": None,  # Chọn mode
+        #     "Leaderboard": None,
+        #     "Settings": None,
+        # }
+        self.reset_scene_collection()
         scene = self.scenes_collection[scene_name]
         next_scene, next_grid_pos = scene.play(player=self.player) # Chac chan co next scene, next grid_pos
         del scene
