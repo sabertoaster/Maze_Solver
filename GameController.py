@@ -40,7 +40,7 @@ class GameController:
                                    list_maps=PARAMS["scenes"])  # [PROTOTYPE]
 
         # INSTANTIATE PLAYER
-        self.player = Player(self.screen, (PARAMS["resolution"], PARAMS["cell"]), grid_map=self.grid_map, current_scene=initial_scene, initial_pos=PARAMS["initial_pos"][initial_scene])  # [PROTOTYPE]
+        self.player = Player(self.screen, (PARAMS["resolution"], PARAMS["cell"]), grid_map=self.grid_map, current_scene=initial_scene, initial_pos=PARAMS["initial_pos"][initial_scene], params=PARAMS)  # [PROTOTYPE]
 
         # INSTANTIATE VISUALIZER
         self.visualizer = Visualizer(PARAMS, self.screen, self.player)  # [PROTOTYPE]
@@ -69,6 +69,7 @@ class GameController:
             
             if next_scene:
                 self.game_state_manager.change_state(next_scene)
+                self.player.set_current_scene(next_scene, initial_pos=next_grid_pos)
             else:
                 running = False
             # pygame.display.update()
