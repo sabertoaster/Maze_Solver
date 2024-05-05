@@ -9,6 +9,7 @@ DEFAULT_FONT_PATH = 'Visualize/Resources/Fonts/PixeloidSans.ttf'
 
 
 class Color(Enum):
+    DEFAULT = (60, 107, 114)
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
@@ -22,17 +23,18 @@ class TextBox:
         self.screen = screen
         self.x = x
         self.y = y
+
         self.width = width
         self.height = height
         self.bg_color = (255, 255, 255)  # Background color here
-        self.rect = pygame.Rect(x, y, width, height)
+        # self.rect = pygame.Rect(x, y, width, height)
         self.active = False
 
         font = pygame.font.Font(DEFAULT_FONT_PATH, height - 5)
         self.text_input = TextInputVisualizer(manager=manager, font_object=font, cursor_blink_interval=400)
         # Customize much more
         self.text_input.value = text
-        self.text_input.cursor_width = 2
+        self.text_input.cursor_width = 5
         # self.text_input.cursor_color = font_color
         self.text_input.antialias = True
 
@@ -43,7 +45,7 @@ class TextBox:
         return self.text_input.value
 
     def draw(self):
-        pygame.draw.rect(self.screen, self.bg_color, self.rect)
+        # pygame.draw.rect(self.screen, self.bg_color, self.rect)
         self.screen.blit(self.text_input.surface, (self.x, self.y))
 
 

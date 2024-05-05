@@ -1,6 +1,6 @@
 import pygame
 import numpy as np
-from GridMapObject import GridMapObject
+from GridMapObject import GridMapObject 
 
 
 class GridMap:
@@ -30,7 +30,6 @@ class MapManager:
         for item in self.list_maps:
             self.map_grids[item] = GridMap(name=item, resolution=kwargs["resolution"], cell=kwargs["cell"][item])
         self.init_preset()
-        # print(self.map_grids["Login"].get_grid())
 
     def init_preset(self):  # GridMap.py y, x -> LoginScreen.py x, y
         """
@@ -49,23 +48,24 @@ class MapManager:
 
             grid[:6, :] = [[GridMapObject.WALL]]
             grid[5, 12:15] = [GridMapObject.FREE]
+
+            grid[5, 9] = GridMapObject.FREE
+            grid[5, 17] = GridMapObject.FREE
             grid[4, 13] = GridMapObject.DOOR    # LoginScreen.py -> door_pos["Exit"]
 
             # LOG-IN HOUSE
 
-            grid[6:11, :9] = [[GridMapObject.WALL]]
+            grid[6:11, :10] = [[GridMapObject.WALL]]
             grid[10, 4] = GridMapObject.FREE
             grid[9, 4] = GridMapObject.DOOR  # LoginScreen.py -> door_pos["Login"]
 
             # REGISTER HOUSE
 
-            grid[6:11, 18:] = [[GridMapObject.WALL]]
+            grid[6:11, 17:] = [[GridMapObject.WALL]]
             grid[10, 22] = GridMapObject.DOOR   # LoginScreen.py -> door_pos["Register"]
 
             # TREES
-            
-            grid[14, 3] = GridMapObject.WALL
-            grid[13, -5] = GridMapObject.WALL
+
             grid[:, :3] = [[GridMapObject.WALL]] #LEFT
             grid[:, -3:] = [[GridMapObject.WALL]] #RIGHT
 
@@ -91,7 +91,7 @@ class MapManager:
             grid[:2, :] = [[GridMapObject.WALL]]
 
             # MAIN DOOR
-            grid[1, -4] = [GridMapObject.DOOR]
+            grid[1, -4] = GridMapObject.DOOR
 
 
             pass
@@ -129,4 +129,5 @@ class MapManager:
         :param name:
         :return:
         """
+
         return self.map_grids[name]

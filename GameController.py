@@ -20,23 +20,6 @@ PARAMS = {
 }
 FPS = 60
 
-# Pre-defined imports
-import sys
-import pygame
-import numpy as np
-import cv2
-from enum import Enum
-
-# init hyperparameters here
-PARAMS = {
-    "resources": "Visualize/Resources/",
-    "resolution": (1200, 800),  # ratio 3:2
-    "cell": {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80)}, # 12 cells column, 8 cells row
-    "scenes": ["Login", "Menu", "Play", "Leaderboard", "Settings"],
-    "initial_pos": {"Login": (12, 12), "Menu": (11, 2), "Play": (0, 0), "Leaderboard": (0, 0), "Settings": (0, 0)}  # need adjusting
-}
-FPS = 60
-
 
 class GameController:
     """
@@ -57,7 +40,7 @@ class GameController:
                                    list_maps=PARAMS["scenes"])  # [PROTOTYPE]
 
         # INSTANTIATE PLAYER
-        self.player = Player(self.screen, (PARAMS["resolution"], PARAMS["cell"]), grid_map=self.grid_map, current_scene=initial_scene, initial_pos=PARAMS["initial_pos"][initial_scene])  # [PROTOTYPE]
+        self.player = Player(self.screen, (PARAMS["resolution"], PARAMS["cell"]), grid_map=self.grid_map, current_scene=initial_scene, initial_pos=PARAMS["initial_pos"][initial_scene], params=PARAMS)  # [PROTOTYPE]
 
         # INSTANTIATE VISUALIZER
         self.visualizer = Visualizer(PARAMS, self.screen, self.player)  # [PROTOTYPE]
@@ -79,8 +62,16 @@ class GameController:
                     running = False
                     pygame.exit()
                     sys.exit(0)
-            running = self.visualizer.draw_scene(
-                self.game_state_manager.get_state())  # Fucking transmit signal to another scene here, this is just a prototype
+
+            next_scene, next_grid_pos = self.visualizer.draw_scene(self.game_state_manager.get_state())  
+            # Fucking transmit signal to another scene here, this is just a prototype
+            
+            if next_scene:
+                self.game_state_manager.change_state(next_scene)
+
+                self.player.set_current_scene(next_scene, initial_pos=next_grid_pos)
+            else:
+                running = False
             # pygame.display.update()
             self.clock.tick(FPS)
         # [MAIN GAME LOOP]

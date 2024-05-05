@@ -1,1 +1,30 @@
-asdasdsa
+[
+    {
+        "username": "a",
+        "password": ""
+    },
+    {
+        "username": "ab",
+        "password": ""
+    },
+    {
+        "username": "abc",
+        "password": ""
+    },
+    {
+        "username": "chimtao",
+        "password": "ku"
+    },
+    {
+        "username": "chimtao2",
+        "password": "kuloz"
+    },
+    {
+        "username": "JohnCena",
+        "password": "whatthefuck"
+    },
+    {
+        "username": "admin",
+        "password": "minhbeo123"
+    }
+]
