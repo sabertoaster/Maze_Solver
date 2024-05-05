@@ -73,6 +73,7 @@ class Visualizer:
         return next_scene, next_grid_pos
 
     def apply_transition(self):
+
         pass
 
     # def matching_entity(self, entity: str) -> pygame.Surface:
