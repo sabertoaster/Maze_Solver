@@ -9,6 +9,7 @@ from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
 from Visualize.TextBox import TextBox, FormManager, Color
 from Visualize.Mouse_Events import Mouse_Events
+from Visualize.Transition import Transition
 
 FILENAME = "miniTown_BG.png"
 
@@ -62,6 +63,9 @@ class LoginScreen:
         self.text_box = FormManager(self.screen, {"username": {"position": (483, 426, 568, 24), "color": Color.DEFAULT}, # (x, y, width, height)
                                                   "password": {"position": (483, 474, 568, 24), "color": Color.DEFAULT}}) # (x, y, width, height)
 
+        # Transition effect
+        self.transition = Transition(self.screen, self.resolution)
+
     def play(self, player):
         """
         Play the scene
@@ -89,8 +93,14 @@ class LoginScreen:
         self.register_panel = add_element(self.blur, register_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1] + 11) / 2)) # HANDLE KIEU SUC VAT
         # self.create_font()  # Create font for text input
 
+        # Start transition effect
+        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                        self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                   transition_type='circle_out')  # draw transition effect
+
+        pygame.display.flip()
+
         self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
-        
         self.chosen_door = None
         
         running = True
@@ -197,6 +207,16 @@ class LoginScreen:
                     if diction["username"] == tmp_dic["username"]:
                         if diction["password"] == tmp_dic["password"]:
                             print("Login successfully")
+                            self.player.deactivate(active=True)
+
+                            # Transition effect
+                            self.screen.blit(self.screenCopy, (0, 0))
+                            self.player.update(self.screenCopy)
+                            pygame.display.flip()
+                            self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                            self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                                       transition_type='circle_in')
+
                             return "Menu", self.player.params["initial_pos"]["Menu"]  # [PROTOTYPE]
                         else:
                             print("Password is incorrect, please try again")
