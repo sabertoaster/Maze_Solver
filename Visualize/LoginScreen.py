@@ -59,8 +59,8 @@ class LoginScreen:
         }
 
         # Tạo textbox nhập username/password
-        self.my_form = FormManager(self.screen, {"username": {"position": (10, 10, 200, 30), "color": Color.WHITE},
-                                                 "password": {"position": (10, 70, 200, 30), "color": Color.WHITE}})
+        self.text_box = FormManager(self.screen, {"username": {"position": (483, 426, 568, 24), "color": Color.DEFAULT}, # (x, y, width, height)
+                                                  "password": {"position": (483, 474, 568, 24), "color": Color.DEFAULT}}) # (x, y, width, height)
 
     def play(self, player):
         """
@@ -81,12 +81,12 @@ class LoginScreen:
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
 
-        panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
+        panel_shape = self.resolution[0] * 0.95, self.resolution[1] * 0.5
         login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
         register_panel = morph_image(self.pth_re + "register_box.png", panel_shape)
 
         self.login_panel = add_element(self.blur, login_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
-        self.register_panel = add_element(self.blur, register_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
+        self.register_panel = add_element(self.blur, register_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1] + 11) / 2)) # HANDLE KIEU SUC VAT
         # self.create_font()  # Create font for text input
 
         self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
@@ -96,11 +96,11 @@ class LoginScreen:
         running = True
         while running:
             events = pygame.event.get()
-            self.my_form.update(events)
+            self.text_box.update(events)
             for event in events:
                 mouse_pos = pygame.mouse.get_pos()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.my_form.focus(mouse_pos)
+                    self.text_box.focus(mouse_pos)
                 if event.type == pygame.QUIT:
                     running = False
                     # pygame.quit()
@@ -129,7 +129,7 @@ class LoginScreen:
                         if player_response == "Move":
                             pass
                         if player_response == "Interact":
-                            pass # Handle Interact Here
+                            pass  # Handle Interact Here
                         if player_response == "Door":
                             self.panel_fl = True
                             self.chosen_door = self.door_pos[self.player.get_current_door()]
@@ -176,7 +176,7 @@ class LoginScreen:
         Login panel
         """
         self.screen.blit(self.login_panel, (0, 0))
-        self.my_form.draw()
+        self.text_box.draw()
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -188,7 +188,7 @@ class LoginScreen:
             if event.key == pygame.K_RETURN:
                 # Get the {"username", "password"} the player input
 
-                tmp_dic = self.my_form.get_all_text()
+                tmp_dic = self.text_box.get_all_text()
 
                 with open('user_profile.json', 'r') as file:
                     data = json.load(file)
@@ -215,18 +215,18 @@ class LoginScreen:
         """
 
         self.screen.blit(self.register_panel, (0, 0))
-        self.my_form.draw()
+        self.text_box.draw()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 return "Login", self.player.get_grid_pos()
             
             if event.key == pygame.K_RETURN:
-                # print(self.my_form.get_all_text())
+                # print(self.text_box.get_all_text())
                 with open('user_profile.json', 'r+') as file:
                     try:
                         data = json.load(file)
 
-                        cur_input = self.my_form.get_all_text()
+                        cur_input = self.text_box.get_all_text()
 
                         if cur_input["password"] == "":
                             print("Vui long nhap mat khau")
@@ -239,9 +239,9 @@ class LoginScreen:
 
                         data.append(cur_input)
                     except json.JSONDecodeError:
-                        data = [self.my_form.get_all_text()]
+                        data = [self.text_box.get_all_text()]
                     
-                    #Rewind to top of the file
+                    # Rewind to top of the file
                     file.seek(0)
 
                     json.dump(data, file, indent=4)

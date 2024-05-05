@@ -8,15 +8,10 @@ SCENCES = {
             "Register" : [[x, y] for x in range(6, 11) for y in range(18, 27)],
             "Exit" : [[4,13]]
         },
-        # 'HOVER_FRAME': {
-        #     "Login": "miniTown_BG_login_hover.png",
-        #     "Register": "miniTown_BG_register_hover.png",
-        #     "Exit": "miniTown_BG_exit_hover.png"
-        # },
         'HOVER_FRAME': {
-            "Login": "miniTown_BG.png",
-            "Register": "miniTown_BG.png",
-            "Exit": "miniTown_BG.png"
+            "Login": "miniTown_BG_login_hover.png",
+            "Register": "miniTown_BG_register_hover.png",
+            "Exit": "miniTown_BG_exit_hover.png"
         },
     },
 }
