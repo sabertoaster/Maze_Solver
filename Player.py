@@ -61,6 +61,7 @@ class Player:
         :return:
         """
         self.current_scene = target_scene
+
         self.cell = self.cell_collection[target_scene]
         self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], self.cell)  # [PROTOTYPE]
         print(self.grid_map.get_map(self.current_scene).get_grid())
@@ -205,8 +206,7 @@ class Player:
         return position of GridMapObject.FREE from self.grid_pos (must at door)
         """
         self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.DOOR
-        cells = self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] - 1:self.grid_pos[1] + 2,
-                self.grid_pos[0] - 1:self.grid_pos[0] + 2]  # - set(self.grid_pos)
+        cells = self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] - 1:self.grid_pos[1] + 2, self.grid_pos[0] - 1:self.grid_pos[0] + 2]  # - set(self.grid_pos)
         relative_position = tuple([val.tolist()[0] - 1 for val in list(np.where(cells == Gmo.FREE))])
 
         return relative_position

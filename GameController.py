@@ -63,12 +63,12 @@ class GameController:
                     pygame.exit()
                     sys.exit(0)
 
-            next_scene, next_grid_pos = self.visualizer.draw_scene(
-                self.game_state_manager.get_state())  
+            next_scene, next_grid_pos = self.visualizer.draw_scene(self.game_state_manager.get_state())  
             # Fucking transmit signal to another scene here, this is just a prototype
             
             if next_scene:
                 self.game_state_manager.change_state(next_scene)
+
                 self.player.set_current_scene(next_scene, initial_pos=next_grid_pos)
             else:
                 running = False

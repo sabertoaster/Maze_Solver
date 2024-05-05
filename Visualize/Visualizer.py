@@ -27,7 +27,6 @@ class Visualizer:
         self.player = player
         self.reset_scene_collection()
         self.logo = pygame.image.load(self.pth_re + "logo.png")  # Load logo image
-        print(self.cell)
 
 
         self.panel_collection = { # Pop-up panel, with buttons to choose, information presentation, sths like that
@@ -60,9 +59,6 @@ class Visualizer:
         :return:
         """
 
-        if scene_name == "Register":
-            scene_name = "Login"
-
         scene = self.scenes_collection.copy()[scene_name]
 
         if scene:
@@ -70,8 +66,8 @@ class Visualizer:
                 next_scene, next_grid_pos = scene.play(player = self.player) # Chac chan co next scene, next grid_pos
             except TypeError:
                 return None, None
-
-            return next_scene, next_grid_pos
+            else:
+                return next_scene, next_grid_pos
         
         return None, None
 

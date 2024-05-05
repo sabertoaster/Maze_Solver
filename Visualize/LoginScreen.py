@@ -73,7 +73,7 @@ class LoginScreen:
         # drawGrid(screen=self.screen)
 
         self.player = player
-        print(self.player.grid_map.get_map(self.player.current_scene).get_grid()[12, 12])
+        # print(self.player.grid_map.get_map(self.player.current_scene).get_grid()[12, 12])
         self.panel_fl = False  # CÁI NI Bị DOWN
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
@@ -83,10 +83,9 @@ class LoginScreen:
         panel_shape = self.resolution[0] * 0.9, self.resolution[1] * 0.6
         login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
         register_panel = morph_image(self.pth_re + "register_box.png", panel_shape)
-        self.login_panel = add_element(self.blur, login_panel, (
-            (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
-        self.register_panel = add_element(self.blur, register_panel, (
-            (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
+
+        self.login_panel = add_element(self.blur, login_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
+        self.register_panel = add_element(self.blur, register_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
         # self.create_font()  # Create font for text input
 
         running = True
@@ -101,8 +100,8 @@ class LoginScreen:
                     # pygame.quit()
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
                 if self.panel_fl:
-                    next_scene, next_grid_pos = self.toggle_panel(event,
-                                                                  self.door_pos[self.player.get_current_door()])
+                    next_scene, next_grid_pos = self.toggle_panel(event, self.door_pos[self.player.get_current_door()])
+
                     if next_scene:
                         return next_scene, next_grid_pos
                     continue
@@ -133,16 +132,20 @@ class LoginScreen:
             self.player.deactivate(active=False)
             if name == "Login":
                 next_scene, next_grid_pos = self.login(event)
+
                 if next_scene:
                     self.player.deactivate(active=True)
                     return next_scene, next_grid_pos
+                
             if name == "Exit":
                 # Play outro animation here
                 self.panel_fl = False
                 pygame.quit()
                 exit()
+                
             if name == "Register":
                 next_scene, next_grid_pos = self.register(event)
+
                 if next_scene:
                     self.player.deactivate(active=True)
                     return next_scene, next_grid_pos
@@ -158,14 +161,14 @@ class LoginScreen:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-
                 free_pos_from_door = self.player.distance_from_door()
                 absolute_pos_of_door = [key for key, val in self.door_pos.items() if val == "Login"][0]
-                # print("Login", (absolute_pos_of_door[0] + free_pos_from_door[1], absolute_pos_of_door[1] + free_pos_from_door[0]))
+                
                 return "Login", self.player.get_grid_pos()  # [PROTOTYPE]
+            
             if event.key == pygame.K_RETURN:
                 # Get the {"username", "password"} the player input
-                print(self.my_form.get_all_text())
+
                 tmp_dic = self.my_form.get_all_text()
 
                 with open('user_profile.json', 'r') as file:
@@ -196,11 +199,7 @@ class LoginScreen:
         self.my_form.draw()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                free_pos_from_door = self.player.distance_from_door()
-                absolute_pos_of_door = [key for key, val in self.door_pos.items() if val == "Register"][0]
-                
-                return "Register", (
-                    absolute_pos_of_door[0] + free_pos_from_door[1], absolute_pos_of_door[1] + free_pos_from_door[0])
+                return "Login", self.player.get_grid_pos()
             
             if event.key == pygame.K_RETURN:
                 # print(self.my_form.get_all_text())
