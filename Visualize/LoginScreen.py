@@ -74,7 +74,7 @@ class LoginScreen:
         """
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
-        pygame.display.flip()
+        # pygame.display.flip()
         # drawGrid(screen=self.screen)
 
         self.player = player
@@ -98,7 +98,7 @@ class LoginScreen:
                                         self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
                                    transition_type='circle_out')  # draw transition effect
 
-        pygame.display.flip()
+        # pygame.display.flip()
 
         self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
         self.chosen_door = None

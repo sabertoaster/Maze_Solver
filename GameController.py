@@ -2,7 +2,7 @@
 from Player import Player
 from Visualize.Visualizer import Visualizer  # [PROTOTYPE]
 from GridMap import MapManager
-
+from Visualize.Playgif import play_gif
 # Pre-defined imports
 import sys
 import pygame
@@ -55,6 +55,7 @@ class GameController:
         self.visualizer.start_visualize()  # [PROTOTYPE]
         # [MAIN GAME LOOP]
         pygame.init()
+        play_gif(self.screen)
         running = True
         while running:
             for event in pygame.event.get():
