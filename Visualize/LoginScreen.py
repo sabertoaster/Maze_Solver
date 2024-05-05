@@ -8,6 +8,7 @@ from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
 from Visualize.TextBox import TextBox, FormManager, Color
+from Visualize.Mouse_Events import Mouse_Events
 
 FILENAME = "miniTown_BG.png"
 
@@ -88,39 +89,56 @@ class LoginScreen:
         self.register_panel = add_element(self.blur, register_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
         # self.create_font()  # Create font for text input
 
+        self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
+        
+        self.chosen_door = None
+        
         running = True
         while running:
             events = pygame.event.get()
             self.my_form.update(events)
             for event in events:
+                mouse_pos = pygame.mouse.get_pos()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.my_form.focus(pygame.mouse.get_pos())
+                    self.my_form.focus(mouse_pos)
                 if event.type == pygame.QUIT:
                     running = False
                     # pygame.quit()
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
-                if self.panel_fl:
-                    next_scene, next_grid_pos = self.toggle_panel(event, self.door_pos[self.player.get_current_door()])
-
+                
+                if self.chosen_door:
+                    next_scene, next_grid_pos = self.toggle_panel(event, self.chosen_door)
                     if next_scene:
                         return next_scene, next_grid_pos
                     continue
-                if event.type == pygame.KEYDOWN:
-                    pressed = event.key
-                    player_response = self.player.handle_event(pressed)
+                
+                if not self.chosen_door:
+                
+                    self.mouse_handler.set_pos(mouse_pos)
+                    
+                    self.screenCopy = self.mouse_handler.get_hover_frame()
+                    
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        self.chosen_door = self.mouse_handler.click()
+                        continue
+                    
+                    if event.type == pygame.KEYDOWN:
+                        pressed = event.key
+                        player_response = self.player.handle_event(pressed)
 
-                    if player_response == "Move":
-                        pass
-                    if player_response == "Interact":
-                        pass # Handle Interact Here
-                    if player_response == "Door":
-                        self.panel_fl = True
-                    # if self.player.handle_event(pressed):  # Handle interact from player
-                    #     pass
-                    # if self.player.get_grid_pos() in self.door_pos:
-                    #     pass
-                    self.player.update(
-                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                        if player_response == "Move":
+                            pass
+                        if player_response == "Interact":
+                            pass # Handle Interact Here
+                        if player_response == "Door":
+                            self.panel_fl = True
+                            self.chosen_door = self.door_pos[self.player.get_current_door()]
+                        # if self.player.handle_event(pressed):  # Handle interact from player
+                        #     pass
+                        # if self.player.get_grid_pos() in self.door_pos:
+                        #     pass
+                        self.player.update(
+                            self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
     def toggle_panel(self, event, name):
         """
@@ -139,6 +157,7 @@ class LoginScreen:
                 
             if name == "Exit":
                 # Play outro animation here
+                print("dume")
                 self.panel_fl = False
                 pygame.quit()
                 exit()
