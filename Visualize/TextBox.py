@@ -41,12 +41,22 @@ class TextBox:
 
     def get_position(self):
         return self.x, self.y, self.width, self.height
+    
+    def set_position(self, position):
+        self.x = position[0]
+        self.y = position[1]
 
     def set_text(self, text):
         self.text_input.value = text
 
     def get_current_text(self):
         return self.text_input.value
+    
+    def get_length(self):
+        font = pygame.font.Font(DEFAULT_FONT_PATH, self.height - 5)
+        text_surface = font.render(self.text_input.value, True, Color.BLACK.value)
+        print(text_surface.get_width())
+        return text_surface.get_width()
 
     def draw(self):
         # pygame.draw.rect(self.screen, self.bg_color, self.rect)

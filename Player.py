@@ -6,6 +6,9 @@ import cv2
 from GridMapObject import GridMapObject as Gmo
 from Visualize.ImageProcess import morph_image
 
+from Visualize.TextBox import TextBox   
+from pygame_textinput import TextInputManager, TextInputVisualizer
+
 AVATAR = {
     "down": "tom_icon_1.png",
     "right": "tom_icon_2.png",
@@ -19,7 +22,7 @@ class Player:
     This is a class to represent Player Instance
     """
 
-    def __init__(self, screen, res_cell, grid_map, current_scene, initial_pos, params):
+    def __init__(self, screen, res_cell, grid_map, current_scene, initial_pos, params, player_name='asvdjasjdgashdhasdg'):
 
         """
         :param screen:
@@ -52,6 +55,9 @@ class Player:
         self.grid_step = 1
         self.visual_step = self.grid_step * cell[current_scene][0]
         self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
+        
+        self.name = player_name
+        self.name_box = TextBox(screen=self.screen, position=(0, 0, res_cell[1][current_scene][0]*2, res_cell[1][current_scene][1]), font_color=(0, 0, 0), manager=TextInputManager(), text=self.name)
 
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
 
@@ -126,6 +132,7 @@ class Player:
         """
         copy_scr = screenCopy.copy()
         if self.active:
+            name_length = self.name_box.get_length()
             if self.visualize_direction[0] != self.visualize_direction[1]:
                 for i in range(0, 24):
                     self.visual_pos = (self.visual_pos[0] + (
@@ -135,6 +142,9 @@ class Player:
                                                self.visualize_direction[1][1] - self.visualize_direction[0][
                                            1]) * self.grid_step * 1 / 24)
                     self.screen.blit(self.avatar, self.visual_pos)
+                    self.name_box.set_position((self.visual_pos[0] - (name_length//2) + (self.cell[0]//2), self.visual_pos[1] - self.cell[0]))
+                    self.name_box.draw()
+                    
                     pygame.time.delay(2)
                     if (i % 2 == 0):
                         pygame.display.flip()
@@ -146,7 +156,10 @@ class Player:
                     # pygame.time.delay(2)
                 self.visualize_direction = (self.visualize_direction[1], self.visualize_direction[1])
                 return
+            
             self.screen.blit(self.avatar, self.visual_pos)
+            self.name_box.set_position((self.visual_pos[0] - (name_length//2) + (self.cell[0]//2), self.visual_pos[1] - self.cell[0]))
+            self.name_box.draw()
             pygame.display.flip()
 
     def move(self, cmd):

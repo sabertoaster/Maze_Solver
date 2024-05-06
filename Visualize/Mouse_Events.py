@@ -1,7 +1,7 @@
 import pygame
 from Visualize.ImageProcess import morph_image
 
-SCENCES = {
+SCENES = {
     'Login': {
         'OBJECTS_POS': {
             "Login" : [[x, y] for x in range(6, 10) for y in range(3, 9)],
@@ -30,7 +30,7 @@ class Mouse_Events:
         self.pos = [x,y]
         
     def click(self):
-        for key, value in SCENCES[self.current_scene]['OBJECTS_POS'].items():
+        for key, value in SCENES[self.current_scene]['OBJECTS_POS'].items():
             for item in value:
                 if item == self.pos:
                     return key
@@ -39,9 +39,9 @@ class Mouse_Events:
     def get_hover_frame(self):
         frame = self.original_frame
 
-        for key in SCENCES[self.current_scene]['OBJECTS_POS'].keys():
-            if self.pos in SCENCES[self.current_scene]['OBJECTS_POS'][key]:
-                frame = morph_image(self.PARAMS['resources'] + SCENCES[self.current_scene]['HOVER_FRAME'][key], self.PARAMS['resolution'])
+        for key in SCENES[self.current_scene]['OBJECTS_POS'].keys():
+            if self.pos in SCENES[self.current_scene]['OBJECTS_POS'][key]:
+                frame = morph_image(self.PARAMS['resources'] + SCENES[self.current_scene]['HOVER_FRAME'][key], self.PARAMS['resolution'])
 
         
         self.screen.blit(frame, (0, 0))

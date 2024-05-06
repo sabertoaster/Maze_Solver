@@ -106,6 +106,7 @@ class LoginScreen:
         pygame.display.flip()
 
         self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
+        
         self.chosen_door = None
 
         running = True
@@ -113,7 +114,9 @@ class LoginScreen:
             events = pygame.event.get()
             self.text_box.update(events)
             for event in events:
+                
                 mouse_pos = pygame.mouse.get_pos()
+                
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.text_box.focus(mouse_pos)
                 if event.type == pygame.QUIT:
