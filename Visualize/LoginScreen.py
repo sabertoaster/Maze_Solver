@@ -77,7 +77,7 @@ class LoginScreen:
         """
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
-        pygame.display.flip()
+        # pygame.display.flip()
         # drawGrid(screen=self.screen)
 
         self.player = player
@@ -103,10 +103,9 @@ class LoginScreen:
                                         self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
                                    transition_type='circle_out')  # draw transition effect
 
-        pygame.display.flip()
+        # pygame.display.flip()
 
         self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
-        
         self.chosen_door = None
 
         running = True
@@ -123,7 +122,6 @@ class LoginScreen:
                     running = False
                     # pygame.quit()
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
-
                 if self.chosen_door:
                     next_scene, next_grid_pos = self.toggle_panel(event, self.chosen_door)
                     if next_scene:
@@ -268,7 +266,6 @@ class LoginScreen:
                         data.append(cur_input)
                     except json.JSONDecodeError:
                         data = [self.text_box.get_all_text()]
-
                     # Rewind to top of the file
                     file.seek(0)
 

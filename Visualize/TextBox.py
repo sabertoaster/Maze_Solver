@@ -49,6 +49,9 @@ class TextBox:
     def set_text(self, text):
         self.text_input.value = text
 
+    def set_text(self, text):
+        self.text_input.value = text
+
     def get_current_text(self):
         return self.text_input.value
     
@@ -84,7 +87,7 @@ class FormManager:
             self.text_boxes[key] = {
                 "box": TextBox(screen=screen, position=value["position"], font_color=value["color"],
                                manager=TextInputManager(validator=lambda input_s: value["maximum_length"]),
-                               text=value["init_text"])}
+                               text=value["init_text"], focusable=value["focusable"])}
 
     def focus(self, position) -> None:
         """
@@ -92,7 +95,7 @@ class FormManager:
         """
         for key, value in self.text_boxes.items():
             if not value["box"].focusable:
-                return
+                continue
             (x, y, width, height) = value["box"].get_position()
             if x <= position[0] <= x + width and y <= position[1] <= y + height:
                 value["box"].active = True
