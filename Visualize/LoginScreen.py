@@ -62,7 +62,7 @@ class LoginScreen:
         # Tạo textbox nhập username/password
         self.text_box = FormManager(self.screen, {
             "username": {"position": (483, 426, 568, 24), "color": Color.WHITE.value, "maximum_length": 16,
-                         "focusable": False, "init_text": "ditmemay"},  # (x, y, width, height)
+                         "focusable": True, "init_text": ""},  # (x, y, width, height)
             "password": {"position": (483, 474, 568, 24), "color": Color.WHITE.value, "maximum_length": 32,
                          "focusable": True, "init_text": ""}})  # (x, y, width, height)
 

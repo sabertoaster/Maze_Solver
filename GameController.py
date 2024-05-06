@@ -28,7 +28,7 @@ class GameController:
     def __init__(self):
         pygame.init()
         pygame.key.set_repeat(200, 125)
-        initial_scene = "Login"
+        initial_scene = "Leaderboard"
         # initial_scene = "Menu"
         self.game_state_manager = GameStateManager(initial_scene)  # [PROTOTYPE]
         self.clock = pygame.time.Clock()  # Define a variable to control the main loop
@@ -55,7 +55,7 @@ class GameController:
         self.visualizer.start_visualize()  # [PROTOTYPE]
         # [MAIN GAME LOOP]
         pygame.init()
-        play_gif(self.screen)
+        # play_gif(self.screen) # [PROTOTYPE]
         running = True
         while running:
             for event in pygame.event.get():
