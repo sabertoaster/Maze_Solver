@@ -42,9 +42,9 @@ def print_path(path: list[tuple], test: Maze, Color: str):
             pygame.draw.line(sc, pygame.Color('black'), (x, y + TILE), (x + TILE, y + TILE), 2)
 fps_clock = pygame.time.Clock()
 running = True
-test = Maze('Prim', (50, 50))
+test = Maze('BinaryTree', (50, 50))
 #path1 = depth_first_search(test, (0,0), (49, 49))
-#path2 = astar(test, (0,0), (0, 49))
+path2 = astar(test, (0,0), (0, 49))
 
 
 while running:
@@ -55,9 +55,9 @@ while running:
     for i in range(test.size[0]):
         for j in range(test.size[1]):
             print_cell(test.maze[i][j])
-            
+            print(test.maze[i][j].walls)
     #print_path(path1,test, 'red')
-    #print_path(path2,test, 'yellow')
+    print_path(path2,test, 'yellow')
     
         
     pygame.display.update()

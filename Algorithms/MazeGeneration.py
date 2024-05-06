@@ -3,13 +3,6 @@ import pygame
 from random import choice
 from random import shuffle
 from random import randint
-import pygame
-WIDTH, HEIGHT = 602, 602
-TILE = 60
-rows, cols = HEIGHT // TILE, WIDTH // TILE
-sc = pygame.display.set_mode((HEIGHT, WIDTH))
-pygame.display.set_caption('Generating Maze')
-fps_clock = pygame.time.Clock()
 
 
 sys.setrecursionlimit(15000)
@@ -20,7 +13,7 @@ class Cell:
         self.walls = {'top': True, 'bottom': True, 'right': True, 'left': True}
         
             
-class DepthFirstSearchGeneration:
+class DepthFirstSearch:
     def __init__(self, size_maze : tuple ):
         self.size = size_maze
         self.maze = [[Cell(i,j) for i in range(size_maze[1])] for j in range(size_maze[0])]
@@ -57,7 +50,7 @@ class DepthFirstSearchGeneration:
                 # tiếp tục đi qua ô tiếp theo
         
 
-class KruskalAlgorithmGeneration:
+class KruskalAlgorithm:
     def __init__(self, size_maze : tuple ):
         self.size = size_maze
         self.maze = [[Cell(i,j) for i in range(size_maze[1])] for j in range(size_maze[0])]
@@ -115,7 +108,7 @@ class KruskalAlgorithmGeneration:
             self.join((current_cell[0] * self.size[1] + current_cell[1]),(next_neighbor[0] * self.size[1] + next_neighbor[1]))
             #gộp hai đỉnh thành một
             
-class WilsonAlgorithmGeneration:
+class WilsonAlgorithm:
     def __init__(self, size_maze):
         self.size = size_maze
         self.maze = [[Cell(j,i) for j in range(size_maze[1])] for i in range(size_maze[0])]
@@ -158,7 +151,7 @@ class WilsonAlgorithmGeneration:
                 self.maze[next_neighbor[0]][next_neighbor[1]].walls[next_wall[iter]] = False
                 visited_cell.remove(current_cell)
 
-class PrimAlgorithmGeneration:
+class PrimAlgorithm:
     def __init__(self, size_maze):
         self.size = size_maze
         self.maze = [[Cell(j,i) for j in range(size_maze[1])] for i in range(size_maze[0])]
@@ -200,13 +193,43 @@ class PrimAlgorithmGeneration:
             for next_neighbor in list_neighbors:
                 if next_neighbor not in list_random_cell:
                     list_random_cell.append(next_neighbor)            
-        
+                    
+                    
+class BinaryTreeAlgorithm:
+    def __init__(self, size_maze):
+        self.size = size_maze
+        self.maze = [[Cell(j,i) for j in range(size_maze[1] + 5)] for i in range(size_maze[0] + 5)]                  
+    
+    def run(self):
+        # East/ South
+        for row in range(self.size[0]):
+            for col in range(self.size[1]):
+                if row == self.size[0] - 1 and col == self.size[1] - 1:
+                    continue
+                if row == self.size[0] - 1:
+                    self.maze[row][col].walls['right'] = False
+                    self.maze[row][col + 1].walls['left'] = False
+                if col == self.size[1] - 1:
+                    self.maze[row][col].walls['bottom'] = False
+                    self.maze[row + 1][col].walls['top'] = False
+                else:
+                    wall = choice(['right', 'bottom'])
+                    if wall == 'right':
+                        self.maze[row][col].walls[wall] = False
+                        self.maze[row][col + 1].walls['left'] = False
+                    else:
+                        self.maze[row][col].walls[wall] = False
+                        self.maze[row + 1][col].walls['top'] = False
+                #print(row, col, self.maze[row][col].walls)
+
 def random_start_end(size):
     start = randint(0, size[0]), randint(0, size[1])
     end = randint(0, size[0]), randint(0, size[1])
     return start, end
 class Maze:
-    """_summary_
+    """
+    type_generating_maze chọn một trong các ['DFS', 'Kruskal', 'Prim', 'Wilson']
+    nếu ghi sai thì Maze sẽ random tự chọn kiểu
     
     return self.size    -> tuple() : dòng trước, cột sau
     
@@ -223,26 +246,31 @@ class Maze:
     """
     def __init__(self, type_generating_maze : str, size_maze : tuple):
         self.start, self.end = random_start_end(size_maze)
-        if type_generating_maze not in ['DFS', 'Kruskal', 'Wilson', 'Prim']:
-            type_generating_maze = choice(['DFS', 'Kruskal', 'Wilson', 'Prim'])
+        Algorithm = ['DFS', 'Kruskal', 'Wilson', 'Prim','BinaryTree']
+        if type_generating_maze not in Algorithm:
+            type_generating_maze = choice(Algorithm)
         if type_generating_maze == 'DFS':
-            tmp = DepthFirstSearchGeneration(size_maze)
+            tmp = DepthFirstSearch(size_maze)
             tmp.run((0,0))
             self.maze = tmp.maze
-            self.size = size_maze
-            
+            self.size = size_maze          
         elif type_generating_maze == 'Kruskal':
-            tmp = KruskalAlgorithmGeneration(size_maze)
+            tmp = KruskalAlgorithm(size_maze)
             tmp.run()
             self.maze = tmp.maze
             self.size = size_maze
         elif type_generating_maze == 'Wilson':
-            tmp = WilsonAlgorithmGeneration(size_maze)
+            tmp = WilsonAlgorithm(size_maze)
             tmp.run()
             self.maze = tmp.maze
             self.size = size_maze
         elif type_generating_maze == 'Prim':
-            tmp = PrimAlgorithmGeneration(size_maze)
+            tmp = PrimAlgorithm(size_maze)
+            tmp.run()
+            self.maze = tmp.maze
+            self.size = size_maze
+        elif type_generating_maze == 'BinaryTree':
+            tmp = BinaryTreeAlgorithm(size_maze)
             tmp.run()
             self.maze = tmp.maze
             self.size = size_maze
