@@ -7,10 +7,20 @@ from GridMapObject import GridMapObject as Gmo
 from Visualize.ImageProcess import morph_image
 
 AVATAR = {
-    "down": "tom_icon_1.png",
-    "right": "tom_icon_2.png",
-    "left": "tom_icon_3.png",
-    "up": "tom_icon_4.png"
+    "Tom": {"down": "tom_icon_d.png",
+            "right": "tom_icon_r.png",
+            "left": "tom_icon_l.png",
+            "up": "tom_icon_u.png"},
+    
+    "orangeTom": {"down": "orangeTom_icon_d.png",
+                  "right": "orangeTom_icon_r.png",
+                  "left": "orangeTom_icon_l.png",
+                  "up": "orangeTom_icon_u.png"},
+
+    "blackTom": {"down": "blackTom_icon_d.png",
+                 "right": "blackTom_icon_r.png",
+                 "left": "blackTom_icon_l.png",
+                 "up": "blackTom_icon_u.png"},
 }
 
 
@@ -19,7 +29,7 @@ class Player:
     This is a class to represent Player Instance
     """
 
-    def __init__(self, screen, res_cell, grid_map, current_scene, initial_pos, params):
+    def __init__(self, screen, res_cell, grid_map, current_scene, initial_pos, params, skin="blackTom"):
 
         """
         :param screen:
@@ -35,6 +45,7 @@ class Player:
         self.resolution = resolution
         self.cell_collection = cell
         self.grid_map = grid_map
+        self.skin = skin
         self.movement = {
             "left": (-1, 0),
             "right": (1, 0),
@@ -42,7 +53,7 @@ class Player:
             "down": (0, 1)
         }
 
-        self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], res_cell[1][current_scene])  # [PROTOTYPE]
+        self.avatar = morph_image("Visualize/Resources/" + AVATAR[self.skin]["down"], res_cell[1][current_scene])  # [PROTOTYPE]
         self.current_scene = current_scene
         self.cell = cell[current_scene]
         self.ratio = (resolution[0] // cell[current_scene][0], resolution[1] // cell[current_scene][1])
@@ -63,9 +74,9 @@ class Player:
         self.current_scene = target_scene
 
         self.cell = self.cell_collection[target_scene]
-        self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], self.cell)  # [PROTOTYPE]
+        self.avatar = morph_image("Visualize/Resources/" + AVATAR[self.skin]["down"], self.cell)  # [PROTOTYPE]
         print(self.grid_map.get_map(self.current_scene).get_grid())
-        self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], self.cell)  # [PROTOTYPE]
+        self.avatar = morph_image("Visualize/Resources/" + AVATAR[self.skin]["down"], self.cell)  # [PROTOTYPE]
         self.ratio = (self.resolution[0] // self.cell[0], self.resolution[1] // self.cell[1])
 
         self.grid_pos = initial_pos  # [PROTOTYPE]
@@ -94,19 +105,20 @@ class Player:
             response = None
             if key_pressed == pygame.K_RIGHT or key_pressed == pygame.K_d:
                 response = self.move("right")
-                self.avatar = morph_image("Visualize/Resources/" + AVATAR["right"], resolution=self.cell)
+                self.avatar = morph_image("Visualize/Resources/" + AVATAR[self.skin]["right"], resolution=self.cell)
             if key_pressed == pygame.K_LEFT or key_pressed == pygame.K_a:
                 response = self.move("left")
-                self.avatar = morph_image("Visualize/Resources/" + AVATAR["left"], resolution=self.cell)
+                self.avatar = morph_image("Visualize/Resources/" + AVATAR[self.skin]["left"], resolution=self.cell)
             if key_pressed == pygame.K_DOWN or key_pressed == pygame.K_s:
                 response = self.move("down")
-                self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], resolution=self.cell)
+                self.avatar = morph_image("Visualize/Resources/" + AVATAR[self.skin]["down"], resolution=self.cell)
             if key_pressed == pygame.K_UP or key_pressed == pygame.K_w:
                 response = self.move("up")
-                self.avatar = morph_image("Visualize/Resources/" + AVATAR["up"], resolution=self.cell)
+                self.avatar = morph_image("Visualize/Resources/" + AVATAR[self.skin]["up"], resolution=self.cell)
             if key_pressed == pygame.K_e:
                 self.interact()
                 return "Interact"
+            pygame.event.clear()
             return response
         return None
 

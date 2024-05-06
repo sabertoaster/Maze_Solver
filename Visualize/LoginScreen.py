@@ -120,7 +120,6 @@ class LoginScreen:
                     running = False
                     # pygame.quit()
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
-
                 if self.chosen_door:
                     next_scene, next_grid_pos = self.toggle_panel(event, self.chosen_door)
                     if next_scene:
@@ -265,7 +264,6 @@ class LoginScreen:
                         data.append(cur_input)
                     except json.JSONDecodeError:
                         data = [self.text_box.get_all_text()]
-
                     # Rewind to top of the file
                     file.seek(0)
 

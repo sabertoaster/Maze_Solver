@@ -36,7 +36,6 @@ class Visualizer:
             "GameOver": None,
             "Generic": None
         }
-
     def reset_scene_collection(self):
         self.scenes_collection = {
             "Login": login(self.screen, (self.resolution, self.cell["Login"]), self.pth_re),
@@ -46,7 +45,6 @@ class Visualizer:
             "Leaderboard": leaderboard(self.screen, (self.resolution, self.cell["Leaderboard"]), self.pth_re),
             "Settings": None,
         }
-
     def start_visualize(self):
         """
         This is quite useless to be honest (for now)
@@ -70,6 +68,7 @@ class Visualizer:
         return next_scene, next_grid_pos
 
     def apply_transition(self):
+
         pass
 
     # def matching_entity(self, entity: str) -> pygame.Surface:
