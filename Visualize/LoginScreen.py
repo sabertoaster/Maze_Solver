@@ -60,8 +60,11 @@ class LoginScreen:
         }
 
         # Tạo textbox nhập username/password
-        self.text_box = FormManager(self.screen, {"username": {"position": (483, 426, 568, 24), "color": Color.DEFAULT}, # (x, y, width, height)
-                                                  "password": {"position": (483, 474, 568, 24), "color": Color.DEFAULT}}) # (x, y, width, height)
+        self.text_box = FormManager(self.screen, {
+            "username": {"position": (483, 426, 568, 24), "color": Color.WHITE.value, "maximum_length": 16,
+                         "focusable": False, "init_text": "ditmemay"},  # (x, y, width, height)
+            "password": {"position": (483, 474, 568, 24), "color": Color.WHITE.value, "maximum_length": 32,
+                         "focusable": True, "init_text": ""}})  # (x, y, width, height)
 
         # Transition effect
         self.transition = Transition(self.screen, self.resolution)
@@ -89,8 +92,10 @@ class LoginScreen:
         login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
         register_panel = morph_image(self.pth_re + "register_box.png", panel_shape)
 
-        self.login_panel = add_element(self.blur, login_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
-        self.register_panel = add_element(self.blur, register_panel, ((self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1] + 11) / 2)) # HANDLE KIEU SUC VAT
+        self.login_panel = add_element(self.blur, login_panel, (
+        (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
+        self.register_panel = add_element(self.blur, register_panel, ((self.resolution[0] - panel_shape[0]) / 2, (
+                    self.resolution[1] - panel_shape[1] + 11) / 2))  # HANDLE KIEU SUC VAT
         # self.create_font()  # Create font for text input
 
         # Start transition effect
@@ -102,7 +107,7 @@ class LoginScreen:
 
         self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
         self.chosen_door = None
-        
+
         running = True
         while running:
             events = pygame.event.get()
@@ -115,23 +120,23 @@ class LoginScreen:
                     running = False
                     # pygame.quit()
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
-                
+
                 if self.chosen_door:
                     next_scene, next_grid_pos = self.toggle_panel(event, self.chosen_door)
                     if next_scene:
                         return next_scene, next_grid_pos
                     continue
-                
+
                 if not self.chosen_door:
-                
+
                     self.mouse_handler.set_pos(mouse_pos)
-                    
+
                     self.screenCopy = self.mouse_handler.get_hover_frame()
-                    
+
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         self.chosen_door = self.mouse_handler.click()
                         continue
-                    
+
                     if event.type == pygame.KEYDOWN:
                         pressed = event.key
                         player_response = self.player.handle_event(pressed)
@@ -164,21 +169,21 @@ class LoginScreen:
                 if next_scene:
                     self.player.deactivate(active=True)
                     return next_scene, next_grid_pos
-                
+
             if name == "Exit":
                 # Play outro animation here
                 print("dume")
                 self.panel_fl = False
                 pygame.quit()
                 exit()
-                
+
             if name == "Register":
                 next_scene, next_grid_pos = self.register(event)
 
                 if next_scene:
                     self.player.deactivate(active=True)
                     return next_scene, next_grid_pos
-                
+
         return None, None
 
     def login(self, event):
@@ -192,9 +197,9 @@ class LoginScreen:
             if event.key == pygame.K_ESCAPE:
                 free_pos_from_door = self.player.distance_from_door()
                 absolute_pos_of_door = [key for key, val in self.door_pos.items() if val == "Login"][0]
-                
+
                 return "Login", self.player.get_grid_pos()  # [PROTOTYPE]
-            
+
             if event.key == pygame.K_RETURN:
                 # Get the {"username", "password"} the player input
 
@@ -239,7 +244,7 @@ class LoginScreen:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 return "Login", self.player.get_grid_pos()
-            
+
             if event.key == pygame.K_RETURN:
                 # print(self.text_box.get_all_text())
                 with open('user_profile.json', 'r+') as file:
@@ -260,7 +265,7 @@ class LoginScreen:
                         data.append(cur_input)
                     except json.JSONDecodeError:
                         data = [self.text_box.get_all_text()]
-                    
+
                     # Rewind to top of the file
                     file.seek(0)
 
@@ -270,5 +275,5 @@ class LoginScreen:
 
                 file.close()
         pygame.display.update()
-        
+
         return None, None
