@@ -1,6 +1,6 @@
 import pygame
 from pygame_textinput import TextInputManager, TextInputVisualizer
-from typing import Dict
+from typing import Dict, List
 from enum import Enum
 import numpy
 import cv2
@@ -18,7 +18,7 @@ class Color(Enum):
 
 
 class TextBox:
-    def __init__(self, screen, position, font_color, manager, text=''):
+    def __init__(self, screen, position, font_color, manager, text='', focusable=True):
         (x, y, width, height) = position
         self.screen = screen
         self.x = x
@@ -29,9 +29,10 @@ class TextBox:
         self.bg_color = (255, 255, 255)  # Background color here
         # self.rect = pygame.Rect(x, y, width, height)
         self.active = False
-
+        self.focusable = focusable
         font = pygame.font.Font(DEFAULT_FONT_PATH, height - 5)
-        self.text_input = TextInputVisualizer(manager=manager, font_object=font, cursor_blink_interval=400)
+        self.text_input = TextInputVisualizer(manager=manager, font_object=font, cursor_blink_interval=400,
+                                              font_color=font_color)
         # Customize much more
         self.text_input.value = text
         self.text_input.cursor_width = 5
@@ -40,6 +41,9 @@ class TextBox:
 
     def get_position(self):
         return self.x, self.y, self.width, self.height
+
+    def set_text(self, text):
+        self.text_input.value = text
 
     def get_current_text(self):
         return self.text_input.value
@@ -53,21 +57,32 @@ class FormManager:
     """
     This is a class to represent Form Manager Instance
     """
-    def __init__(self, screen, list_of_textbox: Dict[str, {"position": (int, int, int, int), "color": Color}]):
+
+    def __init__(self, screen, list_of_textbox: [str, {"position": (int, int, int, int), "color": Color,
+                                                       "maximum_length": int, "focusable": bool,
+                                                       "init_text": str}]):
         """
         Initialize Form Manager Instance
         :param screen: pygame.Surface
-        :param list_of_textbox: Dict[str, {"position": (int, int, int, int), "color": Color}]
+        :param list_of_textbox: Dict[str, {"position": (int, int, int, int), "color": Color, "maximum_length": int, "controllable": bool,
+              "init_text": str}]
+        "focusable": có thể focus
+        "init_text": giá trị ban đầu của textbox
         """
         self.text_boxes = dict.fromkeys(list_of_textbox.keys())
         for key, value in list_of_textbox.items():
             self.text_boxes[key] = {
                 "box": TextBox(screen=screen, position=value["position"], font_color=value["color"],
-                               manager=TextInputManager(validator=lambda input_s: len(input_s) <= 14))
-            }
+                               manager=TextInputManager(validator=lambda input_s: value["maximum_length"]),
+                               text=value["init_text"])}
 
     def focus(self, position) -> None:
+        """
+        Handle focus event
+        """
         for key, value in self.text_boxes.items():
+            if not value["box"].focusable:
+                return
             (x, y, width, height) = value["box"].get_position()
             if x <= position[0] <= x + width and y <= position[1] <= y + height:
                 value["box"].active = True
@@ -77,16 +92,36 @@ class FormManager:
                 value["box"].text_input.cursor_visible = False
 
     def update(self, events):
+        """
+        Update text input
+        """
         for key, value in self.text_boxes.items():
             if value["box"].active:
                 value["box"].text_input.update(events)
 
     def draw(self):
+        """
+        Draw text input
+        """
         for key, value in self.text_boxes.items():
             value["box"].draw()
 
+    def set_text(self, key, text) -> None:
+        """
+        Set text for text input
+        key: str -> name of text box
+        """
+        self.text_boxes[key]["box"].set_text(text)
+
     def get_current_text(self) -> Dict[str, str]:
-        return {key: value["box"].get_current_text() for key, value in self.text_boxes.items() if value["box"].active}
+        """
+        Get current text from text input
+        """
+        return {key: value["box"].get_current_text() for key, value in self.text_boxes.items() if
+                value["box"].active}
 
     def get_all_text(self) -> Dict[str, str]:
+        """
+        Get all text from text input
+        """
         return {key: value["box"].get_current_text() for key, value in self.text_boxes.items()}
