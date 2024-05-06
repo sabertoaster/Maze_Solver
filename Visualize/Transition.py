@@ -23,7 +23,6 @@ class Transition:
     def __init__(self, screen, resolution):
         self.screen = screen
         self.resolution = resolution
-        self.nigga = pygame.display.set_mode(self.resolution)
 
     def circle(self, pos, zoom_in=True): # pos: x, y
         RADIUS = max(calc_distance(pos, (0, 0)),
@@ -45,7 +44,7 @@ class Transition:
             filter = filter.repeat(8, 1)
             filter = filter.reshape((self.resolution[0], self.resolution[1], 1)).repeat(3, axis=2)
 
-            self.nigga.blit(pygame.surfarray.make_surface(tmp * filter), (0, 0))
+            self.screen.blit(pygame.surfarray.make_surface(tmp * filter), (0, 0))
             pygame.display.flip()
 
 
