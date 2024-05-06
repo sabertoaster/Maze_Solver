@@ -21,6 +21,7 @@ class TextBox:
     def __init__(self, screen, position, font_color, manager, text='', focusable=True):
         (x, y, width, height) = position
         self.screen = screen
+        self.height = height
         self.x = x
         self.y = y
 
@@ -61,8 +62,12 @@ class TextBox:
         print(text_surface.get_width())
         return text_surface.get_width()
 
-    def draw(self):
-        # pygame.draw.rect(self.screen, self.bg_color, self.rect)
+    def draw(self, background=False):
+        if background:
+            width = self.get_length()
+            box = pygame.Surface((width, self.height * 1.2), pygame.SRCALPHA)
+            box.fill((0, 0, 0, 128))
+            self.screen.blit(box, (self.x, self.y))
         self.screen.blit(self.text_input.surface, (self.x, self.y))
 
 

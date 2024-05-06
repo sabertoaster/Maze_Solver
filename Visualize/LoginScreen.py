@@ -173,8 +173,8 @@ class LoginScreen:
 
             if name == "Exit":
                 # Play outro animation here
-                print("dume")
                 self.panel_fl = False
+                self.chosen_door = None
                 pygame.quit()
                 exit()
 
