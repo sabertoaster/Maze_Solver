@@ -66,6 +66,12 @@ class LoginScreen:
             "password": {"position": (483, 474, 568, 24), "color": Color.WHITE.value, "maximum_length": 32,
                          "focusable": True, "init_text": ""}})  # (x, y, width, height)
 
+        # Tạo textbox hiển thị notification cho login/ register screen
+        self.notify_text_box = FormManager(self.screen, {
+            "notification": {"position": (483, 530, 568, 48), "color": Color.RED.value, "maximum_length": 50,
+                             "focusable": False, "init_text": "Test"}
+        })
+
         # Transition effect
         self.transition = Transition(self.screen, self.resolution)
 
@@ -93,9 +99,9 @@ class LoginScreen:
         register_panel = morph_image(self.pth_re + "register_box.png", panel_shape)
 
         self.login_panel = add_element(self.blur, login_panel, (
-        (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
+            (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
         self.register_panel = add_element(self.blur, register_panel, ((self.resolution[0] - panel_shape[0]) / 2, (
-                    self.resolution[1] - panel_shape[1] + 11) / 2))  # HANDLE KIEU SUC VAT
+                self.resolution[1] - panel_shape[1] + 11) / 2))  # HANDLE KIEU SUC VAT
         # self.create_font()  # Create font for text input
 
         # Start transition effect
@@ -107,6 +113,8 @@ class LoginScreen:
 
         self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
         self.chosen_door = None
+
+        self.notify_text_box.set_text("notification", "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
 
         running = True
         while running:
@@ -123,9 +131,18 @@ class LoginScreen:
                     # pygame.quit()
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
                 if self.chosen_door:
-                    next_scene, next_grid_pos = self.toggle_panel(event, self.chosen_door)
-                    if next_scene:
-                        return next_scene, next_grid_pos
+                    if self.panel_fl:
+                        next_scene, next_grid_pos = self.toggle_panel(event, self.chosen_door)
+                        if next_scene:
+                            return next_scene, next_grid_pos
+                    else:
+                        self.panel_fl = True
+                        if self.chosen_door == "Register":
+                            self.screen.blit(self.register_panel, (0, 0))
+                            continue
+                        if self.chosen_door == "Login":
+                            self.screen.blit(self.login_panel, (0, 0))
+                            continue
                     continue
 
                 if not self.chosen_door:
@@ -147,7 +164,7 @@ class LoginScreen:
                         if player_response == "Interact":
                             pass  # Handle Interact Here
                         if player_response == "Door":
-                            self.panel_fl = True
+                            # self.panel_fl = True
                             self.chosen_door = self.door_pos[self.player.get_current_door()]
                         # if self.player.handle_event(pressed):  # Handle interact from player
                         #     pass
@@ -163,6 +180,7 @@ class LoginScreen:
         :return:
         """
         if name:
+
             self.player.deactivate(active=False)
             if name == "Login":
                 next_scene, next_grid_pos = self.login(event)
@@ -173,8 +191,7 @@ class LoginScreen:
 
             if name == "Exit":
                 # Play outro animation here
-                self.panel_fl = False
-                self.chosen_door = None
+                print("dume")
                 pygame.quit()
                 exit()
 
@@ -191,14 +208,10 @@ class LoginScreen:
         """
         Login panel
         """
-        self.screen.blit(self.login_panel, (0, 0))
-        self.text_box.draw()
-
         if event.type == pygame.KEYDOWN:
+            self.screen.blit(self.login_panel, (0, 0))
+            self.text_box.draw()
             if event.key == pygame.K_ESCAPE:
-                free_pos_from_door = self.player.distance_from_door()
-                absolute_pos_of_door = [key for key, val in self.door_pos.items() if val == "Login"][0]
-
                 return "Login", self.player.get_grid_pos()  # [PROTOTYPE]
 
             if event.key == pygame.K_RETURN:
@@ -213,6 +226,13 @@ class LoginScreen:
                     if diction["username"] == tmp_dic["username"]:
                         if diction["password"] == tmp_dic["password"]:
                             print("Login successfully")
+                            # Notification
+                            self.notify_text_box.set_text("notification", "Login successfully")
+                            self.notify_text_box.draw()
+                            pygame.display.flip()
+                            pygame.time.delay(500)
+
+                            # Transition effect
                             self.player.deactivate(active=True)
 
                             # Transition effect
@@ -226,10 +246,13 @@ class LoginScreen:
                             return "Menu", self.player.params["initial_pos"]["Menu"]  # [PROTOTYPE]
                         else:
                             print("Password is incorrect, please try again")
+                            self.notify_text_box.set_text("notification", "Password is incorrect, please try again")
+                            self.notify_text_box.draw()
                         break
-                else:
-                    print("The player hasn't registered yet")
-
+                    else:
+                        print("The player hasn't registered yet")
+                        self.notify_text_box.set_text("notification", "The player hasn't registered yet")
+                        self.notify_text_box.draw()
         pygame.display.update()
 
         return None, None
@@ -239,10 +262,12 @@ class LoginScreen:
         Register panel
         :return: username and password
         """
-
-        self.screen.blit(self.register_panel, (0, 0))
-        self.text_box.draw()
         if event.type == pygame.KEYDOWN:
+            self.screen.blit(self.register_panel, (0, 0))
+            self.text_box.draw()
+            # self.notify_text_box.set_text("notification", "ME MAY CUC BEO")
+
+            # self.notify_text_box.draw()
             if event.key == pygame.K_ESCAPE:
                 return "Login", self.player.get_grid_pos()
 
@@ -256,11 +281,21 @@ class LoginScreen:
 
                         if cur_input["password"] == "":
                             print("Vui long nhap mat khau")
+                            self.notify_text_box.set_text("notification", "Vui long nhap mat khau")
+                            self.notify_text_box.draw()
+
+                            # pygame.display.flip()
+                            # pygame.event.clear()
+                            # pygame.time.delay(1000)
                             return None, None
 
                         for dic in data:
                             if dic["username"] == cur_input["username"]:
                                 print("Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
+                                self.notify_text_box.set_text("notification",
+                                                              "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
+                                self.notify_text_box.draw()
+
                                 return None, None
 
                         data.append(cur_input)
@@ -272,8 +307,10 @@ class LoginScreen:
                     json.dump(data, file, indent=4)
 
                     print("Dang ki thanh cong")
-
+                    self.notify_text_box.set_text("notification", "Dang ki thanh cong")
+                    self.notify_text_box.draw()
                 file.close()
+
         pygame.display.update()
 
         return None, None
