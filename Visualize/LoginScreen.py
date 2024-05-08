@@ -114,6 +114,8 @@ class LoginScreen:
         self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
         self.chosen_door = None
 
+        self.notify_text_box.set_text("notification", "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
+
         running = True
         while running:
             events = pygame.event.get()
@@ -167,6 +169,7 @@ class LoginScreen:
         :return:
         """
         if name:
+
             self.player.deactivate(active=False)
             if name == "Login":
                 next_scene, next_grid_pos = self.login(event)
@@ -249,12 +252,15 @@ class LoginScreen:
         :return: username and password
         """
 
-        self.screen.blit(self.register_panel, (0, 0))
+        # self.screen.blit(self.register_panel, (0, 0))
         self.text_box.draw()
-        self.notify_text_box.draw()
 
-        print(self.notify_text_box.get_all_text())
+
         if event.type == pygame.KEYDOWN:
+            self.notify_text_box.set_text("notification", "ME MAY CUC BEO")
+
+            self.screen.blit(self.register_panel, (0, 0))
+            # self.notify_text_box.draw()
             if event.key == pygame.K_ESCAPE:
                 return "Login", self.player.get_grid_pos()
 
@@ -267,9 +273,16 @@ class LoginScreen:
                         cur_input = self.text_box.get_all_text()
 
                         if cur_input["password"] == "":
+
+                            print(self.notify_text_box.get_all_text())
                             print("Vui long nhap mat khau")
-                            self.notify_text_box.set_text("notification", "Vui long nhap mat khau")
+                            # self.notify_text_box.set_text("notification", "Vui long nhap mat khau")
+                            print(self.notify_text_box.get_all_text())
                             self.notify_text_box.draw()
+
+                            # pygame.display.flip()
+                            # pygame.event.clear()
+                            # pygame.time.delay(1000)
                             return None, None
 
                         for dic in data:
@@ -278,7 +291,7 @@ class LoginScreen:
                                 self.notify_text_box.set_text("notification", "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
                                 self.notify_text_box.draw()
 
-                                pygame.time.delay(50)
+
                                 return None, None
 
                         data.append(cur_input)
