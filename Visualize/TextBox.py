@@ -76,7 +76,7 @@ class FormManager:
                                manager=TextInputManager(validator=lambda input_s: value["maximum_length"]),
                                text=value["init_text"], focusable=value["focusable"])}
 
-    def focus(self, position) -> None:
+    def focus(self, position: object) -> None:
         """
         Handle focus event
         """
