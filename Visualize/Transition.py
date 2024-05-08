@@ -1,8 +1,16 @@
+import cv2
 import numpy as np
 import pygame
-import keyboard
+# from CONSTANTS import SCENE
+RESOURCE = "Visualize/Resources/"
 
-
+SCENE = {
+    "Login": "login_BG.png",
+    "Menu": "livingRoom_BG.png",
+    "Play": "kitchen_BG.png",
+    "Leaderboard": "leaderboard_BG.png",
+    "Settings": "settings_BG.png"
+}
 # Support functions
 def calc_distance(pos1, pos2):
     return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2) ** 0.5
@@ -32,7 +40,7 @@ class Transition:
 
 
         tmp = pygame.surfarray.array3d(self.screen.copy())
-        rate = 96
+        rate = 48
         radius = RADIUS if zoom_in else 0
 
         for _ in range(rate):
@@ -47,18 +55,51 @@ class Transition:
             self.screen.blit(pygame.surfarray.make_surface(tmp * filter), (0, 0))
             pygame.display.flip()
 
+    def zelda(self, next_scene, reversed):
+        rate = 96
+        zelda = pygame.Surface((self.resolution[0] * 2, self.resolution[1]), pygame.SRCALPHA)
+        next_scene_screen = pygame.image.load(RESOURCE + SCENE[next_scene]).convert_alpha()
 
-    def transition(self, pos, transition_type): # pos = (x, y) not (y, x)
+        if reversed:
+            zelda.blit(self.screen, (0, 0))
+            zelda.blit(next_scene_screen, (self.resolution[0], 0))
+        else:
+            zelda.blit(next_scene_screen, (0, 0))
+            zelda.blit(self.screen, (self.resolution[0], 0))
+
+        for scroll in range(rate):
+            if reversed:
+                self.screen.blit(zelda, (0, 0),
+                                 (scroll * self.resolution[0] / rate, 0, self.resolution[0], self.resolution[1]))
+            else:
+                self.screen.blit(zelda, (0, 0), (
+                    self.resolution[0] - (scroll + 1) * self.resolution[0] / rate, 0, self.resolution[0],
+                    self.resolution[1]))
+
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+
+    def transition(self, pos, transition_type, next_scene=None): # pos = (x, y) not (y, x)
         """
         Transition effect:
             - circle_in: Zooming in effect
             - circle_out: Zooming out effect
         """
         pos = (pos[1], pos[0])
+
         if transition_type == 'circle_in':
             self.circle(pos, zoom_in=True)
+
         elif transition_type == 'circle_out':
             self.circle(pos, zoom_in=False)
+
+        elif transition_type == 'zelda_lr':
+            self.zelda(next_scene, reversed=True)
+
+        elif transition_type == 'zelda_rl':
+            self.zelda(next_scene, reversed=False)
+
 
         pygame.event.clear()
 

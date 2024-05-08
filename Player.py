@@ -2,7 +2,6 @@ from copy import deepcopy
 
 import numpy as np
 import pygame
-import cv2
 from GridMapObject import GridMapObject as Gmo
 from Visualize.ImageProcess import morph_image
 
@@ -40,6 +39,7 @@ class Player:
         :param grid_map:
         :param current_scene:
         """
+        self.door_pos = None
         from copy import deepcopy
         self.active = True
         self.screen = screen
@@ -68,7 +68,9 @@ class Player:
         self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
         
         self.name = player_name
-
+        self.name_box = TextBox(screen=self.screen, position=(0, 0, self.cell[0] * 2, self.cell[1]),
+                                font_color=(0, 0, 0), manager=TextInputManager(), text=self.name)
+        self.name_length = self.name_box.get_length()
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
 
     def set_current_scene(self, target_scene, initial_pos):
@@ -123,6 +125,7 @@ class Player:
                 self.interact()
                 return "Interact"
             pygame.event.clear()
+            print("Response: ", response)
             return response
         return None
 
@@ -142,22 +145,17 @@ class Player:
         """
         copy_scr = screenCopy.copy()
         if self.active:
-            self.name_box = TextBox(screen=self.screen, position=(0, 0, self.cell[0]*2, self.cell[1]), font_color=(0, 0, 0), manager=TextInputManager(), text=self.name)
-            name_length = self.name_box.get_length()
+
             if self.visualize_direction[0] != self.visualize_direction[1]:
                 for i in range(0, 24):
-                    self.visual_pos = (self.visual_pos[0] + (
-                            self.visualize_direction[1][0] - self.visualize_direction[0][
-                        0]) * self.grid_step * 1 / 24,
-                                       self.visual_pos[1] + (
-                                               self.visualize_direction[1][1] - self.visualize_direction[0][
-                                           1]) * self.grid_step * 1 / 24)
+                    self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / 24,
+                                       self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / 24)
                     self.screen.blit(self.avatar, self.visual_pos)
-                    self.name_box.set_position((self.visual_pos[0] - (name_length//2) + (self.cell[0]//2), self.visual_pos[1] - self.cell[0]*1.5))
+                    self.name_box.set_position((self.visual_pos[0] - (self.name_length//2) + (self.cell[0]//2), self.visual_pos[1] - self.cell[0]*1.5))
                     self.name_box.draw(True)
                     
-                    pygame.time.delay(2)
-                    if (i % 2 == 0):
+                    # pygame.time.delay(2)
+                    if i % 3 == 0:
                         pygame.display.flip()
                         pygame.time.wait(2)
                     self.screen.blit(copy_scr, (0, 0))
@@ -169,7 +167,7 @@ class Player:
                 return
             
             self.screen.blit(self.avatar, self.visual_pos)
-            self.name_box.set_position((self.visual_pos[0] - (name_length//2) + (self.cell[0]//2), self.visual_pos[1] - self.cell[0]*1.5))
+            self.name_box.set_position((self.visual_pos[0] - (self.name_length//2) + (self.cell[0]//2), self.visual_pos[1] - self.cell[0]*1.5))
             self.name_box.draw(True)
             pygame.display.flip()
 
@@ -180,18 +178,22 @@ class Player:
         :return:
         """
         status = self.is_legal_move(cmd)
-        if status == Gmo.DOOR:
-            self.set_current_door((self.grid_pos[0] + self.movement[cmd][0], self.grid_pos[1] + self.movement[cmd][1]))
-            return "Door"
-        if cmd in self.movement and (status != Gmo.WALL) and self.active:
+        if status != Gmo.WALL:
             x, y = self.movement[cmd]
             self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(
                 (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)))
-            self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.FREE
-            self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
-            # self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
-            self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
-        return "Move"
+
+            if status == Gmo.DOOR:
+                self.set_current_door((self.grid_pos[0] + x, self.grid_pos[1] + y))
+                return "Door"
+
+            if cmd in self.movement and self.active:
+                self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.FREE
+                self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
+                # self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
+                self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
+
+            return "Move"
 
     def is_legal_move(self, cmd):
         """

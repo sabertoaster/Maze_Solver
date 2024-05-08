@@ -93,6 +93,9 @@ class MapManager:
             # MAIN DOOR
             grid[1, -4] = GridMapObject.DOOR
 
+            grid[:, 0] = [GridMapObject.DOOR]
+            grid[:, 14] = [GridMapObject.DOOR]
+
 
             pass
 
@@ -101,6 +104,13 @@ class MapManager:
             Initialize Play Scene
             :return:
             """
+            grid = self.map_grids["Play"].get_grid()
+
+            grid[:2, :] = [[GridMapObject.WALL]] # clock,etc
+            grid[2, 4:] = [GridMapObject.WALL]
+            grid[3, 13:15] = [GridMapObject.WALL]
+
+            grid[:, 0] = [GridMapObject.DOOR]
             pass
 
         def leaderBoardScene():
@@ -108,6 +118,16 @@ class MapManager:
             Initialize Leaderboard Scene
             :return:
             """
+            grid = self.map_grids["Leaderboard"].get_grid()
+
+            # WALL
+            grid[:3, :] = [[GridMapObject.WALL]]
+            grid[:9, :2] = [[GridMapObject.WALL]]
+            grid[4, 3] = GridMapObject.WALL
+            grid[5:7, 6:9] = [[GridMapObject.WALL]]
+
+            grid[:, 14] = [GridMapObject.DOOR]
+
             pass
 
         def settingsScene():

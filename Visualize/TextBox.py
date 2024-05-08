@@ -54,6 +54,9 @@ class TextBox:
     def set_text(self, text):
         self.text_input.value = text
 
+    def set_text(self, text):
+        self.text_input.value = text
+
     def get_current_text(self):
         return self.text_input.value
     

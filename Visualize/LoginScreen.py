@@ -88,10 +88,13 @@ class LoginScreen:
         login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
         register_panel = morph_image(self.pth_re + "register_box.png", panel_shape)
 
-        self.login_panel = add_element(self.blur, login_panel, (
-            (self.resolution[0] - panel_shape[0]) / 2, (self.resolution[1] - panel_shape[1]) / 2))
-        self.register_panel = add_element(self.blur, register_panel, ((self.resolution[0] - panel_shape[0]) / 2, (
-                self.resolution[1] - panel_shape[1] + 11) / 2))  # HANDLE KIEU SUC VAT
+        self.login_panel = add_element(self.blur, login_panel,
+                                        ((self.resolution[0] - panel_shape[0]) / 2,
+                                        (self.resolution[1] - panel_shape[1]) / 2))
+
+        self.register_panel = add_element(self.blur, register_panel,
+                                          ((self.resolution[0] - panel_shape[0]) / 2,
+                                           (self.resolution[1] - panel_shape[1] + 11) / 2))  # HANDLE KIEU SUC VAT
         # self.create_font()  # Create font for text input
 
         # Start transition effect
@@ -118,7 +121,6 @@ class LoginScreen:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.text_box.focus(mouse_pos)
                 if event.type == pygame.QUIT:
-                    running = False
                     # pygame.quit()
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
                 if self.chosen_door:
@@ -161,8 +163,8 @@ class LoginScreen:
                         #     pass
                         # if self.player.get_grid_pos() in self.door_pos:
                         #     pass
-                        self.player.update(
-                            self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                    self.player.update(
+                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
     def toggle_panel(self, event, name):
         """
@@ -182,7 +184,10 @@ class LoginScreen:
 
             if name == "Exit":
                 # Play outro animation here
-                print("dume")
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                           transition_type='circle_in')
+                self.panel_fl = False
                 pygame.quit()
                 exit()
 
