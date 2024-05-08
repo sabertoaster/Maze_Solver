@@ -122,17 +122,17 @@ class MenuScreen:
         if name:
             if name == "Login":
 
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][SCENE_NAME][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][SCENE_NAME][1] / 2),
                                            transition_type='circle_in')
 
                 return name, self.player.get_GridMapObject_Player("Login")
 
             if name == "Leaderboard":
                 self.player.update(self.screen)
-
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][SCENE_NAME][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][SCENE_NAME][1] / 2),
                                            transition_type='zelda_rl',
                                            next_scene=name)
 
@@ -141,8 +141,8 @@ class MenuScreen:
             if name == "Play":
                 self.player.update(self.screen)
 
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][SCENE_NAME][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][SCENE_NAME][1] / 2),
                                            transition_type='zelda_lr',
                                            next_scene=name)
 

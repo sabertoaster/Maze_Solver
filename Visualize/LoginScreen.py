@@ -228,8 +228,9 @@ class LoginScreen:
                             pygame.display.flip()
                             pygame.time.delay(500)
 
-                            # Transition effect
+                            # Player re-init
                             self.player.deactivate(active=True)
+                            self.player.update_name(tmp_dic["username"])
 
                             # Transition effect
                             self.screen.blit(self.screenCopy, (0, 0))
