@@ -56,7 +56,7 @@ class Transition:
             pygame.display.flip()
 
     def zelda(self, next_scene, reversed):
-        rate = 17
+        rate = 96
         zelda = pygame.Surface((self.resolution[0] * 2, self.resolution[1]), pygame.SRCALPHA)
         next_scene_screen = pygame.image.load(RESOURCE + SCENE[next_scene]).convert_alpha()
 
@@ -77,7 +77,7 @@ class Transition:
                     self.resolution[1]))
 
             pygame.display.flip()
-            pygame.time.delay(60)
+            pygame.time.delay(10)
 
 
     def transition(self, pos, transition_type, next_scene=None): # pos = (x, y) not (y, x)
