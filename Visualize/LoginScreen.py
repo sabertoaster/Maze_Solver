@@ -113,6 +113,7 @@ class LoginScreen:
 
         self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
         self.chosen_door = None
+        self.hovered_door = None
 
         self.notify_text_box.set_text("notification", "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
 
@@ -149,7 +150,7 @@ class LoginScreen:
 
                     self.mouse_handler.set_pos(mouse_pos)
 
-                    self.screenCopy = self.mouse_handler.get_hover_frame()
+                    self.screenCopy, self.hovered_door = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_door)
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         self.chosen_door = self.mouse_handler.click()

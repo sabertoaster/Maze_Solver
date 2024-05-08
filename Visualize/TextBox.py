@@ -59,7 +59,6 @@ class TextBox:
     def get_length(self):
         font = pygame.font.Font(DEFAULT_FONT_PATH, self.height - 5)
         text_surface = font.render(self.text_input.value, True, Color.BLACK.value)
-        print(text_surface.get_width())
         return text_surface.get_width()
 
     def draw(self, background=False):

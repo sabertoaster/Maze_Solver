@@ -99,7 +99,6 @@ class Player:
         return self.door_pos
 
     def handle_event(self, key_pressed):
-        print("Key pressed: ", key_pressed)
         """
         Handle event from keyboard
         :param key_pressed:
