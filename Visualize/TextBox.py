@@ -48,6 +48,10 @@ class TextBox:
         self.x = position[0]
         self.y = position[1]
 
+    def set_size(self, size):
+        self.width = size[1]
+        self.height = size[0]
+    
     def set_text(self, text):
         self.text_input.value = text
 

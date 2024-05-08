@@ -230,7 +230,7 @@ class LoginScreen:
 
                             # Player re-init
                             self.player.deactivate(active=True)
-                            self.player.update_name(tmp_dic["username"])
+                            self.player.re_init(name=tmp_dic["username"], scene="Menu")
 
                             # Transition effect
                             self.screen.blit(self.screenCopy, (0, 0))
