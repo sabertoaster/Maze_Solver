@@ -21,6 +21,7 @@ class TextBox:
     def __init__(self, screen, position, font_color, manager, text='', focusable=True):
         (x, y, width, height) = position
         self.screen = screen
+        self.height = height
         self.x = x
         self.y = y
 
@@ -41,15 +42,34 @@ class TextBox:
 
     def get_position(self):
         return self.x, self.y, self.width, self.height
+    
+    def set_position(self, position):
+        self.x = position[0]
+        self.y = position[1]
+
+    def set_text(self, text):
+        self.text_input.value = text
+
+    def set_text(self, text):
+        self.text_input.value = text
 
     def set_text(self, text):
         self.text_input.value = text
 
     def get_current_text(self):
         return self.text_input.value
+    
+    def get_length(self):
+        font = pygame.font.Font(DEFAULT_FONT_PATH, self.height - 5)
+        text_surface = font.render(self.text_input.value, True, Color.BLACK.value)
+        return text_surface.get_width()
 
-    def draw(self):
-        # pygame.draw.rect(self.screen, self.bg_color, self.rect)
+    def draw(self, background=False):
+        if background:
+            width = self.get_length()
+            box = pygame.Surface((width, self.height * 1.2), pygame.SRCALPHA)
+            box.fill((0, 0, 0, 128))
+            self.screen.blit(box, (self.x, self.y))
         self.screen.blit(self.text_input.surface, (self.x, self.y))
 
 
@@ -76,7 +96,7 @@ class FormManager:
                                manager=TextInputManager(validator=lambda input_s: value["maximum_length"]),
                                text=value["init_text"], focusable=value["focusable"])}
 
-    def focus(self, position) -> None:
+    def focus(self, position: object) -> None:
         """
         Handle focus event
         """
