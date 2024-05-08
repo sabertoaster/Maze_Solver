@@ -7,7 +7,7 @@ class GridMapObject(Enum):
     This is a class to represent Grid Map Object Enum
     """
     FREE = 0
-    WALL = 1
-    DOOR = 2
+    DOOR = 1
+    WALL = 2
     INTERACTABLE = 3
     PLAYER = 4

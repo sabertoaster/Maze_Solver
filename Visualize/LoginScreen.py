@@ -151,8 +151,8 @@ class LoginScreen:
                         #     pass
                         # if self.player.get_grid_pos() in self.door_pos:
                         #     pass
-                        self.player.update(
-                            self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                    self.player.update(
+                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
     def toggle_panel(self, event, name):
         """
@@ -171,7 +171,9 @@ class LoginScreen:
 
             if name == "Exit":
                 # Play outro animation here
-                print("dume")
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                           transition_type='circle_in')
                 self.panel_fl = False
                 pygame.quit()
                 exit()
@@ -215,8 +217,6 @@ class LoginScreen:
 
                             # Transition effect
                             self.screen.blit(self.screenCopy, (0, 0))
-                            self.player.update(self.screenCopy)
-                            pygame.display.flip()
                             self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
                                                             self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
                                                        transition_type='circle_in')

@@ -16,7 +16,7 @@ PARAMS = {
     "resolution": (1200, 800),  # ratio 3:2
     "cell": {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80)}, # 12 cells column, 8 cells row
     "scenes": ["Login", "Menu", "Play", "Leaderboard", "Settings"],
-    "initial_pos": {"Login": (12, 12), "Menu": (11, 2), "Play": (0, 0), "Leaderboard": (0, 0), "Settings": (0, 0)}  # need adjusting
+    "initial_pos": {"Login": (12, 12), "Menu": (11, 2)}  # need adjusting
 }
 FPS = 60
 
@@ -28,7 +28,7 @@ class GameController:
     def __init__(self):
         pygame.init()
         pygame.key.set_repeat(200, 125)
-        initial_scene = "Leaderboard"
+        initial_scene = "Menu"
         # initial_scene = "Menu"
         self.game_state_manager = GameStateManager(initial_scene)  # [PROTOTYPE]
         self.clock = pygame.time.Clock()  # Define a variable to control the main loop

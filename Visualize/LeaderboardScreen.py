@@ -65,23 +65,17 @@ class LeaderboardScreen:
         :param player:
         :return:
         """
+
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
+        pygame.display.flip()
         drawGrid(screen=self.screen)
 
         self.player = player
-        # print(self.player.grid_map.get_map(self.player.current_scene).get_grid()[12, 12])
-        self.panel_fl = False  # CÁI NI Bị DOWN
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
-
-        # Start transition effect
-        # self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-        #                                 self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
-        #                            transition_type='circle_out')  # draw transition effect
-        self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
 
         running = True
         while running:
@@ -89,7 +83,27 @@ class LeaderboardScreen:
             for event in events:
                 if event.type == pygame.QUIT:
                     running = False
+                    # pygame.quit()
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
+                if event.type == pygame.KEYDOWN:
+                    pressed = event.key
+                    player_response = self.player.handle_event(pressed)
+
+                    if player_response == "Move":
+                        pass
+                    if player_response == "Interact":
+                        pass  # Handle Interact Here
+                    if player_response == "Door":
+                        next_scene, next_grid_pos = self.toggle_panel(event,
+                                                                      self.door_pos[self.player.get_current_door()])
+                        if next_scene:
+                            return next_scene, next_grid_pos
+                    # if self.player.handle_event(pressed):  # Handle interact from player
+                    #     pass
+                    # if self.player.get_grid_pos() in self.door_pos:
+                    #     pass
+                    self.player.update(
+                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
     def toggle_panel(self, event, name):
         """
