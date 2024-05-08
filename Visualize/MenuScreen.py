@@ -92,6 +92,9 @@ class MenuScreen:
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
+        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                        self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                   transition_type='zelda')
 
         running = True
         while running:

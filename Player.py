@@ -29,7 +29,7 @@ class Player:
     This is a class to represent Player Instance
     """
 
-    def __init__(self, screen, res_cell, grid_map, current_scene, initial_pos, params, skin="blackTom"):
+    def __init__(self, screen, res_cell, grid_map, current_scene, initial_pos, params, skin="Tom"):
 
         """
         :param screen:

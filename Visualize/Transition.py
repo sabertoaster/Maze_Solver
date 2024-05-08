@@ -1,7 +1,6 @@
+import cv2
 import numpy as np
 import pygame
-import keyboard
-
 
 # Support functions
 def calc_distance(pos1, pos2):
@@ -32,7 +31,7 @@ class Transition:
 
 
         tmp = pygame.surfarray.array3d(self.screen.copy())
-        rate = 96
+        rate = 48
         radius = RADIUS if zoom_in else 0
 
         for _ in range(rate):
@@ -47,7 +46,14 @@ class Transition:
             self.screen.blit(pygame.surfarray.make_surface(tmp * filter), (0, 0))
             pygame.display.flip()
 
-
+    def zelda(self):
+        rate = 30
+        im1 = cv2.hconcat("Visualize/Resources/livingRoom_BG.png", "Visualize/Resources/kitchen_BG.png")
+        for _ in range(rate):
+            self.screen.blit(img, (0, 0), (_*self.resolution[0]/rate, 0, 1200, 800)) #PROTOTYPE
+            pygame.display.flip()
+            pygame.time.delay(30)
+        pass
     def transition(self, pos, transition_type): # pos = (x, y) not (y, x)
         """
         Transition effect:
@@ -59,6 +65,9 @@ class Transition:
             self.circle(pos, zoom_in=True)
         elif transition_type == 'circle_out':
             self.circle(pos, zoom_in=False)
+        elif transition_type == 'zelda':
+            self.zelda()
+
 
         pygame.event.clear()
 
