@@ -66,6 +66,12 @@ class LoginScreen:
             "password": {"position": (483, 474, 568, 24), "color": Color.WHITE.value, "maximum_length": 32,
                          "focusable": True, "init_text": ""}})  # (x, y, width, height)
 
+        # Tạo textbox hiển thị notification cho login/ register screen
+        self.notify_text_box = FormManager(self.screen, {
+            "notification": {"position": (483, 530, 568, 48), "color": Color.RED.value, "maximum_length": 50, "focusable": False, "init_text": "Test"}
+        })
+
+
         # Transition effect
         self.transition = Transition(self.screen, self.resolution)
 
@@ -191,7 +197,7 @@ class LoginScreen:
         """
         self.screen.blit(self.login_panel, (0, 0))
         self.text_box.draw()
-
+        self.notify_text_box.draw()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 free_pos_from_door = self.player.distance_from_door()
@@ -211,6 +217,8 @@ class LoginScreen:
                     if diction["username"] == tmp_dic["username"]:
                         if diction["password"] == tmp_dic["password"]:
                             print("Login successfully")
+                            self.notify_text_box.set_text("notification", "Login successfully")
+                            self.notify_text_box.draw()
                             self.player.deactivate(active=True)
 
                             # Transition effect
@@ -224,10 +232,13 @@ class LoginScreen:
                             return "Menu", self.player.params["initial_pos"]["Menu"]  # [PROTOTYPE]
                         else:
                             print("Password is incorrect, please try again")
+                            self.notify_text_box.set_text("notification", "Password is incorrect, please try again")
+                            self.notify_text_box.draw()
                         break
                 else:
                     print("The player hasn't registered yet")
-
+                    self.notify_text_box.set_text("notification", "The player hasn't registered yet")
+                    self.notify_text_box.draw()
         pygame.display.update()
 
         return None, None
@@ -240,6 +251,9 @@ class LoginScreen:
 
         self.screen.blit(self.register_panel, (0, 0))
         self.text_box.draw()
+        self.notify_text_box.draw()
+
+        print(self.notify_text_box.get_all_text())
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 return "Login", self.player.get_grid_pos()
@@ -254,11 +268,17 @@ class LoginScreen:
 
                         if cur_input["password"] == "":
                             print("Vui long nhap mat khau")
+                            self.notify_text_box.set_text("notification", "Vui long nhap mat khau")
+                            self.notify_text_box.draw()
                             return None, None
 
                         for dic in data:
                             if dic["username"] == cur_input["username"]:
                                 print("Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
+                                self.notify_text_box.set_text("notification", "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
+                                self.notify_text_box.draw()
+
+                                pygame.time.delay(50)
                                 return None, None
 
                         data.append(cur_input)
@@ -270,8 +290,10 @@ class LoginScreen:
                     json.dump(data, file, indent=4)
 
                     print("Dang ki thanh cong")
-
+                    self.notify_text_box.set_text("notification","Dang ki thanh cong")
+                    self.notify_text_box.draw()
                 file.close()
+
         pygame.display.update()
 
         return None, None

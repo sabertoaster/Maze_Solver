@@ -26,5 +26,13 @@
     {
         "username": "admin",
         "password": "minhbeo123"
+    },
+    {
+        "username": "s1",
+        "password": "1"
+    },
+    {
+        "username": "thienan",
+        "password": "ythientv"
     }
 ]
