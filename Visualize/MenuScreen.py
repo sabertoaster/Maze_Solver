@@ -85,21 +85,20 @@ class MenuScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        drawGrid(screen=self.screen)
+        # drawGrid(screen=self.screen)
 
         self.player = player
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
-        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                        self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
-                                   transition_type='zelda')
 
         running = True
         while running:
             events = pygame.event.get()
             for event in events:
+                if event.type == pygame.QUIT:
+                    return None, None
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
                     player_response = self.player.handle_event(pressed)
@@ -128,19 +127,33 @@ class MenuScreen:
         :param name: to know whether if the player step into which door
         :return:
         """
-        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                        self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
-                                   transition_type='circle_in')
         if name:
             if name == "Login":
-                print(name, self.player.params["initial_pos"][name])
-                return name, self.player.params["initial_pos"][name]
+
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                           transition_type='circle_in')
+
+                return name, self.player.get_GridMapObject_Player("Login")
 
             if name == "Leaderboard":
-                print(self.player.get_grid_pos())
+                self.player.update(self.screen)
+
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                           transition_type='zelda_rl',
+                                           next_scene=name)
+
                 return name, (13, self.player.get_grid_pos()[1])
 
             if name == "Play":
+                self.player.update(self.screen)
+
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                           transition_type='zelda_lr',
+                                           next_scene=name)
+
                 return name, (1, self.player.get_grid_pos()[1])
 
         return None, None

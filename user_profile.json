@@ -26,5 +26,41 @@
     {
         "username": "admin",
         "password": "minhbeo123"
+    },
+    {
+        "username": "s1",
+        "password": "1"
+    },
+    {
+        "username": "thienan",
+        "password": "ythientv"
+    },
+    {
+        "username": "dawawdawd",
+        "password": "dawd"
+    },
+    {
+        "username": "awdawdawd",
+        "password": "dawadawdawd"
+    },
+    {
+        "username": "ddwaawd",
+        "password": "awdaw"
+    },
+    {
+        "username": "",
+        "password": "a"
+    },
+    {
+        "username": "addawdwa",
+        "password": "awdadaw"
+    },
+    {
+        "username": "minhbeo",
+        "password": "123"
+    },
+    {
+        "username": "minhbeo123",
+        "password": "12"
     }
 ]

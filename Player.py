@@ -2,9 +2,11 @@ from copy import deepcopy
 
 import numpy as np
 import pygame
-import cv2
 from GridMapObject import GridMapObject as Gmo
 from Visualize.ImageProcess import morph_image
+
+from Visualize.TextBox import TextBox   
+from pygame_textinput import TextInputManager, TextInputVisualizer
 
 AVATAR = {
     "Tom": {"down": "tom_icon_d.png",
@@ -29,7 +31,7 @@ class Player:
     This is a class to represent Player Instance
     """
 
-    def __init__(self, screen, res_cell, grid_map, current_scene, initial_pos, params, skin="Tom"):
+    def __init__(self, screen, res_cell, grid_map, current_scene, initial_pos, params,skin="blackTom", player_name='Guest'):
 
         """
         :param screen:
@@ -37,6 +39,7 @@ class Player:
         :param grid_map:
         :param current_scene:
         """
+        self.door_pos = None
         from copy import deepcopy
         self.active = True
         self.screen = screen
@@ -63,6 +66,8 @@ class Player:
         self.grid_step = 1
         self.visual_step = self.grid_step * cell[current_scene][0]
         self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
+        
+        self.name = player_name
 
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
 
@@ -138,13 +143,18 @@ class Player:
         """
         copy_scr = screenCopy.copy()
         if self.active:
+            self.name_box = TextBox(screen=self.screen, position=(0, 0, self.cell[0]*2, self.cell[1]), font_color=(0, 0, 0), manager=TextInputManager(), text=self.name)
+            name_length = self.name_box.get_length()
             if self.visualize_direction[0] != self.visualize_direction[1]:
                 for i in range(0, 24):
                     self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / 24,
                                        self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / 24)
                     self.screen.blit(self.avatar, self.visual_pos)
+                    self.name_box.set_position((self.visual_pos[0] - (name_length//2) + (self.cell[0]//2), self.visual_pos[1] - self.cell[0]*1.5))
+                    self.name_box.draw(True)
+                    
                     pygame.time.delay(2)
-                    if (i % 2 == 0):
+                    if i % 2 == 0:
                         pygame.display.flip()
                         pygame.time.wait(2)
                     self.screen.blit(copy_scr, (0, 0))
@@ -154,7 +164,10 @@ class Player:
                     # pygame.time.delay(2)
                 self.visualize_direction = (self.visualize_direction[1], self.visualize_direction[1])
                 return
+            
             self.screen.blit(self.avatar, self.visual_pos)
+            self.name_box.set_position((self.visual_pos[0] - (name_length//2) + (self.cell[0]//2), self.visual_pos[1] - self.cell[0]*1.5))
+            self.name_box.draw(True)
             pygame.display.flip()
 
     def move(self, cmd):
