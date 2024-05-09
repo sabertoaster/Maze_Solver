@@ -54,6 +54,14 @@ class PlayScreen:
         self.pth_re = path_resources
         self.screen = screen
         self.door_pos = {
+            (0, 2): "Menu",
+            (0, 3): "Menu",
+            (0, 4): "Menu",
+            (0, 5): "Menu",
+            (0, 6): "Menu",
+            (0, 7): "Menu",
+            (0, 8): "Menu",
+            (0, 9): "Menu",
         }
 
         # Transition effect
@@ -65,52 +73,58 @@ class PlayScreen:
         :param player:
         :return:
         """
+
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
+        pygame.display.flip()
         # drawGrid(screen=self.screen)
 
         self.player = player
-        # print(self.player.grid_map.get_map(self.player.current_scene).get_grid()[12, 12])
-        self.panel_fl = False  # CÁI NI Bị DOWN
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
-
-        # Start transition effect
-        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                        self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
-                                   transition_type='circle_out')  # draw transition effect
-        self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame, PARAMS)
 
         running = True
         while running:
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
-                    running = False
-                    return None, None  # Fucking transmit signal to another scene here, this is just a prototype
+                    return None, None
+                if event.type == pygame.KEYDOWN:
+                    pressed = event.key
+                    player_response = self.player.handle_event(pressed)
+                    if player_response == "Move":
+                        pass
+                    if player_response == "Interact":
+                        pass  # Handle Interact Here
+                    if player_response == "Door":
+                        self.player.update(self.screenCopy)
+                        self.panel_fl = True
+                        self.chosen_door = self.door_pos[self.player.get_current_door()]
+                        next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
+                        if next_scene:
+                            player_response = self.player.handle_event(pressed)
+                            return next_scene, next_grid_pos
 
-    def toggle_panel(self, event, name):
+
+                    # if self.player.handle_event(pressed):  # Handle interact from player
+                    #     pass
+                    # if self.player.get_grid_pos() in self.door_pos:
+                    #     pass
+                    self.player.update(self.screenCopy)
+
+    def toggle_panel(self, name):
         """
-        :param event:
         :param name: to know whether if the player step into which door
         :return:
         """
         if name:
-            self.player.deactivate(active=False)
-            # if name == "Menu":
-            #     next_scene, next_grid_pos = self.login(event)
-            #
-            #     if next_scene:
-            #         self.player.deactivate(active=True)
-            #         return next_scene, next_grid_pos
-            #
-            # if name == "Gameplay":
-            #     next_scene, next_grid_pos = self.register(event)
-            #
-            #     if next_scene:
-            #         self.player.deactivate(active=True)
-            #         return next_scene, next_grid_pos
-
+            if name == "Menu":
+                self.player.update(self.screen)
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                           transition_type='zelda_rl',
+                                           next_scene=name)
+                return name, (13, self.player.get_grid_pos()[1])
         return None, None

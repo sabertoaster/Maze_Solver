@@ -6,6 +6,7 @@ import cv2
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
+from Visualize.Transition import Transition
 
 FILENAME = "livingRoom_BG.png"
 
@@ -49,9 +50,30 @@ class MenuScreen:
         self.frame = morph_image(path_resources + FILENAME, self.resolution)
         self.pth_re = path_resources
         self.screen = screen
+        tup = (14, slice(0, 14))
+
         self.door_pos = {
-            (11, 1): "Login"
+            (11, 1): "Login",
+
+            (0, 3): "Leaderboard",
+            (0, 4): "Leaderboard",
+            (0, 5): "Leaderboard",
+            (0, 6): "Leaderboard",
+            (0, 7): "Leaderboard",
+            (0, 8): "Leaderboard",
+            (0, 9): "Leaderboard",
+
+            (14, 2): "Play",
+            (14, 3): "Play",
+            (14, 4): "Play",
+            (14, 5): "Play",
+            (14, 6): "Play",
+            (14, 7): "Play",
+            (14, 8): "Play",
+            (14, 9): "Play",
         }
+        self.transition = Transition(self.screen, self.resolution)
+
 
     def play(self, player):
         """
@@ -63,7 +85,7 @@ class MenuScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        drawGrid(screen=self.screen)
+        # drawGrid(screen=self.screen)
 
         self.player = player
         self.screenCopy = self.screen.copy()
@@ -76,47 +98,62 @@ class MenuScreen:
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
-                    running = False
-                    # pygame.quit()
-                    return None, None  # Fucking transmit signal to another scene here, this is just a prototype
+                    return None, None
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
                     player_response = self.player.handle_event(pressed)
-
                     if player_response == "Move":
                         pass
                     if player_response == "Interact":
                         pass  # Handle Interact Here
                     if player_response == "Door":
-                        next_scene, next_grid_pos = self.toggle_panel(event,
-                                                                      self.door_pos[self.player.get_current_door()])
+                        self.player.update(self.screenCopy)
+                        self.panel_fl = True
+                        self.chosen_door = self.door_pos[self.player.get_current_door()]
+                        next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
                         if next_scene:
+                            player_response = self.player.handle_event(pressed)
                             return next_scene, next_grid_pos
+
+
                     # if self.player.handle_event(pressed):  # Handle interact from player
                     #     pass
                     # if self.player.get_grid_pos() in self.door_pos:
                     #     pass
-                    self.player.update(
-                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                    self.player.update(self.screenCopy)
 
-    def toggle_panel(self, event, name):
+    def toggle_panel(self, name):
         """
-        :param event:
         :param name: to know whether if the player step into which door
         :return:
         """
         if name:
-            self.player.deactivate(active=False)
-
             if name == "Login":
-                print(name, self.player.params["initial_pos"][name])
-                self.player.deactivate(active=True)
+
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                           transition_type='circle_in')
+
                 return name, self.player.get_GridMapObject_Player("Login")
-            if name == "Exit":
-                # Play outro animation here
-                pygame.quit()
-                exit()
-            if name == "Register":
-                self.register(event)
-                pass
+
+            if name == "Leaderboard":
+                self.player.update(self.screen)
+
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                           transition_type='zelda_rl',
+                                           next_scene=name)
+
+                return name, (13, self.player.get_grid_pos()[1])
+
+            if name == "Play":
+                self.player.update(self.screen)
+
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                           transition_type='zelda_lr',
+                                           next_scene=name)
+
+                return name, (1, self.player.get_grid_pos()[1])
+
         return None, None
