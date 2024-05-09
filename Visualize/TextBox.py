@@ -49,6 +49,7 @@ class TextBox:
         return self.text_input.value
 
     def draw(self):
+        self.text_input._rerender()
         # pygame.draw.rect(self.screen, self.bg_color, self.rect)
         self.screen.blit(self.text_input.surface, (self.x, self.y))
 

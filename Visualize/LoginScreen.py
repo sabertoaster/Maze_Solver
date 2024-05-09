@@ -129,18 +129,17 @@ class LoginScreen:
                     # pygame.quit()
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
                 if self.chosen_door:
-                    if self.panel_fl:
+                    if self.panel_fl and event.type == pygame.KEYDOWN:
                         next_scene, next_grid_pos = self.toggle_panel(event, self.chosen_door)
                         if next_scene:
                             return next_scene, next_grid_pos
-                    else:
+                    elif not self.panel_fl:
                         self.panel_fl = True
                         if self.chosen_door == "Register":
                             self.screen.blit(self.register_panel, (0, 0))
-                            continue
                         if self.chosen_door == "Login":
                             self.screen.blit(self.login_panel, (0, 0))
-                            continue
+                    pygame.display.update()
                     continue
 
                 if not self.chosen_door:
