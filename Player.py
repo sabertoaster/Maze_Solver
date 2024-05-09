@@ -146,17 +146,20 @@ class Player:
         copy_scr = screenCopy.copy()
         if self.active:
             if self.visualize_direction[0] != self.visualize_direction[1]:
-                rate = 48
+                rate = 100
                 for i in range(0, rate):
                     self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / rate,
                                        self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / rate)
-                    self.screen.blit(self.avatar, self.visual_pos)
-                    self.name_box.set_position((self.visual_pos[0] - (self.name_length//2) + (self.cell[0]//2), self.visual_pos[1] - self.cell[0]*1.5))
-                    self.name_box.draw(True)
-                    
-                    pygame.time.delay(1)
-                    pygame.display.flip()
-                    self.screen.blit(copy_scr, (0, 0))
+
+
+                    if i % 4 == 0:
+                        self.screen.blit(self.avatar, self.visual_pos)
+                        self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + (self.cell[0] // 2),
+                                                    self.visual_pos[1] - self.cell[0] * 1.5))
+                        self.name_box.draw(True)
+                        pygame.time.delay(1)
+                        pygame.display.flip()
+                        self.screen.blit(copy_scr, (0, 0))
                 self.visualize_direction = (self.visualize_direction[1], self.visualize_direction[1])
                 return
             
