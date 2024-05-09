@@ -13,6 +13,11 @@ from Visualize.Transition import Transition
 
 from CONSTANTS import PARAMS, COLORS, SCENES
 
+PARAMS = {
+    "resources": "Visualize/Resources/",
+    "resolution": (1200, 800),  # ratio 3:2
+    "cell": (80, 80)  # 12 cells column, 8 cells row
+}
 
 SCENE_NAME = "Leaderboard"
 
@@ -71,19 +76,11 @@ class LeaderboardScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        # drawGrid(screen=self.screen)
 
+        # Draw Player
         self.player = player
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
-        # Add login panel background
-        self.blur = blur_screen(screen=self.screen.copy())
-
-        # Start transition effect
-        # self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-        #                                 self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
-        #                            transition_type='circle_out')  # draw transition effect
-        self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame)
 
         running = True
         while running:

@@ -1,16 +1,9 @@
 import cv2
 import numpy as np
 import pygame
-# from CONSTANTS import SCENE
+from CONSTANTS import BG
 RESOURCE = "Visualize/Resources/"
 
-SCENE = {
-    "Login": "login_BG.png",
-    "Menu": "livingRoom_BG.png",
-    "Play": "kitchen_BG.png",
-    "Leaderboard": "leaderboard_BG.png",
-    "Settings": "settings_BG.png"
-}
 # Support functions
 def calc_distance(pos1, pos2):
     return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2) ** 0.5
@@ -56,26 +49,51 @@ class Transition:
             self.screen.blit(pygame.surfarray.make_surface(tmp * filter), (0, 0))
             pygame.display.flip()
 
-    def zelda(self, next_scene, reversed):
+    def zelda(self, next_scene, reversed, direction='h'):
         rate = 96
-        zelda = pygame.Surface((self.resolution[0] * 2, self.resolution[1]), pygame.SRCALPHA)
-        next_scene_screen = pygame.image.load(RESOURCE + SCENE[next_scene]).convert_alpha()
+        if direction == 'h':
+            zelda = pygame.Surface((self.resolution[0] * 2, self.resolution[1]), pygame.SRCALPHA)
+        elif direction == 'v':
+            zelda = pygame.Surface((self.resolution[0], self.resolution[1] * 2), pygame.SRCALPHA)
+
+        next_scene_screen = pygame.image.load(RESOURCE + BG[next_scene]).convert_alpha()
 
         if reversed:
-            zelda.blit(self.screen, (0, 0))
-            zelda.blit(next_scene_screen, (self.resolution[0], 0))
+            if direction == 'h':
+                zelda.blit(next_scene_screen, (0, 0))
+                zelda.blit(self.screen, (self.resolution[0], 0))
+            elif direction == 'v':
+                zelda.blit(next_scene_screen, (0, 0))
+                zelda.blit(self.screen, (0, self.resolution[1]))
+
         else:
-            zelda.blit(next_scene_screen, (0, 0))
-            zelda.blit(self.screen, (self.resolution[0], 0))
+            if direction == 'h':
+                zelda.blit(self.screen, (0, 0))
+                zelda.blit(next_scene_screen, (self.resolution[0], 0))
+            elif direction == 'v':
+                zelda.blit(self.screen, (0, 0))
+                zelda.blit(next_scene_screen, (0, self.resolution[1]))
 
         for scroll in range(rate):
             if reversed:
-                self.screen.blit(zelda, (0, 0),
-                                 (scroll * self.resolution[0] / rate, 0, self.resolution[0], self.resolution[1]))
+                if direction == 'h':
+                    self.screen.blit(zelda, (0, 0), (
+                        self.resolution[0] - (scroll + 1) * self.resolution[0] / rate, 0, self.resolution[0],
+                        self.resolution[1]))
+                elif direction == 'v':
+                    self.screen.blit(zelda, (0, 0),
+                                     (0, self.resolution[1] - (scroll + 1) * self.resolution[1] / rate,
+                                     self.resolution[0], self.resolution[1]))
+
+
             else:
-                self.screen.blit(zelda, (0, 0), (
-                    self.resolution[0] - (scroll + 1) * self.resolution[0] / rate, 0, self.resolution[0],
-                    self.resolution[1]))
+                if direction == 'h':
+                    self.screen.blit(zelda, (0, 0),
+                                     ((scroll + 1) * self.resolution[0] / rate, 0, self.resolution[0], self.resolution[1]))
+                elif direction == 'v':
+                    self.screen.blit(zelda, (0, 0), (
+                                    0, (scroll + 1) * self.resolution[1] / rate, self.resolution[0], self.resolution[1]))
+
 
             pygame.display.flip()
             pygame.time.delay(10)
@@ -86,6 +104,10 @@ class Transition:
         Transition effect:
             - circle_in: Zooming in effect
             - circle_out: Zooming out effect
+            - zelda_lr: Transition effect from left to right
+            - zelda_rl: Transition effect from right to left
+            - zelda_ud: Transition effect from up to down
+            - zelda_du: Transition effect from down to up
         """
         pos = (pos[1], pos[0])
 
@@ -96,10 +118,16 @@ class Transition:
             self.circle(pos, zoom_in=False)
 
         elif transition_type == 'zelda_lr':
-            self.zelda(next_scene, reversed=True)
+            self.zelda(next_scene, reversed=False)
 
         elif transition_type == 'zelda_rl':
-            self.zelda(next_scene, reversed=False)
+            self.zelda(next_scene, reversed=True)
+
+        elif transition_type == 'zelda_ud':
+            self.zelda(next_scene, reversed=False, direction='v')
+
+        elif transition_type == 'zelda_du':
+            self.zelda(next_scene, reversed=True, direction='v')
 
 
         pygame.event.clear()

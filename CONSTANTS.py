@@ -47,3 +47,11 @@ FPS = 60
 COLORS = {
     'WHITE': (200, 200, 200),
 }
+
+BG = {
+    "Login": "login_BG.png",
+    "Menu": "livingRoom_BG.png",
+    "Play": "kitchen_BG.png",
+    "Leaderboard": "leaderboard_BG.png",
+    "Settings": "settings_BG.png"
+}
