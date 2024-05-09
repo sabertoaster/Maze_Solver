@@ -102,6 +102,9 @@ class LoginScreen:
                                         self.player.visual_pos[1] + PARAMS["cell"]['Login'][1] / 2),
                                    transition_type='circle_out')  # draw transition effect
 
+        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"]['Login'][0] / 2,
+                                        self.player.visual_pos[1] + PARAMS["cell"]['Login'][1] / 2),
+                                   transition_type='sign_pop')
         # pygame.display.flip()
 
         self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame)

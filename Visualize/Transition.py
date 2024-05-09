@@ -49,6 +49,26 @@ class Transition:
             self.screen.blit(pygame.surfarray.make_surface(tmp * filter), (0, 0))
             pygame.display.flip()
 
+    def sign_pop(self, pos):
+        box = pygame.image.load(RESOURCE + "sign_box.png").convert_alpha()
+        box_shape = box.get_size()
+        screen_copy = self.screen.copy()
+        rate = 48
+        for _ in range(rate):
+            self.screen.blit(screen_copy, (0, 0))
+            self.screen.blit(box, (0, 0), (0, box_shape[1] - (_ + 1) * box_shape[1]/ rate, self.resolution[0], self.resolution[1]))
+            pygame.display.update()
+            pygame.time.delay(10)
+
+        pygame.time.delay(500)
+
+        for _ in range(rate):
+            self.screen.blit(screen_copy, (0, 0))
+            self.screen.blit(box, (0, 0), (0, (_ + 1) * box_shape[1]/ rate, self.resolution[0], self.resolution[1]))
+            pygame.display.update()
+            pygame.time.delay(10)
+
+
     def zelda(self, next_scene, reversed, direction='h'):
         rate = 96
         if direction == 'h':
@@ -128,6 +148,9 @@ class Transition:
 
         elif transition_type == 'zelda_du':
             self.zelda(next_scene, reversed=True, direction='v')
+
+        elif transition_type == "sign_pop":
+            self.sign_pop(pos)
 
 
         pygame.event.clear()
