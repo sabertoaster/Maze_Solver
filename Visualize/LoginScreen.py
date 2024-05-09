@@ -223,10 +223,11 @@ class LoginScreen:
                 # Get the {"username", "password"} the player input
 
                 tmp_dic = self.text_box.get_all_text()
-
-                with open('user_profile.json', 'r') as file:
-                    data = json.load(file)
-
+                try:
+                    with open('user_profile.json', 'r') as file:
+                        data = json.load(file)
+                except json.JSONDecodeError:
+                    data = []
                 for diction in data:
                     if diction["username"] == tmp_dic["username"]:
                         if diction["password"] == tmp_dic["password"]:
@@ -251,11 +252,12 @@ class LoginScreen:
                             print("Password is incorrect, please try again")
                             self.notify_text_box.set_text("notification", "Password is incorrect, please try again")
                             self.notify_text_box.draw()
-                        break
-                    else:
-                        print("The player hasn't registered yet")
-                        self.notify_text_box.set_text("notification", "The player hasn't registered yet")
-                        self.notify_text_box.draw()
+                            break
+                else:
+                    print("The player hasn't registered yet")
+                    self.notify_text_box.set_text("notification", "The player hasn't registered yet")
+                    self.notify_text_box.draw()
+
         pygame.display.update()
 
         return None, None
@@ -303,7 +305,17 @@ class LoginScreen:
 
                         data.append(cur_input)
                     except json.JSONDecodeError:
-                        data = [self.text_box.get_all_text()]
+                        cur_input = self.text_box.get_all_text()
+                        if cur_input["password"] == "":
+                            print("Vui long nhap mat khau")
+                            self.notify_text_box.set_text("notification", "Vui long nhap mat khau")
+                            self.notify_text_box.draw()
+
+                            # pygame.display.flip()
+                            # pygame.event.clear()
+                            # pygame.time.delay(1000)
+                            return None, None
+                        data = [cur_input]
                     # Rewind to top of the file
                     file.seek(0)
 
