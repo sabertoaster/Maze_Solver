@@ -10,11 +10,17 @@ from Visualize.ImageProcess import add_element
 from Visualize.TextBox import TextBox, FormManager, Color
 from Visualize.Mouse_Events import Mouse_Events
 from Visualize.Transition import Transition
+from Visualize.HangingSign import HangingSign
 
 from CONSTANTS import PARAMS, COLORS, SCENES
 
 SCENE_NAME = "Login"
 
+PARAMS = {
+    "resources": "Visualize/Resources/",
+    "resolution": (1200, 800),  # ratio 3:2
+    "cell": (40, 40)  # 12 cells column, 8 cells row
+}
 def drawGrid(screen):
     """
     FOR FUCKING DEBUG THE GRID MAP
@@ -65,6 +71,8 @@ class LoginScreen:
         # Transition effect
         self.transition = Transition(self.screen, self.resolution)
 
+        self.sign = HangingSign(SCENE_NAME.upper(), 50)
+
     def play(self, player):
         """
         Play the scene
@@ -97,13 +105,14 @@ class LoginScreen:
                                            (self.resolution[1] - panel_shape[1] + 11) / 2))  # HANDLE KIEU SUC VAT
         # self.create_font()  # Create font for text input
 
-        # Start transition effect
-        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"]['Login'][0] / 2,
-                                        self.player.visual_pos[1] + PARAMS["cell"]['Login'][1] / 2),
+        # Start transition effect 9 60 9 190
+        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                        self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
                                    transition_type='circle_out')  # draw transition effect
 
-        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"]['Login'][0] / 2,
-                                        self.player.visual_pos[1] + PARAMS["cell"]['Login'][1] / 2),
+        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                        self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                                   box=self.sign,
                                    transition_type='sign_pop')
         # pygame.display.flip()
 
@@ -137,6 +146,8 @@ class LoginScreen:
                             self.screen.blit(self.register_panel, (0, 0))
                         if self.chosen_door == "Login":
                             self.screen.blit(self.login_panel, (0, 0))
+                        if self.chosen_door == "Exit":
+                            return None, None
                     pygame.display.update()
                     continue
 
@@ -239,8 +250,8 @@ class LoginScreen:
                             self.screen.blit(self.screenCopy, (0, 0))
                             self.player.update(self.screenCopy)
                             pygame.display.flip()
-                            self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"]['Login'][0] / 2,
-                                                            self.player.visual_pos[1] + PARAMS["cell"]['Login'][1] / 2),
+                            self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
+                                                            self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
                                                        transition_type='circle_in')
 
                             return "Menu", self.player.params["initial_pos"]["Menu"]  # [PROTOTYPE]

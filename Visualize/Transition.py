@@ -49,8 +49,8 @@ class Transition:
             self.screen.blit(pygame.surfarray.make_surface(tmp * filter), (0, 0))
             pygame.display.flip()
 
-    def sign_pop(self, pos):
-        box = pygame.image.load(RESOURCE + "sign_box.png").convert_alpha()
+    def sign_pop(self, box):
+        box = box.to_surface()
         box_shape = box.get_size()
         screen_copy = self.screen.copy()
         rate = 48
@@ -119,7 +119,7 @@ class Transition:
             pygame.time.delay(10)
 
 
-    def transition(self, pos, transition_type, next_scene=None): # pos = (x, y) not (y, x)
+    def transition(self, pos, transition_type, box=None, next_scene=None): # pos = (x, y) not (y, x)
         """
         Transition effect:
             - circle_in: Zooming in effect
@@ -150,7 +150,7 @@ class Transition:
             self.zelda(next_scene, reversed=True, direction='v')
 
         elif transition_type == "sign_pop":
-            self.sign_pop(pos)
+            self.sign_pop(box)
 
 
         pygame.event.clear()
