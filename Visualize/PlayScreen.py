@@ -11,6 +11,7 @@ from Visualize.TextBox import TextBox, FormManager, Color
 from Visualize.Mouse_Events import Mouse_Events
 from Visualize.Transition import Transition
 
+
 FILENAME = "kitchen_BG.png"
 
 # [PROTOTYPE]

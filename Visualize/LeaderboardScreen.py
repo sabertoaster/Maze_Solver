@@ -11,16 +11,15 @@ from Visualize.TextBox import TextBox, FormManager, Color
 from Visualize.Mouse_Events import Mouse_Events
 from Visualize.Transition import Transition
 
-FILENAME = "leaderboard_BG.png"
+from CONSTANTS import PARAMS, COLORS, SCENES
 
-# [PROTOTYPE]
 PARAMS = {
     "resources": "Visualize/Resources/",
     "resolution": (1200, 800),  # ratio 3:2
     "cell": (80, 80)  # 12 cells column, 8 cells row
 }
-# [PROTOTYPE]
-WHITE = (200, 200, 200)
+
+SCENE_NAME = "Leaderboard"
 
 
 def drawGrid(screen):
@@ -29,11 +28,11 @@ def drawGrid(screen):
     :param screen:
     :return:
     """
-    blockSize = PARAMS["cell"][0]  # Set the size of the grid block
+    blockSize = PARAMS["cell"][SCENE_NAME][0]  # Set the size of the grid block
     for x in range(0, PARAMS["resolution"][0], blockSize):
         for y in range(0, PARAMS["resolution"][1], blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, WHITE, rect, 1)
+            pygame.draw.rect(screen, COLORS['WHITE'], rect, 1)
 
 
 # [PROTOTYPE]
@@ -50,7 +49,7 @@ class LeaderboardScreen:
         :param path_resources:
         """
         self.resolution, self.cell = res_cel
-        self.frame = morph_image(path_resources + FILENAME, self.resolution)
+        self.frame = morph_image(path_resources + SCENES[SCENE_NAME]['ORIGINAL_FRAME'], self.resolution)
         self.pth_re = path_resources
         self.screen = screen
         self.door_pos = {
@@ -77,13 +76,11 @@ class LeaderboardScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        # drawGrid(screen=self.screen)
 
+        # Draw Player
         self.player = player
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
-        # Add login panel background
-        self.blur = blur_screen(screen=self.screen.copy())
 
         running = True
         while running:

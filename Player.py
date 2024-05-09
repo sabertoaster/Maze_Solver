@@ -71,6 +71,7 @@ class Player:
         self.name_box = TextBox(screen=self.screen, position=(0, 0, self.cell[0] * 2, self.cell[1]),
                                 font_color=(0, 0, 0), manager=TextInputManager(), text=self.name)
         self.name_length = self.name_box.get_length()
+        
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
 
     def set_current_scene(self, target_scene, initial_pos):
@@ -135,14 +136,24 @@ class Player:
         :param screenCopy:
         :return:
         """
+        
         self.screen.blit(screenCopy.copy(), (0, 0))
         self.draw(screenCopy)
 
+    def re_init(self, name, scene):
+        self.current_scene = scene
+        self.cell = self.cell_collection[self.current_scene]
+        self.name = name
+        self.name_box = TextBox(screen=self.screen, position=(0, 0, self.cell[0] * 2, self.cell[1]),
+                                font_color=(0, 0, 0), manager=TextInputManager(), text=self.name)
+        self.name_length = self.name_box.get_length()     
+           
     def draw(self, screenCopy):
         """
         Draw player
         :return:
         """
+        
         copy_scr = screenCopy.copy()
         if self.active:
             if self.visualize_direction[0] != self.visualize_direction[1]:

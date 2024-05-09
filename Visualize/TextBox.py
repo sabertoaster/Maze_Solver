@@ -34,6 +34,7 @@ class TextBox:
         font = pygame.font.Font(DEFAULT_FONT_PATH, height - 5)
         self.text_input = TextInputVisualizer(manager=manager, font_object=font, cursor_blink_interval=400,
                                               font_color=font_color)
+        self.text_input._require_rerender()
         # Customize much more
         self.text_input.value = text
         self.text_input.cursor_width = 5
@@ -47,6 +48,10 @@ class TextBox:
         self.x = position[0]
         self.y = position[1]
 
+    def set_size(self, size):
+        self.width = size[1]
+        self.height = size[0]
+    
     def set_text(self, text):
         self.text_input.value = text
 
@@ -122,6 +127,7 @@ class FormManager:
         Draw text input
         """
         for key, value in self.text_boxes.items():
+            print('draw', key, ":", value["box"].get_current_text())
             value["box"].draw()
 
     def set_text(self, key, text) -> None:
@@ -130,6 +136,7 @@ class FormManager:
         key: str -> name of text box
         """
         self.text_boxes[key]["box"].set_text(text)
+        print('set', key, ":", text, self.text_boxes[key]["box"].get_current_text())
 
     def get_current_text(self) -> Dict[str, str]:
         """

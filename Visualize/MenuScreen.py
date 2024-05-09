@@ -8,17 +8,9 @@ from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
 from Visualize.Transition import Transition
 
-FILENAME = "livingRoom_BG.png"
+from CONSTANTS import PARAMS, COLORS, SCENES
 
-# [PROTOTYPE]
-PARAMS = {
-    "resources": "Visualize/Resources/",
-    "resolution": (1200, 800),  # ratio 3:2
-    "cell": (80, 80)  # 12 cells column, 8 cells row
-}
-# [PROTOTYPE]
-WHITE = (200, 200, 200)
-
+SCENE_NAME = "Menu"
 
 def drawGrid(screen):
     """
@@ -26,11 +18,11 @@ def drawGrid(screen):
     :param screen:
     :return:
     """
-    blockSize = PARAMS["cell"][0]  # Set the size of the grid block
+    blockSize = PARAMS["cell"][SCENE_NAME][0]  # Set the size of the grid block
     for x in range(0, PARAMS["resolution"][0], blockSize):
         for y in range(0, PARAMS["resolution"][1], blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, WHITE, rect, 1)
+            pygame.draw.rect(screen, COLORS['WHITE'], rect, 1)
 
 
 # [PROTOTYPE]
@@ -47,7 +39,7 @@ class MenuScreen:
         :param path_resources:
         """
         self.resolution, self.cell = res_cel
-        self.frame = morph_image(path_resources + FILENAME, self.resolution)
+        self.frame = morph_image(path_resources + SCENES[SCENE_NAME]['ORIGINAL_FRAME'], self.resolution)
         self.pth_re = path_resources
         self.screen = screen
         tup = (14, slice(0, 14))
@@ -130,17 +122,17 @@ class MenuScreen:
         if name:
             if name == "Login":
 
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][SCENE_NAME][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][SCENE_NAME][1] / 2),
                                            transition_type='circle_in')
 
                 return name, self.player.get_GridMapObject_Player("Login")
 
             if name == "Leaderboard":
                 self.player.update(self.screen)
-
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][SCENE_NAME][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][SCENE_NAME][1] / 2),
                                            transition_type='zelda_rl',
                                            next_scene=name)
 
@@ -149,8 +141,8 @@ class MenuScreen:
             if name == "Play":
                 self.player.update(self.screen)
 
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][SCENE_NAME][0] / 2,
+                                                self.player.visual_pos[1] + PARAMS["cell"][SCENE_NAME][1] / 2),
                                            transition_type='zelda_lr',
                                            next_scene=name)
 
