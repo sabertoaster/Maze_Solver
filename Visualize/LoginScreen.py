@@ -159,6 +159,7 @@ class LoginScreen:
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         self.chosen_door = self.mouse_handler.click()
+                        events.append(pygame.event.Event(pygame.USEREVENT, {}))
                         continue
 
                     if event.type == pygame.KEYDOWN:
