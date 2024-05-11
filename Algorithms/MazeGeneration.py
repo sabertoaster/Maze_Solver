@@ -229,6 +229,8 @@ def random_start_end(size):
     start = randint(0, size[0]), randint(0, size[1])
     end = randint(0, size[0]), randint(0, size[1])
     return start, end
+
+
 class Maze:
     """
     type_generating_maze chọn một trong các ['DFS', 'Kruskal', 'Prim', 'Wilson']
@@ -250,8 +252,10 @@ class Maze:
     def __init__(self, type_generating_maze : str, size_maze : tuple):
         self.start, self.end = random_start_end(size_maze)
         Algorithm = ['DFS', 'Kruskal', 'Wilson', 'Prim','BinaryTree']
+
         if type_generating_maze not in Algorithm:
             type_generating_maze = choice(Algorithm)
+
         if type_generating_maze == 'DFS':
             tmp = DepthFirstSearch(size_maze)
             tmp.run((0,0))
@@ -336,9 +340,7 @@ def convert(maze: list[list[Cell]], maze_instance: Maze):
 
 # Real_Maze = Maze('DFS', (10, 10))
 
-
 # Write_File('D:\Project_Tam&GiaHuy\Maze_Solver\LEGACY', 'maze6.txt', Real_Maze.maze, Real_Maze)
-
 
 #Visualize
 

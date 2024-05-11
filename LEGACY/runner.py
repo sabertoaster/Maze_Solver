@@ -4,6 +4,10 @@ import pygame, sys, time
 import copy
 from Minimap import Minimap
 
+sys.path.append('D:\HCMUS\Source\Self_Project\Maze_Solver\Algorithms')
+from Algorithms import Algorithms
+from MazeGeneration import *
+
 class IO_Basics:
     #Open and get the maze from file
     def get_maze(self, filename):
@@ -194,15 +198,57 @@ pygame.time.set_timer(SCREEN_UPDATE, 200)
 
 #Maze Solver
 
-sol = Solution(maze)
-sol.move_A_star()
+#           [PROTOTYPE]
+# sol = Solution(maze)
+# sol.move_A_star()
+
+sol = Algorithms(maze)
+start, end = (49, 9), (37, 36)
+solution, visited = sol.a_star(start, end)
 
 screen.fill((0,0,0))
 
 io.draw_maze()
 # sol.draw_solution()
 
-def play_with_AI():
+#                           [PROTOTYPE]
+# def play_with_AI():
+#     finding_index = 1
+#     while True:
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#                 sys.exit()
+
+#         if finding_index < len(sol.visited):
+#             position = sol.visited[finding_index]
+
+#             # cell_rect = pygame.Rect(position[1] * cell_size, position[0] * cell_size, cell_size, cell_size)
+
+#             # pygame.draw.rect(screen, (0,255,0), cell_rect)
+
+#             pygame.draw.circle(screen, (30, 50, 163), [int((position[1] + 0.5) * cell_size), int((position[0] + 0.5) * cell_size)], cell_size // 2 - 1)
+
+#             finding_index += 1
+#         else:
+#             sol.draw_solution()
+
+#         # pygame.time.wait(20)
+
+#         pygame.display.update()
+#         clock.tick(100)
+
+# play_with_AI()
+
+def draw_final_solution(solution):
+    cell_size = 15
+
+    for current_position in solution:
+        cell_rect = pygame.Rect(current_position[1] * cell_size, current_position[0] * cell_size, cell_size, cell_size)
+
+        pygame.draw.rect(screen, (52, 229, 235), cell_rect)
+
+def play_with_AI2():
     finding_index = 1
     while True:
         for event in pygame.event.get():
@@ -210,8 +256,8 @@ def play_with_AI():
                 pygame.quit()
                 sys.exit()
 
-        if finding_index < len(sol.visited):
-            position = sol.visited[finding_index]
+        if finding_index < len(visited):
+            position = visited[finding_index]
 
             # cell_rect = pygame.Rect(position[1] * cell_size, position[0] * cell_size, cell_size, cell_size)
 
@@ -221,67 +267,68 @@ def play_with_AI():
 
             finding_index += 1
         else:
-            sol.draw_solution()
+            draw_final_solution(solution)
 
         # pygame.time.wait(20)
 
         pygame.display.update()
         clock.tick(100)
 
-class Player:
-    def __init__(self, pos):
-        self.pos = pos
+play_with_AI2()
+# class Player:
+#     def __init__(self, pos):
+#         self.pos = pos
 
-    def move(self, key_down):
-        if key_down == 'w':
-            self.pos[0] -= 1
-        if key_down == 'a':
-            self.pos[1] -= 1
-        if key_down == 's':
-            self.pos[0] += 1
-        if key_down == 'd':
-            self.pos[1] += 1
+#     def move(self, key_down):
+#         if key_down == 'w':
+#             self.pos[0] -= 1
+#         if key_down == 'a':
+#             self.pos[1] -= 1
+#         if key_down == 's':
+#             self.pos[0] += 1
+#         if key_down == 'd':
+#             self.pos[1] += 1
         
-    def draw_player(self):
-        ceil_rect = pygame.Rect(self.pos[1] * cell_size, self.pos[0] * cell_size, cell_size, cell_size)
+#     def draw_player(self):
+#         ceil_rect = pygame.Rect(self.pos[1] * cell_size, self.pos[0] * cell_size, cell_size, cell_size)
 
-        pygame.draw.rect(screen, (255, 51, 255), ceil_rect)
+#         pygame.draw.rect(screen, (255, 51, 255), ceil_rect)
     
-    def remove_previous(self):
-        ceil_rect = pygame.Rect(self.pos[1] * cell_size, self.pos[0] * cell_size, cell_size, cell_size)
+#     def remove_previous(self):
+#         ceil_rect = pygame.Rect(self.pos[1] * cell_size, self.pos[0] * cell_size, cell_size, cell_size)
 
-        pygame.draw.rect(screen, (255, 255, 255), ceil_rect)
+#         pygame.draw.rect(screen, (255, 255, 255), ceil_rect)
 
-player = Player([30, 30])
+# player = Player([30, 30])
 
-resolution = (row * cell_size, col * cell_size)
-minimap = Minimap(screen, maze, player, resolution)
+# resolution = (row * cell_size, col * cell_size)
+# minimap = Minimap(screen, maze, player, resolution)
 
-def play_with_player():
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                player.remove_previous()
+# def play_with_player():
+#     while True:
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#                 sys.exit()
+#             if event.type == pygame.KEYDOWN:
+#                 player.remove_previous()
 
-                # if event.key == pygame.K_m:
-                #     minimap.zoom()
-                if event.key == pygame.K_w:
-                    player.move('w')
-                elif event.key == pygame.K_a:
-                    player.move('a')
-                elif event.key == pygame.K_s:
-                    player.move('s')
-                elif event.key == pygame.K_d:
-                    player.move('d')
+#                 # if event.key == pygame.K_m:
+#                 #     minimap.zoom()
+#                 if event.key == pygame.K_w:
+#                     player.move('w')
+#                 elif event.key == pygame.K_a:
+#                     player.move('a')
+#                 elif event.key == pygame.K_s:
+#                     player.move('s')
+#                 elif event.key == pygame.K_d:
+#                     player.move('d')
                 
-                player.draw_player()
+#                 player.draw_player()
 
-                minimap.update()
+#                 minimap.update()
 
-        pygame.display.update()
-        clock.tick(100)
+#         pygame.display.update()
+#         clock.tick(100)
 
-play_with_player()
+# play_with_player()

@@ -137,7 +137,6 @@ class TotalAlgorithms:
         
         return get_solution(trace, start, end), visited
 
-
 def check_valid_move(maze: list[list[str]], cur_pos: tuple[int], visited: list[tuple[int]]):
     '''
     - Input:
