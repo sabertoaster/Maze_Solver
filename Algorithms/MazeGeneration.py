@@ -1,6 +1,7 @@
 import random, sys, os
+from turtle import Screen
 import pygame
-
+import numpy as np
 from random import choice
 from random import shuffle
 from random import randint
@@ -277,62 +278,66 @@ class Maze:
             self.maze = tmp.maze
             self.size = size_maze
 
-ROW, COL = 20, 20
-CELL_SIZE = 15
+def Generate_Destination(row, col):
+    strategy = random.choice([0,1])
 
-def Draw_Maze(self):
-    for x in range(ROW):
-        for y in range(COL):
-            cell_rect = pygame.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+    if strategy == 0:
+        x_start = random.randint(0, row - 1)
+        y_start = 0
 
-            pygame.draw.rect(screen, (0,0,0), cell_rect)
+        x_end = random.randint(0, row - 1)
+        y_end = col - 1
 
-            if self.maze[x][y].walls['top']:
-                pygame.draw.line(screen, (255, 255, 255), [x * CELL_SIZE, y * CELL_SIZE], [(x + 1) * CELL_SIZE + 2, y * CELL_SIZE], width = 4)
-            if self.maze[x][y].walls['bottom']:
-                pygame.draw.line(screen, (255, 255, 255), [x * CELL_SIZE, (y + 1) * CELL_SIZE], [(x + 1) * CELL_SIZE + 2, (y + 1)* CELL_SIZE], width = 4)
-            if self.maze[x][y].walls['left']:
-                pygame.draw.line(screen, (255, 255, 255), [x * CELL_SIZE, y * CELL_SIZE], [x * CELL_SIZE, (y + 1) * CELL_SIZE], width = 4)
-            if self.maze[x][y].walls['right']:
-                pygame.draw.line(screen, (255, 255, 255), [(x + 1) * CELL_SIZE, y * CELL_SIZE], [(x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE], width = 4)
+    elif strategy == 1:
+        x_start = 0
+        y_start = random.randint(0, col - 1)
 
-def Write_File(savepath, filename, maze: list[list[Cell]], maze_instance: Generate_Maze):
-    maze_output = [[' ' for i in range(2 * COL - 1)] for j in range(2 * ROW - 1)]
+        x_end = row - 1
+        y_end = random.randint(0, col - 1)
+        
+    return x_start, x_end, y_start, y_end
 
-    for x in range(ROW):
-        for y in range(COL):
-            if maze[x][y].walls['top'] and 2 * y - 1 >= 0:
-                maze_output[2 * y - 1][2 * x] = '#'
-            if maze[x][y].walls['bottom'] and 2 * y + 1 < 2 * ROW - 1:
-                maze_output[2 * y + 1][2 * x] = '#'
-            if maze[x][y].walls['left'] and 2 * x - 1 >= 0:
-                maze_output[2 * y][2 * x - 1] = '#'
-            if maze[x][y].walls['right'] and 2 * x + 1 < 2 * COL - 1:
-                maze_output[2 * y][2 * x + 1] = '#'
+#Convert 2d[Cell] matrix to text file (Tường mỏng -> tường dày)
+    #Output: File txt
+def convert(maze: list[list[Cell]], maze_instance: Maze):
+    maze_output = [[' ' for i in range(2 * maze_instance.size[1] - 1)] for j in range(2 * maze_instance.size[0] - 1)]
+    for x in range(maze_instance.size[0]):
+        for y in range(maze_instance.size[1]):
+            if maze[x][y].walls['left'] and 2 * y - 1 >= 0:
+                maze_output[2 * x][2 * y - 1] = '#'
+            if maze[x][y].walls['right'] and 2 * y + 1 < 2 * maze_instance.size[0] - 1:
+                maze_output[2 * x][2 * y + 1] = '#'
+            if maze[x][y].walls['top'] and 2 * x - 1 >= 0:
+                maze_output[2 * x - 1][2 * y] = '#'
+            if maze[x][y].walls['bottom'] and 2 * x + 1 < 2 * maze_instance.size[1] - 1:
+                maze_output[2 * x + 1][2 * y] = '#'
 
-            if 2 * x + 1 < 2 * ROW - 1 and 2 * y + 1 < 2 * COL - 1:
+            if 2 * x + 1 < 2 * maze_instance.size[0] - 1 and 2 * y + 1 < 2 * maze_instance.size[1] - 1:
                 maze_output[2 * y + 1][2 * x + 1] = '#'
 
-    maze_output = maze_instance.Generate_Destination(maze_output)
+        
+    x_start, x_end, y_start, y_end = Generate_Destination(2 * maze_instance.size[0] - 1, 2 * maze_instance.size[1] - 1)
+    
+    maze_output[x_start][y_start] = 'S'
+    maze_output[x_end][y_end] = 'E'
+    return maze_output
+    # for x in range(2 * maze_instance.size[0] - 2):
+    #     maze_output[x] = ''.join(maze_output[x]) + '\n'
+    # maze_output[2 * maze_instance.size[0] - 2] = ''.join(maze_output[2 * maze_instance.size[0] - 2])
 
-    for x in range(2 * ROW - 2):
-        maze_output[x] = ''.join(maze_output[x]) + '\n'
-    maze_output[2 * ROW - 2] = ''.join(maze_output[2 * ROW - 2])
+    # completeName = os.path.join(savepath, filename)
+    # with open(completeName, mode = 'w') as file_output:
+    #     file_output.write(''.join(maze_output))
 
-    completeName = os.path.join(savepath, filename)
-    with open(completeName, mode = 'w') as file_output:
-        file_output.write(''.join(maze_output))
-
-    file_output.close()
+    # file_output.close()
 
 # pygame.init()
 # screen = pygame.display.set_mode((COL * CELL_SIZE + 4, ROW * CELL_SIZE + 4))
 
-# Real_Maze = Generate_Maze()
+# Real_Maze = Maze('DFS', (10, 10))
 
-# Real_Maze.Generate()
 
-# Write_File('../LEGACY', 'maze6.txt', Real_Maze.maze, Real_Maze)
+# Write_File('D:\Project_Tam&GiaHuy\Maze_Solver\LEGACY', 'maze6.txt', Real_Maze.maze, Real_Maze)
 
 
 #Visualize
