@@ -8,7 +8,7 @@ from Visualize.TextBox import TextBox
 from pygame_textinput import TextInputManager, TextInputVisualizer
 
 from CONSTANTS import AVATAR
-from CONSTANTS import SCENES, RESOLUTION, RESOURCE_PATH, AVATAR, MOVEMENT
+from CONSTANTS import SCENES, RESOLUTION, RESOURCE_PATH, AVATAR, MOVEMENT, SOUNDS
 
 
 class Player:
@@ -55,8 +55,8 @@ class Player:
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
         
         self.sounds_handler = sounds_handler
-        self.sounds_handler.add_sfx("move", 'move.mp3')
-        self.sounds_handler.turn_on()
+        for key, val in SOUNDS["sfx"].items():
+            self.sounds_handler.add_sfx(key, val)
         
         
 
@@ -240,4 +240,4 @@ class Player:
         Interact with the environment
         :return:
         """
-        self.sfx["move"].play()
+        self.sounds_handler.play_sfx('interact')

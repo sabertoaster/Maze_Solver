@@ -221,3 +221,14 @@ AVATAR = {
                  "left": "blackTom_icon_l.png",
                  "up": "blackTom_icon_u.png"},
 }
+
+SOUNDS = {
+    'theme': {
+        'Lobby': 'theme.mp3',
+        'InGame': 'theme.mp3',
+    },
+    'sfx': {
+        'move': 'move.mp3',
+        'interact': 'interact.mp3',
+    }
+}

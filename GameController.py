@@ -11,7 +11,7 @@ import cv2
 from enum import Enum
 
 # init hyperparameters here
-from CONSTANTS import FPS, RESOLUTION, CELLS_LIST, MAPS_LIST, SCENES
+from CONSTANTS import FPS, RESOLUTION, CELLS_LIST, MAPS_LIST, SCENES, SOUNDS
 
 from Sounds import SoundsHandler
 
@@ -36,9 +36,8 @@ class GameController:
 
         # INSTANTIATE SOUNDS HANDLER
         self.sounds_handler = SoundsHandler()
-        self.sounds_handler.set_bgm('theme.mp3')
         self.sounds_handler.turn_on()
-        self.sounds_handler.bgm.play()
+        self.sounds_handler.set_bgm(SOUNDS['theme']['Lobby'])
 
 
         # INSTANTIATE PLAYER

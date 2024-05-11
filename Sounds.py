@@ -1,13 +1,10 @@
 import pygame
-from CONSTANTS import RESOURCE_PATH
-import pygame
-from CONSTANTS import RESOURCE_PATH
-
+from CONSTANTS import RESOURCE_PATH, SOUNDS
 
 class Sounds:
     def __init__(self, file_name):
         self.player = pygame.mixer.Sound(RESOURCE_PATH + 'sounds/' + file_name)
-        self.active = False
+        self.active = True
     
     def turn_on(self):
         self.active = True  
@@ -43,15 +40,18 @@ class SFX(Sounds):
 class SoundsHandler():
     def __init__(self):
         self.sfx = dict()
-        self.bgm = BGM('theme.mp3')
-        self.bgm_name = 'theme.mp3'
-        self.current_state = "off"
+        self.bgm = BGM(SOUNDS['theme']['Lobby'])
+        self.bgm_name = 'Lobby'
+        self.current_state = "on"
     
     def add_sfx(self, sfx_name, file_name):
         self.sfx[sfx_name] = SFX(file_name)
                 
     def set_bgm(self, file_name):
         self.bgm = BGM(file_name)
+        self.bgm_name = file_name
+        self.bgm.turn_on()
+        self.bgm.play()
         
     def turn_on(self):
         self.current_state = "on"
