@@ -8,20 +8,13 @@ from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
 from Visualize.TextBox import TextBox, FormManager, Color
-from Visualize.Mouse_Events import Mouse_Events
+from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
+from Visualize.HangingSign import HangingSign
 
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
-FILENAME = "kitchen_BG.png"
-
-# [PROTOTYPE]
-PARAMS = {
-    "resources": "Visualize/Resources/",
-    "resolution": (1200, 800),  # ratio 3:2
-    "cell": (80, 80)  # 12 cells column, 8 cells row
-}
-# [PROTOTYPE]
-WHITE = (200, 200, 200)
+SCENE_NAME = "Play"
 
 
 def drawGrid(screen):
@@ -30,43 +23,32 @@ def drawGrid(screen):
     :param screen:
     :return:
     """
-    blockSize = PARAMS["cell"][0]  # Set the size of the grid block
-    for x in range(0, PARAMS["resolution"][0], blockSize):
-        for y in range(0, PARAMS["resolution"][1], blockSize):
+    blockSize = SCENES[SCENE_NAME]["cell"][0]  # Set the size of the grid block
+    for x in range(0, RESOLUTION[0], blockSize):
+        for y in range(0, RESOLUTION[1], blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, WHITE, rect, 1)
+            pygame.draw.rect(screen, COLORS["WHITE"], rect, 1)
 
-
-# [PROTOTYPE]
 
 class PlayScreen:
     """
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
 
-    def __init__(self, screen, res_cel, path_resources):
+    def __init__(self, screen):
         """
         :param screen:
         :param res_cel:
         :param path_resources:
         """
-        self.resolution, self.cell = res_cel
-        self.frame = morph_image(path_resources + FILENAME, self.resolution)
-        self.pth_re = path_resources
+
+        self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
-        self.door_pos = {
-            (0, 2): "Menu",
-            (0, 3): "Menu",
-            (0, 4): "Menu",
-            (0, 5): "Menu",
-            (0, 6): "Menu",
-            (0, 7): "Menu",
-            (0, 8): "Menu",
-            (0, 9): "Menu",
-        }
 
         # Transition effect
-        self.transition = Transition(self.screen, self.resolution)
+        self.transition = Transition(self.screen, RESOLUTION)
+
+        self.sign = HangingSign(SCENE_NAME.upper(), 50)
 
     def play(self, player):
         """
@@ -102,16 +84,15 @@ class PlayScreen:
                     if player_response == "Door":
                         self.player.update(self.screenCopy)
                         self.panel_fl = True
-                        self.chosen_door = self.door_pos[self.player.get_current_door()]
+                        self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
                         next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
                         if next_scene:
                             player_response = self.player.handle_event(pressed)
                             return next_scene, next_grid_pos
 
-
                     # if self.player.handle_event(pressed):  # Handle interact from player
                     #     pass
-                    # if self.player.get_grid_pos() in self.door_pos:
+                    # if self.player.get_grid_pos() in DOOR_POS[SCENE_NAME]:
                     #     pass
                     self.player.update(self.screenCopy)
 
@@ -123,9 +104,6 @@ class PlayScreen:
         if name:
             if name == "Menu":
                 self.player.update(self.screen)
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
-                                           transition_type='zelda_rl',
-                                           next_scene=name)
+                self.transition.transition(transition_type='zelda_rl', next_scene=name)
                 return name, (13, self.player.get_grid_pos()[1])
         return None, None

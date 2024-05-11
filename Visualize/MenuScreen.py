@@ -7,8 +7,9 @@ from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
 from Visualize.Transition import Transition
+from Visualize.HangingSign import HangingSign
 
-from CONSTANTS import PARAMS, COLORS, SCENES
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
 SCENE_NAME = "Menu"
 
@@ -18,9 +19,9 @@ def drawGrid(screen):
     :param screen:
     :return:
     """
-    blockSize = PARAMS["cell"][SCENE_NAME][0]  # Set the size of the grid block
-    for x in range(0, PARAMS["resolution"][0], blockSize):
-        for y in range(0, PARAMS["resolution"][1], blockSize):
+    blockSize = SCENES[SCENE_NAME]["cell"][0]  # Set the size of the grid block
+    for x in range(0, RESOLUTION[0], blockSize):
+        for y in range(0, RESOLUTION[1], blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
             pygame.draw.rect(screen, COLORS['WHITE'], rect, 1)
 
@@ -31,41 +32,18 @@ class MenuScreen:
     """
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
-
-    def __init__(self, screen, res_cel, path_resources):
+    def __init__(self, screen):
         """
         :param screen:
         :param res_cel:
         :param path_resources:
         """
-        self.resolution, self.cell = res_cel
-        self.frame = morph_image(path_resources + SCENES[SCENE_NAME]['ORIGINAL_FRAME'], self.resolution)
-        self.pth_re = path_resources
+
+        self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
-        tup = (14, slice(0, 14))
-
-        self.door_pos = {
-            (11, 1): "Login",
-
-            (0, 3): "Leaderboard",
-            (0, 4): "Leaderboard",
-            (0, 5): "Leaderboard",
-            (0, 6): "Leaderboard",
-            (0, 7): "Leaderboard",
-            (0, 8): "Leaderboard",
-            (0, 9): "Leaderboard",
-
-            (14, 2): "Play",
-            (14, 3): "Play",
-            (14, 4): "Play",
-            (14, 5): "Play",
-            (14, 6): "Play",
-            (14, 7): "Play",
-            (14, 8): "Play",
-            (14, 9): "Play",
-        }
-        self.transition = Transition(self.screen, self.resolution)
-
+        # Transition effect
+        self.transition = Transition(self.screen, RESOLUTION)
+        self.sign = HangingSign(SCENE_NAME.upper(), 50)
 
     def play(self, player):
         """
@@ -101,17 +79,12 @@ class MenuScreen:
                     if player_response == "Door":
                         self.player.update(self.screenCopy)
                         self.panel_fl = True
-                        self.chosen_door = self.door_pos[self.player.get_current_door()]
+                        self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
                         next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
+
                         if next_scene:
-                            player_response = self.player.handle_event(pressed)
                             return next_scene, next_grid_pos
 
-
-                    # if self.player.handle_event(pressed):  # Handle interact from player
-                    #     pass
-                    # if self.player.get_grid_pos() in self.door_pos:
-                    #     pass
                     self.player.update(self.screenCopy)
 
     def toggle_panel(self, name):
@@ -122,29 +95,23 @@ class MenuScreen:
         if name:
             if name == "Login":
 
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][SCENE_NAME][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][SCENE_NAME][1] / 2),
+                self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                                                self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                                            transition_type='circle_in')
 
                 return name, self.player.get_GridMapObject_Player("Login")
 
             if name == "Leaderboard":
                 self.player.update(self.screen)
-                
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][SCENE_NAME][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][SCENE_NAME][1] / 2),
-                                           transition_type='zelda_rl',
-                                           next_scene=name)
+
+                self.transition.transition(transition_type='zelda_rl', next_scene=name)
 
                 return name, (13, self.player.get_grid_pos()[1])
 
             if name == "Play":
                 self.player.update(self.screen)
 
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][SCENE_NAME][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][SCENE_NAME][1] / 2),
-                                           transition_type='zelda_lr',
-                                           next_scene=name)
+                self.transition.transition(transition_type='zelda_lr', next_scene=name)
 
                 return name, (1, self.player.get_grid_pos()[1])
 

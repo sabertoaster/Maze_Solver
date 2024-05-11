@@ -7,12 +7,13 @@ from Visualize.MenuScreen import MenuScreen as menu
 from Visualize.PlayScreen import PlayScreen as play
 from Visualize.LeaderboardScreen import LeaderboardScreen as leaderboard
 
+from CONSTANTS import RESOLUTION, RESOURCE_PATH
+
 
 class Visualizer:
-    def __init__(self, params, screen, player):
+    def __init__(self, screen, player):
         """
         A Structure to visualize the game
-        :param params:
         :param screen:
         :param player:
         A Visualizer consists of following variables:
@@ -22,14 +23,10 @@ class Visualizer:
         - Player (to move, duh)
         - Scene Sets (for indexing)
         """
-        self.params = params.copy()  # Assign dict to do convention sussy thing
-        self.pth_re = params["resources"]  # Assign resources path to look for images, audio, font, stuffs, etc
-        self.resolution = params["resolution"]
-        self.cell = params["cell"]
         self.screen = screen
         self.player = player
         self.reset_scene_collection()
-        self.logo = pygame.image.load(self.pth_re + "logo.png")  # Load logo image
+        self.logo = pygame.image.load(RESOURCE_PATH + "logo.png")  # Load logo image
 
         self.panel_collection = {  # Pop-up panel, with buttons to choose, information presentation, sths like that
             "Pause": None,
@@ -38,11 +35,11 @@ class Visualizer:
         }
     def reset_scene_collection(self):
         self.scenes_collection = {
-            "Login": login(self.screen, (self.resolution, self.cell["Login"]), self.pth_re),
+            "Login": login(self.screen),
             "Register": None,  # Chung với Login
-            "Menu": menu(self.screen, (self.resolution, self.cell["Menu"]), self.pth_re),
-            "Play": play(self.screen, (self.resolution, self.cell["Play"]), self.pth_re),  # Chọn mode
-            "Leaderboard": leaderboard(self.screen, (self.resolution, self.cell["Leaderboard"]), self.pth_re),
+            "Menu": menu(self.screen),
+            "Play": play(self.screen),  # Chọn mode
+            "Leaderboard": leaderboard(self.screen),
             "Settings": None,
         }
     def start_visualize(self):
@@ -74,7 +71,7 @@ class Visualizer:
     # def matching_entity(self, entity: str) -> pygame.Surface:
     #     match entity:
     #         case "Login":
-    #             return login(self.pth_re)
+    #             return login(RESOURCE_PATH)
     #         case "Register":
     #             pass
     #         case "Menu":
