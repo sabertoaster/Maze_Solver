@@ -1,18 +1,20 @@
 import random, sys, os
 import pygame
+
 from random import choice
 from random import shuffle
 from random import randint
 
 
 sys.setrecursionlimit(15000)
+
 class Cell:
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.walls = {'top': True, 'bottom': True, 'right': True, 'left': True}
         
-            
+        
 class DepthFirstSearch:
     def __init__(self, size_maze : tuple ):
         self.size = size_maze
@@ -274,3 +276,73 @@ class Maze:
             tmp.run()
             self.maze = tmp.maze
             self.size = size_maze
+
+ROW, COL = 20, 20
+CELL_SIZE = 15
+
+def Draw_Maze(self):
+    for x in range(ROW):
+        for y in range(COL):
+            cell_rect = pygame.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+
+            pygame.draw.rect(screen, (0,0,0), cell_rect)
+
+            if self.maze[x][y].walls['top']:
+                pygame.draw.line(screen, (255, 255, 255), [x * CELL_SIZE, y * CELL_SIZE], [(x + 1) * CELL_SIZE + 2, y * CELL_SIZE], width = 4)
+            if self.maze[x][y].walls['bottom']:
+                pygame.draw.line(screen, (255, 255, 255), [x * CELL_SIZE, (y + 1) * CELL_SIZE], [(x + 1) * CELL_SIZE + 2, (y + 1)* CELL_SIZE], width = 4)
+            if self.maze[x][y].walls['left']:
+                pygame.draw.line(screen, (255, 255, 255), [x * CELL_SIZE, y * CELL_SIZE], [x * CELL_SIZE, (y + 1) * CELL_SIZE], width = 4)
+            if self.maze[x][y].walls['right']:
+                pygame.draw.line(screen, (255, 255, 255), [(x + 1) * CELL_SIZE, y * CELL_SIZE], [(x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE], width = 4)
+
+def Write_File(savepath, filename, maze: list[list[Cell]], maze_instance: Generate_Maze):
+    maze_output = [[' ' for i in range(2 * COL - 1)] for j in range(2 * ROW - 1)]
+
+    for x in range(ROW):
+        for y in range(COL):
+            if maze[x][y].walls['top'] and 2 * y - 1 >= 0:
+                maze_output[2 * y - 1][2 * x] = '#'
+            if maze[x][y].walls['bottom'] and 2 * y + 1 < 2 * ROW - 1:
+                maze_output[2 * y + 1][2 * x] = '#'
+            if maze[x][y].walls['left'] and 2 * x - 1 >= 0:
+                maze_output[2 * y][2 * x - 1] = '#'
+            if maze[x][y].walls['right'] and 2 * x + 1 < 2 * COL - 1:
+                maze_output[2 * y][2 * x + 1] = '#'
+
+            if 2 * x + 1 < 2 * ROW - 1 and 2 * y + 1 < 2 * COL - 1:
+                maze_output[2 * y + 1][2 * x + 1] = '#'
+
+    maze_output = maze_instance.Generate_Destination(maze_output)
+
+    for x in range(2 * ROW - 2):
+        maze_output[x] = ''.join(maze_output[x]) + '\n'
+    maze_output[2 * ROW - 2] = ''.join(maze_output[2 * ROW - 2])
+
+    completeName = os.path.join(savepath, filename)
+    with open(completeName, mode = 'w') as file_output:
+        file_output.write(''.join(maze_output))
+
+    file_output.close()
+
+# pygame.init()
+# screen = pygame.display.set_mode((COL * CELL_SIZE + 4, ROW * CELL_SIZE + 4))
+
+# Real_Maze = Generate_Maze()
+
+# Real_Maze.Generate()
+
+# Write_File('../LEGACY', 'maze6.txt', Real_Maze.maze, Real_Maze)
+
+
+#Visualize
+
+# Real_Maze.Draw_Maze()
+
+# while True:
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             pygame.quit()
+#             sys.exit()
+
+#     pygame.display.update()
