@@ -8,54 +8,41 @@ from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
 from Visualize.TextBox import TextBox, FormManager, Color
-from Visualize.Mouse_Events import Mouse_Events
+from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
 
-from CONSTANTS import PARAMS, COLORS, SCENES
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
 SCENE_NAME = "Login"
 
-PARAMS = {
-    "resources": "Visualize/Resources/",
-    "resolution": (1200, 800),  # ratio 3:2
-    "cell": (40, 40)  # 12 cells column, 8 cells row
-}
-def drawGrid(screen):
-    """
-    FOR FUCKING DEBUG THE GRID MAP
-    :param screen:
-    :return:
-    """
-    blockSize = PARAMS["cell"][SCENE_NAME][0]  # Set the size of the grid block
-    for x in range(0, PARAMS["resolution"][0], blockSize):
-        for y in range(0, PARAMS["resolution"][1], blockSize):
-            rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, COLORS['WHITE'], rect, 1)
-
+# def drawGrid(screen):
+#     """
+#     FOR FUCKING DEBUG THE GRID MAP
+#     :param screen:
+#     :return:
+#     """
+#     blockSize = SCENES[SCENE_NAME]["cell[]SCENE_NAME][0]  # Set the size of the grid block
+#     for x in range(0, RESOLUTION[0], blockSize):
+#         for y in range(0, RESOLUTION[1], blockSize):
+#             rect = pygame.Rect(x, y, blockSize, blockSize)
+#             pygame.draw.rect(screen, COLORS['WHITE'], rect, 1)
 
 class LoginScreen:
     """
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
 
-    def __init__(self, screen, res_cel, path_resources):
+    def __init__(self, screen):
         """
         :param screen:
         :param res_cel:
         :param path_resources:
         """
-        self.resolution, self.cell = res_cel
-        self.frame = morph_image(path_resources + SCENES[SCENE_NAME]['ORIGINAL_FRAME'], self.resolution)
-        self.pth_re = path_resources
-        self.screen = screen
-        self.door_pos = {
-            (4, 9): "Login",
-            (13, 4): "Exit",
-            (22, 10): "Register"
-        }
 
-        # Tạo textbox nhập username/password
+        self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
+        self.screen = screen
+
         self.text_box = FormManager(self.screen, {
             "username": {"position": (483, 426, 568, 24), "color": Color.WHITE.value, "maximum_length": 16,
                          "focusable": True, "init_text": ""},  # (x, y, width, height)
@@ -69,7 +56,7 @@ class LoginScreen:
         })
 
         # Transition effect
-        self.transition = Transition(self.screen, self.resolution)
+        self.transition = Transition(self.screen, RESOLUTION)
 
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
 
@@ -79,44 +66,39 @@ class LoginScreen:
         :param player:
         :return:
         """
-        # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
-        # pygame.display.flip()
-        # drawGrid(screen=self.screen)
+        pygame.display.flip()
 
         self.player = player
-        # print(self.player.grid_map.get_map(self.player.current_scene).get_grid()[12, 12])
-        self.panel_fl = False  # CÁI NI Bị DOWN
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
 
-        panel_shape = self.resolution[0] * 0.95, self.resolution[1] * 0.5
-        login_panel = morph_image(self.pth_re + "login_box.png", panel_shape)
-        register_panel = morph_image(self.pth_re + "register_box.png", panel_shape)
+        self.panel_fl = False  # CÁI NI Bị DOWN
+
+        panel_shape = RESOLUTION[0] * 0.95, RESOLUTION[1] * 0.5
+        login_panel = morph_image(RESOURCE_PATH + "login_box.png", panel_shape)
+        register_panel = morph_image(RESOURCE_PATH + "register_box.png", panel_shape)
 
         self.login_panel = add_element(self.blur, login_panel,
-                                        ((self.resolution[0] - panel_shape[0]) / 2,
-                                        (self.resolution[1] - panel_shape[1]) / 2))
+                                        ((RESOLUTION[0] - panel_shape[0]) / 2,
+                                        (RESOLUTION[1] - panel_shape[1]) / 2))
 
         self.register_panel = add_element(self.blur, register_panel,
-                                          ((self.resolution[0] - panel_shape[0]) / 2,
-                                           (self.resolution[1] - panel_shape[1] + 11) / 2))  # HANDLE KIEU SUC VAT
+                                          ((RESOLUTION[0] - panel_shape[0]) / 2,
+                                           (RESOLUTION[1] - panel_shape[1] + 11) / 2))  # HANDLE KIEU SUC VAT
         # self.create_font()  # Create font for text input
 
         # Start transition effect 9 60 9 190
-        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                        self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+        self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                                        self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                                    transition_type='circle_out')  # draw transition effect
 
-        self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                        self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
-                                   box=self.sign,
-                                   transition_type='sign_pop')
+        self.transition.transition(transition_type='sign_pop', box=self.sign)
         # pygame.display.flip()
 
-        self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame)
+        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
         self.chosen_door = None
         self.hovered_door = None
 
@@ -172,10 +154,10 @@ class LoginScreen:
                             pass  # Handle Interact Here
                         if player_response == "Door":
                             # self.panel_fl = True
-                            self.chosen_door = self.door_pos[self.player.get_current_door()]
+                            self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
                         # if self.player.handle_event(pressed):  # Handle interact from player
                         #     pass
-                        # if self.player.get_grid_pos() in self.door_pos:
+                        # if self.player.get_grid_pos() in DOOR_POS[SCENE_NAME]:
                         #     pass
                     self.player.update(
                         self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
@@ -198,8 +180,8 @@ class LoginScreen:
 
             if name == "Exit":
                 # Play outro animation here
-                self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                                self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                                                self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                                            transition_type='circle_in')
                 self.panel_fl = False
                 pygame.quit()
@@ -245,17 +227,16 @@ class LoginScreen:
 
                             # Transition effect
                             self.screen.blit(self.screenCopy, (0, 0))
-                            self.player.update(self.screenCopy)
                             pygame.display.flip()
-                            self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
-                                                            self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
+                            self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                                                            self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                                                        transition_type='circle_in')
                             
                             # Player re-init
                             self.player.deactivate(active=True)
                             self.player.re_init(name=tmp_dic["username"], scene="Menu")
 
-                            return "Menu", self.player.params["initial_pos"]["Menu"]  # [PROTOTYPE]
+                            return "Menu", SCENES["Menu"]["initial_pos"]  # [PROTOTYPE]
                         else:
                             print("Password is incorrect, please try again")
                             self.notify_text_box.set_text("notification", "Password is incorrect, please try again")

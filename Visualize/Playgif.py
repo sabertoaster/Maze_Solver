@@ -1,7 +1,8 @@
 import pygame
+from CONSTANTS import RESOLUTION, FPS
+
 
 IMG_PATH = "Visualize/Resources/animation"
-FPS = 60
 FRAMES = ["welcome_1.png",
           "welcome_2.png",
           "welcome_3.png",

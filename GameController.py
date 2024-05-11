@@ -11,7 +11,7 @@ import cv2
 from enum import Enum
 
 # init hyperparameters here
-from CONSTANTS import PARAMS, FPS
+from CONSTANTS import FPS, RESOLUTION, CELLS_LIST, MAPS_LIST, SCENES
 
 from Sounds import Music
 
@@ -24,21 +24,23 @@ class GameController:
         pygame.init()
         pygame.key.set_repeat(200, 125)
         initial_scene = "Login"
-        # initial_scene = "Menu"
         self.game_state_manager = GameStateManager(initial_scene)  # [PROTOTYPE]
         self.clock = pygame.time.Clock()  # Define a variable to control the main loop
-        self.screen = pygame.display.set_mode(
-            PARAMS["resolution"])  # Create a surface on screen that has the size of `resolution`
+        self.screen = pygame.display.set_mode(RESOLUTION)  # Create a surface on screen that has the size of `resolution`
 
         # INSTANTIATE SCREEN GRID MAP
-        self.grid_map = MapManager(resolution=PARAMS["resolution"], cell=PARAMS["cell"],
-                                   list_maps=PARAMS["scenes"])  # [PROTOTYPE]
+        self.grid_map = MapManager(resolution=RESOLUTION,
+                                   cell=CELLS_LIST,
+                                   list_maps=MAPS_LIST)  # [PROTOTYPE]
 
         # INSTANTIATE PLAYER
-        self.player = Player(self.screen, (PARAMS["resolution"], PARAMS["cell"]), grid_map=self.grid_map, current_scene=initial_scene, initial_pos=PARAMS["initial_pos"][initial_scene], params=PARAMS)  # [PROTOTYPE]
+        self.player = Player(self.screen,
+                             grid_map=self.grid_map,
+                             current_scene=initial_scene,
+                             initial_pos=SCENES[initial_scene]["initial_pos"])  # [PROTOTYPE]
 
         # INSTANTIATE VISUALIZER
-        self.visualizer = Visualizer(PARAMS, self.screen, self.player)  # [PROTOTYPE]
+        self.visualizer = Visualizer(self.screen, self.player)  # [PROTOTYPE]
 
         # INSTANTIATE THEME MUSIC
         self.theme = Music('theme.mp3')  # [PROTOTYPE]

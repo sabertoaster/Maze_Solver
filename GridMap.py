@@ -10,9 +10,7 @@ class GridMap:
 
     def __init__(self, name, resolution, cell):
         self.name = name
-        self.grid_map = np.full(
-            (resolution[1] // cell[1], resolution[0] // cell[0]),
-            GridMapObject.FREE)
+        self.grid_map = np.full((resolution[1] // cell[1], resolution[0] // cell[0]),GridMapObject.FREE)
 
     def get_grid(self):  # Pass by reference
         return self.grid_map
