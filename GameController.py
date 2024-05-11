@@ -37,7 +37,7 @@ class GameController:
         # INSTANTIATE SOUNDS HANDLER
         self.sounds_handler = SoundsHandler()
         self.sounds_handler.turn_on()
-        self.sounds_handler.set_bgm(SOUNDS['theme']['Lobby'])
+        self.sounds_handler.play_bgm(SOUNDS['theme']['Lobby'])
 
 
         # INSTANTIATE PLAYER

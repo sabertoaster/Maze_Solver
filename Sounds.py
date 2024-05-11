@@ -47,10 +47,9 @@ class SoundsHandler():
     def add_sfx(self, sfx_name, file_name):
         self.sfx[sfx_name] = SFX(file_name)
                 
-    def set_bgm(self, file_name):
+    def play_bgm(self, file_name):
         self.bgm = BGM(file_name)
         self.bgm_name = file_name
-        self.bgm.turn_on()
         self.bgm.play()
         
     def turn_on(self):
