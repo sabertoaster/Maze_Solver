@@ -24,6 +24,7 @@ class Mouse_Events:
         for key, value in SCENES[self.current_scene]['OBJECTS_POS'].items():
             for item in value:
                 if item == self.pos:
+                    print(key)
                     return key
         return None
         

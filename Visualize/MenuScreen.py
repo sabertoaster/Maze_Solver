@@ -7,6 +7,7 @@ from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
 from Visualize.Transition import Transition
+from Visualize.Mouse_Events import Mouse_Events
 
 from CONSTANTS import PARAMS, COLORS, SCENES
 
@@ -65,7 +66,7 @@ class MenuScreen:
             (14, 9): "Play",
         }
         self.transition = Transition(self.screen, self.resolution)
-
+        
 
     def play(self, player):
         """
@@ -77,7 +78,7 @@ class MenuScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        # drawGrid(screen=self.screen)
+        drawGrid(screen=self.screen)
 
         self.player = player
         self.screenCopy = self.screen.copy()
@@ -85,12 +86,27 @@ class MenuScreen:
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
 
+        self.mouse_handler = Mouse_Events(self.screen, self.player, self.frame)
+        self.chosen_door = None
+        self.hovered_door = None
+        
         running = True
         while running:
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
                     return None, None
+                
+                mouse_pos = pygame.mouse.get_pos()
+                
+                self.mouse_handler.set_pos(mouse_pos)
+
+                # self.screenCopy, self.hovered_door = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_door)
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.chosen_door = self.mouse_handler.click()
+                    events.append(pygame.event.Event(pygame.USEREVENT, {}))
+                    continue
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
                     player_response = self.player.handle_event(pressed)

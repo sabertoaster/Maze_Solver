@@ -13,6 +13,8 @@ from enum import Enum
 # init hyperparameters here
 from CONSTANTS import PARAMS, FPS
 
+from Sounds import Music
+
 
 class GameController:
     """
@@ -38,6 +40,10 @@ class GameController:
         # INSTANTIATE VISUALIZER
         self.visualizer = Visualizer(PARAMS, self.screen, self.player)  # [PROTOTYPE]
 
+        # INSTANTIATE THEME MUSIC
+        self.theme = Music('theme.mp3')  # [PROTOTYPE]
+        # self.theme.turn_on() 
+        
         # INSTANTIATE ALGORITHMS
         # pass
 
@@ -48,6 +54,10 @@ class GameController:
         self.visualizer.start_visualize()  # [PROTOTYPE]
         # [MAIN GAME LOOP]
         pygame.init()
+        
+        #play theme music
+        self.theme.play()
+        
         # play_gif(self.screen) # [PROTOTYPE]
         running = True
         while running:

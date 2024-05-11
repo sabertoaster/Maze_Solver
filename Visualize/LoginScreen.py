@@ -243,10 +243,6 @@ class LoginScreen:
                             pygame.display.flip()
                             pygame.time.delay(500)
 
-                            # Player re-init
-                            self.player.deactivate(active=True)
-                            self.player.re_init(name=tmp_dic["username"], scene="Menu")
-
                             # Transition effect
                             self.screen.blit(self.screenCopy, (0, 0))
                             self.player.update(self.screenCopy)
@@ -254,6 +250,10 @@ class LoginScreen:
                             self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][0] / 2,
                                                             self.player.visual_pos[1] + PARAMS["cell"][1] / 2),
                                                        transition_type='circle_in')
+                            
+                            # Player re-init
+                            self.player.deactivate(active=True)
+                            self.player.re_init(name=tmp_dic["username"], scene="Menu")
 
                             return "Menu", self.player.params["initial_pos"]["Menu"]  # [PROTOTYPE]
                         else:

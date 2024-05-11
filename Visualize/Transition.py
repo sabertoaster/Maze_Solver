@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import pygame
-from CONSTANTS import BG
+from CONSTANTS import SCENES
 RESOURCE = "Visualize/Resources/"
 
 # Support functions
@@ -76,7 +76,7 @@ class Transition:
         elif direction == 'v':
             zelda = pygame.Surface((self.resolution[0], self.resolution[1] * 2), pygame.SRCALPHA)
 
-        next_scene_screen = pygame.image.load(RESOURCE + BG[next_scene]).convert_alpha()
+        next_scene_screen = pygame.image.load(RESOURCE + SCENES[next_scene]['ORIGINAL_FRAME']).convert_alpha()
 
         if reversed:
             if direction == 'h':

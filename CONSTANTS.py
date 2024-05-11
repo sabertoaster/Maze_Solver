@@ -25,7 +25,8 @@ SCENES = {
     'Menu': {
         'ORIGINAL_FRAME': 'livingRoom_BG.png',
         'OBJECTS_POS': {
-            "Login" : [[11, 1]],
+            "Login" : [[x,y] for x in range(0, 2) for y in range(11, 11)],
+            "Music_box": [[x,y] for x in range(1, 3) for y in range(2, 4)],
         },
         'HOVER_FRAME': {
         },
@@ -39,7 +40,20 @@ SCENES = {
         'cell': (80, 80),
         'initial_pos': (0, 0),
     },
-    'Settings': {},
+    'Settings': {
+        'ORIGINAL_FRAME': 'settings_BG.png',
+        'OBJECTS_POS': {},
+        'HOVER_FRAME': {},
+        'cell': (80, 80),
+        'initial_pos': (0, 0),   
+    },
+    'Play': {  
+        'ORIGINAL_FRAME': 'kitchen_BG.png',
+        'OBJECTS_POS': {},
+        'HOVER_FRAME': {},
+        'cell': (80, 80),
+        'initial_pos': (0, 0),
+    }
 }
 
 FPS = 60
@@ -48,10 +62,19 @@ COLORS = {
     'WHITE': (200, 200, 200),
 }
 
-BG = {
-    "Login": "login_BG.png",
-    "Menu": "livingRoom_BG.png",
-    "Play": "kitchen_BG.png",
-    "Leaderboard": "leaderboard_BG.png",
-    "Settings": "settings_BG.png"
+AVATAR = {
+    "Tom": {"down": "tom_icon_d.png",
+            "right": "tom_icon_r.png",
+            "left": "tom_icon_l.png",
+            "up": "tom_icon_u.png"},
+    
+    "orangeTom": {"down": "orangeTom_icon_d.png",
+                  "right": "orangeTom_icon_r.png",
+                  "left": "orangeTom_icon_l.png",
+                  "up": "orangeTom_icon_u.png"},
+
+    "blackTom": {"down": "blackTom_icon_d.png",
+                 "right": "blackTom_icon_r.png",
+                 "left": "blackTom_icon_l.png",
+                 "up": "blackTom_icon_u.png"},
 }

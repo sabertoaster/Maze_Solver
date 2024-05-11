@@ -8,22 +8,10 @@ from Visualize.ImageProcess import morph_image
 from Visualize.TextBox import TextBox   
 from pygame_textinput import TextInputManager, TextInputVisualizer
 
-AVATAR = {
-    "Tom": {"down": "tom_icon_d.png",
-            "right": "tom_icon_r.png",
-            "left": "tom_icon_l.png",
-            "up": "tom_icon_u.png"},
-    
-    "orangeTom": {"down": "orangeTom_icon_d.png",
-                  "right": "orangeTom_icon_r.png",
-                  "left": "orangeTom_icon_l.png",
-                  "up": "orangeTom_icon_u.png"},
+from Sounds import SFX
+import asyncio
 
-    "blackTom": {"down": "blackTom_icon_d.png",
-                 "right": "blackTom_icon_r.png",
-                 "left": "blackTom_icon_l.png",
-                 "up": "blackTom_icon_u.png"},
-}
+from CONSTANTS import AVATAR
 
 
 class Player:
@@ -73,6 +61,13 @@ class Player:
         self.name_length = self.name_box.get_length()
         
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
+        
+        self.sfx = {
+            "move": SFX("move.mp3"),
+        }
+        for key in self.sfx:
+            self.sfx[key].turn_on()
+        
 
     def set_current_scene(self, target_scene, initial_pos):
         """
@@ -202,7 +197,10 @@ class Player:
                 self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
                 # self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
-
+            
+            #sound effect
+            self.sfx["move"].play()
+            
             return "Move"
 
     def is_legal_move(self, cmd):
@@ -260,4 +258,4 @@ class Player:
         Interact with the environment
         :return:
         """
-        pass
+        self.sfx["move"].play()
