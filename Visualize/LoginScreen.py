@@ -42,6 +42,7 @@ class LoginScreen:
 
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
+        
 
         self.text_box = FormManager(self.screen, {
             "username": {"position": (483, 426, 568, 24), "color": Color.WHITE.value, "maximum_length": 16,
@@ -97,9 +98,14 @@ class LoginScreen:
 
         self.transition.transition(transition_type='sign_pop', box=self.sign)
         # pygame.display.flip()
+        
+        # Play BGM
+
 
         self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
+        
         self.chosen_door = None
+        self.chosen_obj = None
         self.hovered_door = None
 
         self.notify_text_box.set_text("notification", "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
@@ -140,7 +146,7 @@ class LoginScreen:
                     self.screenCopy, self.hovered_door = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_door)
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        self.chosen_door = self.mouse_handler.click()
+                        self.chosen_door, self.chosen_obj = self.mouse_handler.click()
                         events.append(pygame.event.Event(pygame.USEREVENT, {}))
                         continue
 

@@ -13,7 +13,7 @@ from enum import Enum
 # init hyperparameters here
 from CONSTANTS import FPS, RESOLUTION, CELLS_LIST, MAPS_LIST, SCENES
 
-from Sounds import Music
+from Sounds import SoundsHandler
 
 
 class GameController:
@@ -33,18 +33,23 @@ class GameController:
                                    cell=CELLS_LIST,
                                    list_maps=MAPS_LIST)  # [PROTOTYPE]
 
+
+        # INSTANTIATE SOUNDS HANDLER
+        self.sounds_handler = SoundsHandler()
+        self.sounds_handler.set_bgm('theme.mp3')
+        self.sounds_handler.turn_on()
+        self.sounds_handler.bgm.play()
+
+
         # INSTANTIATE PLAYER
         self.player = Player(self.screen,
                              grid_map=self.grid_map,
                              current_scene=initial_scene,
-                             initial_pos=SCENES[initial_scene]["initial_pos"])  # [PROTOTYPE]
+                             initial_pos=SCENES[initial_scene]["initial_pos"], 
+                             sounds_handler=self.sounds_handler)  # [PROTOTYPE]
 
         # INSTANTIATE VISUALIZER
-        self.visualizer = Visualizer(self.screen, self.player)  # [PROTOTYPE]
-
-        # INSTANTIATE THEME MUSIC
-        self.theme = Music('theme.mp3')  # [PROTOTYPE]
-        # self.theme.turn_on() 
+        self.visualizer = Visualizer(self.screen, self.player, sounds_handler=self.sounds_handler)  # [PROTOTYPE]
         
         # INSTANTIATE ALGORITHMS
         # pass
@@ -56,9 +61,6 @@ class GameController:
         self.visualizer.start_visualize()  # [PROTOTYPE]
         # [MAIN GAME LOOP]
         pygame.init()
-        
-        #play theme music
-        self.theme.play()
         
         # play_gif(self.screen) # [PROTOTYPE]
         running = True

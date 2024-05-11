@@ -51,6 +51,7 @@ class LeaderboardScreen:
 
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
+        
 
         # Transition effect
         self.transition = Transition(self.screen, RESOLUTION)
@@ -72,6 +73,8 @@ class LeaderboardScreen:
         self.player = player
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
+        
+        # Play BGM
 
         running = True
         while running:

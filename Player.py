@@ -7,8 +7,6 @@ from Visualize.ImageProcess import morph_image
 from Visualize.TextBox import TextBox   
 from pygame_textinput import TextInputManager, TextInputVisualizer
 
-from Sounds import SFX
-
 from CONSTANTS import AVATAR
 from CONSTANTS import SCENES, RESOLUTION, RESOURCE_PATH, AVATAR, MOVEMENT
 
@@ -18,7 +16,7 @@ class Player:
     This is a class to represent Player Instance
     """
 
-    def __init__(self, screen, grid_map, current_scene, initial_pos, skin="blackTom", player_name='Guest'):
+    def __init__(self, screen, grid_map, current_scene, initial_pos, skin="blackTom", player_name='Guest', sounds_handler=None):
 
         """
         :param screen:
@@ -56,11 +54,10 @@ class Player:
 
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
         
-        self.sfx = {
-            "move": SFX("move.mp3"),
-        }
-        for key in self.sfx:
-            self.sfx[key].turn_on()
+        self.sounds_handler = sounds_handler
+        self.sounds_handler.add_sfx("move", 'move.mp3')
+        self.sounds_handler.turn_on()
+        
         
 
     def set_current_scene(self, target_scene, initial_pos):
@@ -195,7 +192,7 @@ class Player:
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
             
             #sound effect
-            self.sfx["move"].play()
+            self.sounds_handler.play_sfx("move")
             
             return "Move"
 

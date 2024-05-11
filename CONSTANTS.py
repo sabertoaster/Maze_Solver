@@ -1,4 +1,3 @@
-
 # Game Window Constants
 RESOLUTION = (1200, 800)
 FPS = 60
@@ -17,10 +16,16 @@ SCENES = {
             (22, 10): "Register"
         },
 
-        'OBJECTS_POS': {
+        'DOORS_CLICK_RANGE': {
             "Login" : [[x, y] for x in range(6, 10) for y in range(3, 9)],
             "Register" : [[x, y] for x in range(6, 11) for y in range(18, 27)],
             "Exit" : [[4,13]]
+        },
+        
+        'OBJECTS_POS': {
+            "Login" : [[x, y] for x in range(6, 10) for y in range(3, 9)],
+            "Register" : [[x, y] for x in range(6, 11) for y in range(18, 27)],
+            "Exit" : [[4,13]]    
         },
 
         'HOVER_FRAME': {
@@ -31,6 +36,7 @@ SCENES = {
 
         'cell': (40, 40),
         'initial_pos': (12, 12),
+        'BGM': "theme.mp3"
     },
 
     'Menu': {
@@ -56,9 +62,14 @@ SCENES = {
             (14, 8): "Play",
             (14, 9): "Play",
         },
+        
+        'DOORS_CLICK_RANGE': {
+            'Login': [[1,11]],
+            'Leaderboard': [[x,0] for x in range(3, 10)],
+            'Play': [[x,14] for x in range(2, 10)],
+        },
 
         'OBJECTS_POS': {
-            "Login" : [[x,y] for x in range(0, 2) for y in range(11, 11)],
             "Music_box": [[x,y] for x in range(1, 3) for y in range(2, 4)] 
         },
 
@@ -68,8 +79,72 @@ SCENES = {
         'cell': (80, 80),
 
         'initial_pos': (11, 2),
+        'BGM': 'theme.mp3',
     },
 
+    'Play': {
+        'BG': 'kitchen_BG.png',
+
+        'DOORS': {
+            (0, 2): "Menu",
+            (0, 3): "Menu",
+            (0, 4): "Menu",
+            (0, 5): "Menu",
+            (0, 6): "Menu",
+            (0, 7): "Menu",
+            (0, 8): "Menu",
+            (0, 9): "Menu",
+        },
+        
+        'DOORS_CLICK_RANGE': {
+          'Menu': [[x,0] for x in range(2, 10)]
+        },
+
+        'OBJECTS_POS': {},
+
+        'HOVER_FRAME': {},
+
+        'cell': (80, 80),
+
+        'initial_pos': (0, 0),
+        'BGM': 'theme.mp3',
+    },
+
+    'Leaderboard': {
+        'BG': 'leaderboard_BG.png',
+
+        'DOORS': {
+            (14, 2): "Menu",
+            (14, 3): "Menu",
+            (14, 4): "Menu",
+            (14, 5): "Menu",
+            (14, 6): "Menu",
+            (14, 7): "Menu",
+            (14, 8): "Menu",
+            (14, 9): "Menu",
+        },
+        
+        'DOORS_CLICK_RANGE': {
+            'Menu': [[x,14] for x in range(2, 10)]
+        },
+
+        'OBJECTS_POS': {},
+
+        'HOVER_FRAME': {},
+
+        'cell': (80, 80),
+
+        'initial_pos': (0, 0),
+        'BGM': 'theme.mp3',
+    },
+    'Settings': {
+        'BG': 'settings_BG.png',
+        'OBJECTS_POS': {},
+        'HOVER_FRAME': {},
+        'cell': (80, 80),
+        'initial_pos': (0, 0),   
+        'BGM': 'theme.mp3',
+    },
     'Play': {
         'BG': 'kitchen_BG.png',
 
@@ -91,44 +166,8 @@ SCENES = {
         'cell': (80, 80),
 
         'initial_pos': (0, 0),
+        'BGM': 'theme.mp3',
     },
-
-    'Leaderboard': {
-        'BG': 'leaderboard_BG.png',
-
-        'DOORS': {
-            (14, 2): "Menu",
-            (14, 3): "Menu",
-            (14, 4): "Menu",
-            (14, 5): "Menu",
-            (14, 6): "Menu",
-            (14, 7): "Menu",
-            (14, 8): "Menu",
-            (14, 9): "Menu",
-        },
-
-        'OBJECTS_POS': {},
-
-        'HOVER_FRAME': {},
-
-        'cell': (80, 80),
-
-        'initial_pos': (0, 0),
-    },
-    'Settings': {
-        'ORIGINAL_FRAME': 'settings_BG.png',
-        'OBJECTS_POS': {},
-        'HOVER_FRAME': {},
-        'cell': (80, 80),
-        'initial_pos': (0, 0),   
-    },
-    'Play': {  
-        'ORIGINAL_FRAME': 'kitchen_BG.png',
-        'OBJECTS_POS': {},
-        'HOVER_FRAME': {},
-        'cell': (80, 80),
-        'initial_pos': (0, 0),
-    }
 }
 
 # Skins

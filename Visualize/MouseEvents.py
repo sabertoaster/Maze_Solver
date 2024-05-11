@@ -24,9 +24,12 @@ class MouseEvents:
         for key, value in SCENES[self.current_scene]['OBJECTS_POS'].items():
             for item in value:
                 if item == self.pos:
-                    print(key)
-                    return key
-        return None
+                    return None, key
+                    
+        for key, value in SCENES[self.current_scene]['DOORS_CLICK_RANGE'].items():
+            for item in value:
+                if item == self.pos:
+                    return key, None
 
     def get_hover_frame(self, prev_frame, prev_door=None):
         if self.idling:

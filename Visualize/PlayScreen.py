@@ -35,7 +35,7 @@ class PlayScreen:
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
 
-    def __init__(self, screen):
+    def __init__(self, screen, sounds_handler):
         """
         :param screen:
         :param res_cel:
