@@ -1,9 +1,6 @@
 import json
 import pygame
-import pygame.locals as pl
-from pygame_textinput import TextInputVisualizer, TextInputManager
-import numpy as np
-import cv2
+
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
@@ -15,6 +12,7 @@ from Visualize.HangingSign import HangingSign
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
 SCENE_NAME = "Login"
+
 
 # def drawGrid(screen):
 #     """
@@ -44,14 +42,14 @@ class LoginScreen:
         self.screen = screen
 
         self.text_box = FormManager(self.screen, {
-            "username": {"position": (483, 426, 568, 24), "color": Color.WHITE.value, "maximum_length": 16,
+            "username": {"position": (500, 426, 568, 30), "color": Color.WHITE.value, "maximum_length": 16,
                          "focusable": True, "init_text": ""},  # (x, y, width, height)
-            "password": {"position": (483, 474, 568, 24), "color": Color.WHITE.value, "maximum_length": 32,
+            "password": {"position": (500, 495, 568, 30), "color": Color.WHITE.value, "maximum_length": 16,
                          "focusable": True, "init_text": ""}})  # (x, y, width, height)
 
         # Tạo textbox hiển thị notification cho login/ register screen
         self.notify_text_box = FormManager(self.screen, {
-            "notification": {"position": (483, 530, 568, 48), "color": Color.RED.value, "maximum_length": 50,
+            "notification": {"position": (0, 530, 568, 48), "color": Color.RED.value, "maximum_length": 50,
                              "focusable": False, "init_text": "Test"}
         })
 
@@ -73,21 +71,19 @@ class LoginScreen:
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
-        self.blur = blur_screen(screen=self.screen.copy())
 
         self.panel_fl = False  # CÁI NI Bị DOWN
+        panel_shape = (RESOLUTION[0], RESOLUTION[1])
+        login_panel = pygame.image.load(RESOURCE_PATH + "login_box.png").convert_alpha()
+        register_panel = pygame.image.load(RESOURCE_PATH + "register_box.png").convert_alpha()
 
-        panel_shape = RESOLUTION[0] * 0.95, RESOLUTION[1] * 0.5
-        login_panel = morph_image(RESOURCE_PATH + "login_box.png", panel_shape)
-        register_panel = morph_image(RESOURCE_PATH + "register_box.png", panel_shape)
-
+        self.blur = blur_screen(screen=self.screen)
         self.login_panel = add_element(self.blur, login_panel,
-                                        ((RESOLUTION[0] - panel_shape[0]) / 2,
-                                        (RESOLUTION[1] - panel_shape[1]) / 2))
-
+                                       ((RESOLUTION[0] - login_panel.get_width()) / 2,
+                                        (RESOLUTION[1] - login_panel.get_height()) / 2))
         self.register_panel = add_element(self.blur, register_panel,
-                                          ((RESOLUTION[0] - panel_shape[0]) / 2,
-                                           (RESOLUTION[1] - panel_shape[1] + 11) / 2))  # HANDLE KIEU SUC VAT
+                                       ((RESOLUTION[0] - register_panel.get_width()) / 2,
+                                        (RESOLUTION[1] - register_panel.get_height()) / 2))
         # self.create_font()  # Create font for text input
 
         # Start transition effect 9 60 9 190
@@ -109,9 +105,9 @@ class LoginScreen:
             events = pygame.event.get()
             self.text_box.update(events)
             for event in events:
-                
+
                 mouse_pos = pygame.mouse.get_pos()
-                
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.text_box.focus(mouse_pos)
                 if event.type == pygame.QUIT:
@@ -137,7 +133,8 @@ class LoginScreen:
 
                     self.mouse_handler.set_pos(mouse_pos)
 
-                    self.screenCopy, self.hovered_door = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_door)
+                    self.screenCopy, self.hovered_door = self.mouse_handler.get_hover_frame(self.screenCopy,
+                                                                                            self.hovered_door)
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         self.chosen_door = self.mouse_handler.click()
@@ -231,9 +228,10 @@ class LoginScreen:
                             # Transition effect
                             self.screen.blit(self.screenCopy, (0, 0))
                             pygame.display.flip()
-                            self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                                                            self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                                                       transition_type='circle_in')
+                            self.transition.transition(
+                                pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                                     self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                                transition_type='circle_in')
 
                             return "Menu", SCENES["Menu"]["initial_pos"]  # [PROTOTYPE]
                         else:

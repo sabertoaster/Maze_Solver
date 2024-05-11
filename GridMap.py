@@ -121,7 +121,7 @@ class MapManager:
             # WALL
             grid[:3, :] = [[GridMapObject.WALL]]
             grid[:9, :2] = [[GridMapObject.WALL]]
-            grid[4, 3] = GridMapObject.WALL
+            grid[4, 2] = GridMapObject.WALL
             grid[5:7, 6:9] = [[GridMapObject.WALL]]
 
             grid[:, 14] = [GridMapObject.DOOR]
