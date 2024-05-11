@@ -62,9 +62,7 @@ class SoundsHandler():
     def turn_off(self):
         self.current_state = "off"
         for _, sound in self.sfx.items():
-            sound.stop()
             sound.turn_off()
-        self.bgm.stop()
         self.bgm.turn_off()
                 
     def switch(self):
