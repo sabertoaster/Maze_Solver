@@ -140,12 +140,14 @@ class Player:
         self.screen.blit(screenCopy.copy(), (0, 0))
         self.draw(screenCopy)
 
-    def re_init(self, name, scene):
+    def re_init(self, name='Guest', scene='Login'):
+        
         self.current_scene = scene
         self.cell = self.cell_collection[self.current_scene]
+        
         self.name = name
         self.name_box = TextBox(screen=self.screen, position=(0, 0, self.cell[0] * 2, self.cell[1]),
-                                font_color=(0, 0, 0), manager=TextInputManager(), text=self.name)
+                            font_color=(0, 0, 0), manager=TextInputManager(), text=self.name)
         self.name_length = self.name_box.get_length()     
            
     def draw(self, screenCopy):

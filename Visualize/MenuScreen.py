@@ -120,6 +120,9 @@ class MenuScreen:
         :return:
         """
         if name:
+            
+            self.player.re_init(name=self.player.name, scene=name)
+
             if name == "Login":
 
                 self.transition.transition(pos=(self.player.visual_pos[0] + PARAMS["cell"][SCENE_NAME][0] / 2,
