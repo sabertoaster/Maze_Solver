@@ -4,6 +4,13 @@ import pygame, sys, time
 import copy
 from Minimap import Minimap
 
+sys.path.append('D:\HCMUS\Source\Self_Project\Maze_Solver\Algorithms')
+from Algorithms import TotalAlgorithms
+from MazeGeneration import *
+
+sys.path.append('D:\HCMUS\Source\Self_Project\Maze_Solver')
+from Player import *
+
 class IO_Basics:
     #Open and get the maze from file
     def get_maze(self, filename):
@@ -23,21 +30,23 @@ class IO_Basics:
     def write_maze(self):
         pass
 
-    def draw_maze(self):
-        cell_size = 15
-        
+    def draw_maze(self, screen, surface, cell_size):
         for i in range(len(maze)):
             for j in range(len(maze[0])):
                 ceil_rect = pygame.Rect(j * cell_size, i * cell_size, cell_size, cell_size)
 
                 if maze[i][j] == ' ':
-                    pygame.draw.rect(screen, (255,255,255), ceil_rect)
+                    pygame.draw.rect(surface, (255,255,255), ceil_rect)
                 elif maze[i][j] == '#':
-                    pygame.draw.rect(screen, (0,0,0), ceil_rect)
+                    pygame.draw.rect(surface, (0,0,0), ceil_rect)
                 elif maze[i][j] == 'E':
-                    pygame.draw.rect(screen, (255,255,0), ceil_rect)
+                    pygame.draw.rect(surface, (255,255,0), ceil_rect)
                 elif maze[i][j] == 'S':
-                    pygame.draw.rect(screen, (255,0,0), ceil_rect)
+                    pygame.draw.rect(surface, (255,0,0), ceil_rect)
+
+        screen.blit(surface, (0,0))
+
+        pygame.display.update()
 
 class Solution:
     def __init__(self, maze):
@@ -176,17 +185,42 @@ class Solution:
             
             current_position = self.solution[tuple(current_position)]
 
+def draw_final_solution(solution):
+    cell_size = 15
+
+    for current_position in solution:
+        cell_rect = pygame.Rect(current_position[1] * cell_size, current_position[0] * cell_size, cell_size, cell_size)
+
+        pygame.draw.rect(screen, (52, 229, 235), cell_rect)
+
+def find_destination():
+    res = [0,0]
+    for x in range(len(maze)):
+        for y in range(len(maze[0])):
+            if maze[x][y] == 'E':
+                res[0] = (x,y)
+            elif maze[x][y] == 'S':
+                res[1] = (x,y)
+
+    return res
 
 #Initialize all the essences     
 io = IO_Basics()
-io.get_maze('maze2.txt')
+io.get_maze('maze4.txt')
 
-cell_size = 15
+cell_size = 5
 row, col = len(maze), len(maze[0])
 
+minimap_cell_size = 15
+minimap_size = (20, 20)
+
 pygame.init()
-screen = pygame.display.set_mode((col * cell_size, row * cell_size))
+
+screen_size = (row * cell_size + minimap_size[0] * minimap_cell_size, col * cell_size + minimap_size[1] * minimap_cell_size)
+screen = pygame.display.set_mode(screen_size[::-1])
 clock = pygame.time.Clock()
+
+main_surface = pygame.Surface((col * cell_size, row * cell_size))
 
 SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE, 200)
@@ -194,12 +228,19 @@ pygame.time.set_timer(SCREEN_UPDATE, 200)
 
 #Maze Solver
 
-sol = Solution(maze)
-sol.move_A_star()
+#           [PROTOTYPE]
+# sol = Solution(maze)
+# sol.move_A_star()
+
+sol = TotalAlgorithms(maze)
+
+start, end = find_destination() #[PROTOTYPE]
+
+solution, visited = sol.a_star(start, end)
 
 screen.fill((0,0,0))
 
-io.draw_maze()
+io.draw_maze(screen, main_surface, cell_size)
 # sol.draw_solution()
 
 def play_with_AI():
@@ -210,64 +251,107 @@ def play_with_AI():
                 pygame.quit()
                 sys.exit()
 
-        if finding_index < len(sol.visited):
-            position = sol.visited[finding_index]
+        if finding_index < len(visited):
+            position = visited[finding_index]
 
             # cell_rect = pygame.Rect(position[1] * cell_size, position[0] * cell_size, cell_size, cell_size)
 
             # pygame.draw.rect(screen, (0,255,0), cell_rect)
-
             pygame.draw.circle(screen, (30, 50, 163), [int((position[1] + 0.5) * cell_size), int((position[0] + 0.5) * cell_size)], cell_size // 2 - 1)
 
             finding_index += 1
         else:
-            sol.draw_solution()
+            draw_final_solution(solution)
 
         # pygame.time.wait(20)
 
         pygame.display.update()
         clock.tick(100)
 
+#Simplier version of player.py
 class Player:
     def __init__(self, pos):
         self.pos = pos
 
     def move(self, key_down):
-        if key_down == 'w':
+        if key_down == 'w' and self.pos[0] - 1 >= 0 and maze[self.pos[0] - 1][self.pos[1]] != '#':
             self.pos[0] -= 1
-        if key_down == 'a':
+        if key_down == 'a' and self.pos[1] - 1 >= 0 and maze[self.pos[0]][self.pos[1] - 1] != '#':
             self.pos[1] -= 1
-        if key_down == 's':
+        if key_down == 's' and self.pos[0] + 1 < len(maze) and maze[self.pos[0] + 1][self.pos[1]] != '#':
             self.pos[0] += 1
-        if key_down == 'd':
+        if key_down == 'd' and self.pos[1] + 1 < len(maze[1]) and maze[self.pos[0]][self.pos[1] + 1] != '#':
             self.pos[1] += 1
         
-    def draw_player(self):
+    def draw_player(self, surface, cell_size):
         ceil_rect = pygame.Rect(self.pos[1] * cell_size, self.pos[0] * cell_size, cell_size, cell_size)
 
-        pygame.draw.rect(screen, (255, 51, 255), ceil_rect)
+        pygame.draw.rect(surface, (255, 51, 255), ceil_rect)
+
+        screen.blit(surface, (0,0))
+        pygame.display.update()
     
-    def remove_previous(self):
+    #Remove the previous position rect that the player is in
+    def remove_previous(self, surface, cell_size):
         ceil_rect = pygame.Rect(self.pos[1] * cell_size, self.pos[0] * cell_size, cell_size, cell_size)
 
-        pygame.draw.rect(screen, (255, 255, 255), ceil_rect)
+        pygame.draw.rect(surface, (255, 255, 255), ceil_rect)
 
-player = Player([30, 30])
+        screen.blit(surface, (0,0))
+        pygame.display.update()
+
+player = Player(list(start))
 
 resolution = (row * cell_size, col * cell_size)
-minimap = Minimap(screen, maze, player, resolution)
+minimap = Minimap(screen, minimap_size, maze, player, resolution, main_surface_size = (row * cell_size, col * cell_size))
 
 def play_with_player():
+    count_m = True
+
+    minimap.update()
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                player.remove_previous()
+                if count_m:
+                    player.remove_previous(main_surface, cell_size)
 
-                # if event.key == pygame.K_m:
-                #     minimap.zoom()
+                if event.key == pygame.K_m:
+                    screen.fill((0,0,0))
+
+                    #When press M:
+                        #First time
+                            #Fit the minimap with the screen
+                        
+                        #Second time
+                            #Draw the main map at (0,0)
+
+                            #Draw the minimap under the main map
+                    if count_m:
+                        #Zoom in the minimap to fit the screen when press M by resizing the minimap with a zoom ratio
+                        new_zoom_percentage = min((minimap_size[0] * minimap_cell_size + row * cell_size, minimap_size[1] * minimap_cell_size + col * cell_size)) / (min(minimap_size) * minimap_cell_size)
+                        
+                        #Update the minimap surface to be in the middle of the screen
+                        new_display_pos = (max((screen_size[0] - int(minimap.width * new_zoom_percentage)) // 2, 0), max((screen_size[1] - int(minimap.length * new_zoom_percentage)) // 2, 0))
+
+                        minimap.resize_surface(screen_size, new_display_pos, new_zoom_percentage)
+
+                        count_m = False
+                    else:
+                        #Draw the big maze again
+                        io.draw_maze(screen, main_surface, cell_size)
+
+                        new_size = (minimap_size[0] * minimap_cell_size, minimap_size[1] * minimap_cell_size)
+
+                        new_display_pos = (row * cell_size, col * cell_size)
+                        
+                        minimap.resize_surface(new_size, new_display_pos, 1)
+
+                        count_m = True
+
                 if event.key == pygame.K_w:
                     player.move('w')
                 elif event.key == pygame.K_a:
@@ -277,9 +361,14 @@ def play_with_player():
                 elif event.key == pygame.K_d:
                     player.move('d')
                 
-                player.draw_player()
+                if count_m:
+                    player.draw_player(main_surface, cell_size)
 
                 minimap.update()
+
+                #Return when the player arrived goal
+                if player.pos == list(end):
+                    print("You won the game")
 
         pygame.display.update()
         clock.tick(100)
