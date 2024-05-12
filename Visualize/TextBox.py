@@ -94,9 +94,10 @@ class FormManager:
         """
         self.text_boxes = dict.fromkeys(list_of_textbox.keys())
         for key, value in list_of_textbox.items():
+            print(value["maximum_length"])
             self.text_boxes[key] = {
                 "box": TextBox(screen=screen, position=value["position"], font_color=value["color"],
-                               manager=TextInputManager(validator=lambda input_s: value["maximum_length"]),
+                               manager=TextInputManager(validator=lambda input_s: len(input_s) <= value["maximum_length"]),
                                text=value["init_text"], focusable=value["focusable"])}
 
     def focus(self, position: object) -> None:
