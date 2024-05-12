@@ -95,9 +95,9 @@ class MenuScreen:
                 
                 self.mouse_handler.set_pos(mouse_pos)
 
-                # self.screenCopy, self.hovered_door = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_door)
+                self.screenCopy, self.hovered_door = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_door)
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONUP:
                     self.chosen_door, self.chosen_obj = self.mouse_handler.click()
                     events.append(pygame.event.Event(pygame.USEREVENT, {}))
                     continue
