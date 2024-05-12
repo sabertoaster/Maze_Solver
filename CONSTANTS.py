@@ -3,7 +3,7 @@ RESOLUTION = (1200, 800)
 FPS = 60
 
 # Path to Resources
-RESOURCE_PATH = "Visualize/Resources/"
+RESOURCE_PATH = "Resources/"
 
 # Scenes' Constants
 SCENES = {
@@ -236,4 +236,9 @@ SOUNDS = {
         'move': 'move.mp3',
         'interact': 'interact.mp3',
     }
+}
+
+FONTS = {
+    'default':  RESOURCE_PATH + 'fonts/PixeloidSans.ttf',
+    'default_bold': RESOURCE_PATH + 'fonts/PixeloidSansBold.ttf',
 }

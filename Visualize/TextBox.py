@@ -5,7 +5,8 @@ from enum import Enum
 import numpy
 import cv2
 
-DEFAULT_FONT_PATH = 'Visualize/Resources/Fonts/PixeloidSans.ttf'
+from CONSTANTS import FONTS
+
 
 
 class Color(Enum):
@@ -31,7 +32,7 @@ class TextBox:
         # self.rect = pygame.Rect(x, y, width, height)
         self.active = False
         self.focusable = focusable
-        font = pygame.font.Font(DEFAULT_FONT_PATH, height - 5)
+        font = pygame.font.Font(FONTS['default'], height - 5)
         self.text_input = TextInputVisualizer(manager=manager, font_object=font, cursor_blink_interval=400,
                                               font_color=font_color)
         self.text_input._require_rerender()
@@ -62,7 +63,7 @@ class TextBox:
         return self.text_input.value
 
     def get_length(self):
-        font = pygame.font.Font(DEFAULT_FONT_PATH, self.height - 5)
+        font = pygame.font.Font(FONTS['default'], self.height - 5)
         text_surface = font.render(self.text_input.value, True, Color.BLACK.value)
         return text_surface.get_width()
 
