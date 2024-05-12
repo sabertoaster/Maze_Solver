@@ -40,7 +40,7 @@ class SFX(Sounds):
 class SoundsHandler():
     def __init__(self):
         self.sfx = dict()
-        self.bgm = BGM(SOUNDS['theme']['Lobby'])
+        self.bgm = BGM(SOUNDS['BGM']['Lobby'])
         self.bgm_name = 'Lobby'
         self.current_state = "on"
     

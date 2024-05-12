@@ -228,11 +228,11 @@ AVATAR = {
 }
 
 SOUNDS = {
-    'theme': {
+    'BGM': {
         'Lobby': 'theme.mp3',
         'InGame': 'theme.mp3',
     },
-    'sfx': {
+    'SFX': {
         'move': 'move.mp3',
         'interact': 'interact.mp3',
     }

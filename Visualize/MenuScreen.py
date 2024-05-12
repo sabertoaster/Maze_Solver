@@ -130,17 +130,17 @@ class MenuScreen:
         """
         if name:
             
+            self.player.re_init(name=self.player.name, scene=name)
+            
             if name == "Login":
                 self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                                                 self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                                            transition_type='circle_in')
-                self.player.re_init(name=self.player.name, scene=name)
 
                 return name, self.player.get_GridMapObject_Player("Login")
 
             if name == "Leaderboard":
                 self.player.update(self.screen)
-                self.player.re_init(name=self.player.name, scene=name)
                 
                 self.transition.transition(transition_type='zelda_rl', next_scene=name)
 
@@ -148,7 +148,6 @@ class MenuScreen:
 
             if name == "Play":
                 self.player.update(self.screen)
-                self.player.re_init(name=self.player.name, scene=name)
 
                 self.transition.transition(transition_type='zelda_lr', next_scene=name)
 

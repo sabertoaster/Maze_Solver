@@ -12,7 +12,7 @@ from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
 
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, SOUNDS
 
 SCENE_NAME = "Play"
 
@@ -44,6 +44,9 @@ class PlayScreen:
 
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
+        
+        self.sounds_handler = sounds_handler
+        self.sounds_handler.play_bgm(SOUNDS['BGM']['InGame'])
 
         # Transition effect
         self.transition = Transition(self.screen, RESOLUTION)

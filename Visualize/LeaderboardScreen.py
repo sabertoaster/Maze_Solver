@@ -14,12 +14,6 @@ from Visualize.HangingSign import HangingSign
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
-PARAMS = {
-    "resources": "Visualize/Resources/",
-    "resolution": (1200, 800),  # ratio 3:2
-    "cell": (80, 80)  # 12 cells column, 8 cells row
-}
-
 SCENE_NAME = "Leaderboard"
 
 

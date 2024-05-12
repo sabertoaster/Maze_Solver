@@ -33,8 +33,10 @@ class Transition:
                      calc_distance(pos, (self.resolution[1], self.resolution[0])))
 
         tmp = pygame.surfarray.array3d(self.screen.copy())
+        
         rate = 96
         size = 16
+        
         radius = RADIUS if zoom_in else 0
 
         for _ in range(rate):

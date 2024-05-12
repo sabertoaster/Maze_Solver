@@ -55,7 +55,7 @@ class Player:
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
         
         self.sounds_handler = sounds_handler
-        for key, val in SOUNDS["sfx"].items():
+        for key, val in SOUNDS["SFX"].items():
             self.sounds_handler.add_sfx(key, val)
         
         
