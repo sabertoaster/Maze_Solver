@@ -6,6 +6,7 @@ from Visualize.LoginScreen import LoginScreen as login
 from Visualize.MenuScreen import MenuScreen as menu
 from Visualize.PlayScreen import PlayScreen as play
 from Visualize.LeaderboardScreen import LeaderboardScreen as leaderboard
+from Sounds import SoundsHandler
 
 from CONSTANTS import RESOLUTION, RESOURCE_PATH
 
