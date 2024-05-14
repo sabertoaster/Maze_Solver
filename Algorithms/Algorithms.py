@@ -78,6 +78,8 @@ class TotalAlgorithms:
     def a_star(self, start: tuple[int], end: tuple[int]) -> tuple[list[tuple], list[tuple]]:
         cost_map = heuristic_mapping(self.maze, end)
 
+        print(len(cost_map), len(cost_map[0]))
+
         step = 0
 
         #Each node in the frontier contains:
