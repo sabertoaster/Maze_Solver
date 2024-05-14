@@ -10,7 +10,7 @@ from Visualize.Transition import Transition
 from Visualize.MouseEvents import MouseEvents
 from Visualize.HangingSign import HangingSign
 
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, SOUNDS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
 SCENE_NAME = "Menu"
 
@@ -60,15 +60,15 @@ class MenuScreen:
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
 
-        self.sounds_handler.play_bgm(SCENES[SCENE_NAME]['BGM'])
-
-
         self.player = player
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
         
+        # Play BGM
+        self.sounds_handler.play_bgm(SCENE_NAME)
+
 
         self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
         
@@ -81,9 +81,9 @@ class MenuScreen:
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
-                    self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                                self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                            transition_type='circle_in')
+                    # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                    #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                    #         transition_type='circle_in')
                     return None, None
                 
                 if self.chosen_door:

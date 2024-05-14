@@ -227,16 +227,9 @@ AVATAR = {
                  "up": "blackTom_icon_u.png"},
 }
 
-SOUNDS = {
-    'BGM': {
-        'Login': 'theme.mp3',
-        'Menu': 'theme.mp3',
-        'Play': 'theme.mp3',
-    },
-    'SFX': {
-        'move': 'move.mp3',
-        'interact': 'interact.mp3',
-    }
+SFX = { 
+    'move': 'move.mp3',
+    'interact': 'interact.mp3',   
 }
 
 FONTS = {

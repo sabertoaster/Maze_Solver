@@ -12,7 +12,7 @@ from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
 
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, SOUNDS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
 SCENE_NAME = "Play"
 

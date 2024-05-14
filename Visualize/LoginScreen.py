@@ -10,7 +10,7 @@ from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
 from Sounds import SoundsHandler
 
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, SOUNDS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH
 
 
 SCENE_NAME = "Login"
@@ -72,8 +72,6 @@ class LoginScreen:
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
         
-        self.sounds_handler.play_bgm(SCENES[SCENE_NAME]['BGM'])
-
         self.player = player
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
@@ -102,7 +100,7 @@ class LoginScreen:
         # pygame.display.flip()
         
         # Play BGM
-
+        self.sounds_handler.play_bgm(SCENE_NAME)
 
         self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
         
@@ -111,10 +109,6 @@ class LoginScreen:
         self.hovered_obj = None
 
         self.notify_text_box.set_text("notification", "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
-
-        self.sounds_handler = SoundsHandler()
-        self.sounds_handler.turn_on()
-        self.sounds_handler.play_bgm(SOUNDS['theme']['Lobby'])
 
         running = True
         while running:
@@ -128,9 +122,9 @@ class LoginScreen:
                     self.text_box.focus(mouse_pos)
                     
                 if event.type == pygame.QUIT:
-                    self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                                self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                            transition_type='circle_in')
+                    # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                    #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                    #         transition_type='circle_in')
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
                 if self.chosen_door:
                     if self.panel_fl and event.type == pygame.KEYDOWN:
@@ -198,7 +192,7 @@ class LoginScreen:
 
             if name == "Exit":
                 # Play outro animation here
-
+                
                 self.panel_fl = False
                 pygame.quit()
                 exit()

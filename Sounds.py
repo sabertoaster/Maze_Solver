@@ -1,5 +1,5 @@
 import pygame
-from CONSTANTS import RESOURCE_PATH, SOUNDS
+from CONSTANTS import RESOURCE_PATH, SCENES
 
 class Sounds:
     def __init__(self, file_name):
@@ -40,30 +40,34 @@ class SFX(Sounds):
 class SoundsHandler():
     def __init__(self):
         self.sfx = dict()
-        self.bgm = BGM(SOUNDS['BGM']['Login'])
-        self.bgm_name = 'Login'
-        self.current_state = "on"
+        self.bgm_name = None
+        self.bgm = None # class BGM 
+        self.current_state = "off"
     
     def add_sfx(self, sfx_name, file_name):
         self.sfx[sfx_name] = SFX(file_name)
                 
-    def play_bgm(self, file_name):
+    def play_bgm(self, bgm_name):
+        if self.bgm_name == bgm_name:
+            return
         pygame.mixer.stop()
-        self.bgm = BGM(file_name)
-        self.bgm_name = file_name
+        self.bgm_name = bgm_name
+        self.bgm = BGM(SCENES[self.bgm_name]['BGM'])
         self.bgm.play()
         
     def turn_on(self):
         self.current_state = "on"
         for _, sound in self.sfx.items():
             sound.turn_on()
-        self.bgm.turn_on()
+        if self.bgm:
+            self.bgm.turn_on()
                     
     def turn_off(self):
         self.current_state = "off"
         for _, sound in self.sfx.items():
             sound.turn_off()
-        self.bgm.turn_off()
+        if self.bgm:
+            self.bgm.turn_off()
                 
     def switch(self):
         if self.current_state == "on":
