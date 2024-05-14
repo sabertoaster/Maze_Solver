@@ -10,7 +10,7 @@ from Visualize.Transition import Transition
 from Visualize.MouseEvents import MouseEvents
 from Visualize.HangingSign import HangingSign
 
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, SOUNDS
 
 SCENE_NAME = "Menu"
 
@@ -59,7 +59,9 @@ class MenuScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        drawGrid(screen=self.screen)
+
+        self.sounds_handler.play_bgm(SCENES[SCENE_NAME]['BGM'])
+
 
         self.player = player
         self.screenCopy = self.screen.copy()
@@ -72,13 +74,16 @@ class MenuScreen:
         
         self.chosen_obj = None
         self.chosen_door = None
-        self.hovered_door = None
+        self.hovered_obj = None
         
         running = True
         while running:
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
+                    self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                                self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                            transition_type='circle_in')
                     return None, None
                 
                 if self.chosen_door:
@@ -95,12 +100,13 @@ class MenuScreen:
                 
                 self.mouse_handler.set_pos(mouse_pos)
 
-                self.screenCopy, self.hovered_door = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_door)
+                self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_obj)
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     self.chosen_door, self.chosen_obj = self.mouse_handler.click()
                     events.append(pygame.event.Event(pygame.USEREVENT, {}))
                     continue
+                
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
                     player_response = self.player.handle_event(pressed)
@@ -153,7 +159,4 @@ class MenuScreen:
 
                 return name, (1, self.player.get_grid_pos()[1])
             
-            if name == 'Music_box':
-                self.sounds_handler.switch()
-
         return None, None

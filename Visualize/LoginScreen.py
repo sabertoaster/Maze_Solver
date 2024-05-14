@@ -12,6 +12,7 @@ from Sounds import SoundsHandler
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, SOUNDS
 
+
 SCENE_NAME = "Login"
 
 
@@ -32,7 +33,7 @@ class LoginScreen:
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
 
-    def __init__(self, screen):
+    def __init__(self, screen, sounds_handler):
         """
         :param screen:
         :param res_cel:
@@ -55,6 +56,8 @@ class LoginScreen:
                              "focusable": False, "init_text": "Test"}
         })
 
+        self.sounds_handler = sounds_handler
+        
         # Transition effect
         self.transition = Transition(self.screen, RESOLUTION)
 
@@ -68,6 +71,8 @@ class LoginScreen:
         """
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
+        
+        self.sounds_handler.play_bgm(SCENES[SCENE_NAME]['BGM'])
 
         self.player = player
         self.screenCopy = self.screen.copy()
@@ -103,7 +108,7 @@ class LoginScreen:
         
         self.chosen_door = None
         self.chosen_obj = None
-        self.hovered_door = None
+        self.hovered_obj = None
 
         self.notify_text_box.set_text("notification", "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
 
@@ -121,8 +126,11 @@ class LoginScreen:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.text_box.focus(mouse_pos)
+                    
                 if event.type == pygame.QUIT:
-                    # pygame.quit()
+                    self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                                self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                            transition_type='circle_in')
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
                 if self.chosen_door:
                     if self.panel_fl and event.type == pygame.KEYDOWN:
@@ -143,35 +151,34 @@ class LoginScreen:
                     pygame.display.update()
                     continue
 
-                if not self.chosen_door:
 
-                    self.mouse_handler.set_pos(mouse_pos)
+                self.mouse_handler.set_pos(mouse_pos)
 
-                    self.screenCopy, self.hovered_door = self.mouse_handler.get_hover_frame(self.screenCopy,
-                                                                                            self.hovered_door)
+                self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy,
+                                                                                        self.hovered_obj)
 
-                    if event.type == pygame.MOUSEBUTTONUP:
-                        self.chosen_door, self.chosen_obj = self.mouse_handler.click()
-                        events.append(pygame.event.Event(pygame.USEREVENT, {}))
-                        continue
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.chosen_door, self.chosen_obj = self.mouse_handler.click()
+                    events.append(pygame.event.Event(pygame.USEREVENT, {}))
+                    continue
 
-                    if event.type == pygame.KEYDOWN:
-                        pressed = event.key
-                        player_response = self.player.handle_event(pressed)
+                if event.type == pygame.KEYDOWN:
+                    pressed = event.key
+                    player_response = self.player.handle_event(pressed)
 
-                        if player_response == "Move":
-                            pass
-                        if player_response == "Interact":
-                            pass  # Handle Interact Here
-                        if player_response == "Door":
-                            # self.panel_fl = True
-                            self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
-                        # if self.player.handle_event(pressed):  # Handle interact from player
-                        #     pass
-                        # if self.player.get_grid_pos() in DOOR_POS[SCENE_NAME]:
-                        #     pass
-                    self.player.update(
-                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                    if player_response == "Move":
+                        pass
+                    if player_response == "Interact":
+                        pass  # Handle Interact Here
+                    if player_response == "Door":
+                        # self.panel_fl = True
+                        self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
+                    # if self.player.handle_event(pressed):  # Handle interact from player
+                    #     pass
+                    # if self.player.get_grid_pos() in DOOR_POS[SCENE_NAME]:
+                    #     pass
+                self.player.update(
+                    self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
     def toggle_panel(self, event, name):
         """

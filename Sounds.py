@@ -40,14 +40,15 @@ class SFX(Sounds):
 class SoundsHandler():
     def __init__(self):
         self.sfx = dict()
-        self.bgm = BGM(SOUNDS['BGM']['Lobby'])
-        self.bgm_name = 'Lobby'
+        self.bgm = BGM(SOUNDS['BGM']['Login'])
+        self.bgm_name = 'Login'
         self.current_state = "on"
     
     def add_sfx(self, sfx_name, file_name):
         self.sfx[sfx_name] = SFX(file_name)
                 
     def play_bgm(self, file_name):
+        pygame.mixer.stop()
         self.bgm = BGM(file_name)
         self.bgm_name = file_name
         self.bgm.play()

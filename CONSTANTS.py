@@ -229,8 +229,9 @@ AVATAR = {
 
 SOUNDS = {
     'BGM': {
-        'Lobby': 'theme.mp3',
-        'InGame': 'theme.mp3',
+        'Login': 'theme.mp3',
+        'Menu': 'theme.mp3',
+        'Play': 'theme.mp3',
     },
     'SFX': {
         'move': 'move.mp3',

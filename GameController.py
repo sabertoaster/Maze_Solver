@@ -37,7 +37,8 @@ class GameController:
         # INSTANTIATE SOUNDS HANDLER
         self.sounds_handler = SoundsHandler()
         self.sounds_handler.turn_on()
-        self.sounds_handler.play_bgm(SOUNDS['BGM']['Lobby'])
+        for key, val in SOUNDS["SFX"].items():
+            self.sounds_handler.add_sfx(key, val)
 
 
         # INSTANTIATE PLAYER
@@ -48,7 +49,9 @@ class GameController:
                              sounds_handler=self.sounds_handler)  # [PROTOTYPE]
 
         # INSTANTIATE VISUALIZER
-        self.visualizer = Visualizer(self.screen, self.player, sounds_handler=self.sounds_handler)  # [PROTOTYPE]
+        self.visualizer = Visualizer(self.screen, 
+                                     self.player, 
+                                     sounds_handler=self.sounds_handler)  # [PROTOTYPE]
         
         # INSTANTIATE ALGORITHMS
         # pass

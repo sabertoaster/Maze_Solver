@@ -40,10 +40,10 @@ class Visualizer:
         
     def reset_scene_collection(self):
         self.scenes_collection = {
-            "Login": login(self.screen),
+            "Login": login(self.screen, self.sounds_handler),
             "Register": None,  # Chung với Login
             "Menu": menu(self.screen, self.sounds_handler),
-            "Play": play(self.screen, self.sounds_handler),  # Chọn mode
+            "Play": play(self.screen),  # Chọn mode
             "Leaderboard": leaderboard(self.screen),
             "Settings": None,
         }
