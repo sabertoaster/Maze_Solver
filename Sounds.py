@@ -18,10 +18,13 @@ class Sounds:
     def _play(self, loops):
         self.player.play(loops)
         
+    def set_volume(self, volume):
+        self.player.set_volume(volume)
+        
         
 class BGM(Sounds):
-    def __init__(self, file_name, active=True):
-        super().__init__(file_name, active=active)
+    def __init__(self, name, active=True):
+        super().__init__(name, active=active)
                 
     def play(self):
         if self.active:
@@ -29,8 +32,8 @@ class BGM(Sounds):
             self._play(loops=-1)
 
 class SFX(Sounds):
-    def __init__(self, file_name):
-        super().__init__(file_name)
+    def __init__(self, name):
+        super().__init__(name)
         
     def play(self):
         if self.active:
@@ -46,6 +49,7 @@ class SoundsHandler():
     
     def add_sfx(self, sfx_name, file_name):
         self.sfx[sfx_name] = SFX(file_name)
+        self.sfx[sfx_name].set_volume(SOUNDS['SFX'][sfx_name]['volume'])
                 
     def play_bgm(self, bgm_name):
         if self.bgm_name == bgm_name:
@@ -55,7 +59,8 @@ class SoundsHandler():
             active = self.bgm.active
         pygame.mixer.stop()
         self.bgm_name = bgm_name
-        self.bgm = BGM(SOUNDS['BGM'][self.bgm_name], active=active)
+        self.bgm = BGM(SOUNDS['BGM'][self.bgm_name]['file_name'], active=active)
+        self.bgm.set_volume(SOUNDS['BGM'][self.bgm_name]['volume'])
         self.bgm.play()
         
     def turn_on(self):
@@ -80,7 +85,7 @@ class SoundsHandler():
             self.turn_on()
             self.bgm.play()
         
-    def play_sfx(self, sfx_name, is_transition=False):  
+    def play_sfx(self, sfx_name):  
         for key, s in self.sfx.items():
             if key == sfx_name:
                 s.play()

@@ -96,7 +96,7 @@ class LoginScreen:
         self.sounds_handler.play_bgm(SCENE_NAME)
 
         # Start transition effect 9 60 9 190
-        self.transition.tranpsition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+        self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                                         self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                                    transition_type='circle_out')  # draw transition effect
 

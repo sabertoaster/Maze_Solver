@@ -38,11 +38,7 @@ class GameController:
         self.sounds_handler = SoundsHandler()
         self.sounds_handler.turn_on()
         for key, val in SOUNDS['SFX'].items():
-            if key == 'transition':
-                for k, v in val.items():
-                    self.sounds_handler.add_sfx(k, v)
-                continue
-            self.sounds_handler.add_sfx(key, val)
+            self.sounds_handler.add_sfx(key, val['file_name'])
 
 
         # INSTANTIATE PLAYER

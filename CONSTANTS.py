@@ -229,18 +229,36 @@ AVATAR = {
 
 SOUNDS = {
     'BGM': {
-        'Login': 'town_bgm.mp3',
-        'Menu': 'house_bgm.mp3',
-        'Play': 'house_bgm.mp3',
-
+        'Login': {
+            'file_name': 'town_bgm.mp3',
+            'volume': 0.5
+        },
+        'Menu': {
+            'file_name': 'house_bgm.mp3',
+            'volume': 0.5
+        },
+        'Play': {
+            'file_name': 'house_bgm.mp3',
+            'volume': 0.5
+        },
     },
     'SFX': { 
-        'bump': 'bump.mp3',
-        'interact': 'interact.mp3',
-        'transition': {
-            'circle_in': 'door_enter.mp3',
-            'circle_out': 'door_enter.mp3',
-        }
+        'bump': {
+            'file_name': 'bump.mp3',
+            'volume': 1.0
+        },
+        'interact': {
+            'file_name': 'interact.mp3',
+            'volume': 1.0
+        },
+        'circle_in': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'circle_out': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
     }
 }
 
