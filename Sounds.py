@@ -2,9 +2,9 @@ import pygame
 from CONSTANTS import RESOURCE_PATH, SOUNDS
 
 class Sounds:
-    def __init__(self, file_name):
+    def __init__(self, file_name, active=True):
         self.player = pygame.mixer.Sound(RESOURCE_PATH + 'sounds/' + file_name)
-        self.active = True
+        self.active = active
     
     def turn_on(self):
         self.active = True  
@@ -20,8 +20,8 @@ class Sounds:
         
         
 class BGM(Sounds):
-    def __init__(self, file_name):
-        super().__init__(file_name)
+    def __init__(self, file_name, active=True):
+        super().__init__(file_name, active=active)
                 
     def play(self):
         if self.active:
@@ -50,6 +50,9 @@ class SoundsHandler():
     def play_bgm(self, bgm_name):
         if self.bgm_name == bgm_name:
             return
+        active = True
+        if self.bgm:
+            active = self.bgm.active
         pygame.mixer.stop()
         self.bgm_name = bgm_name
         self.bgm = BGM(SOUNDS['BGM'][self.bgm_name])
