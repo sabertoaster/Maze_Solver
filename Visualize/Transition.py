@@ -132,17 +132,21 @@ class Transition:
             - zelda_ud: Transition effect from up to down
             - zelda_du: Transition effect from down to up
         """
-        #play transition sound effect
-        if self.sounds_handler:
-            self.sounds_handler.play_sfx(transition_type, is_transition=True)
         
         pos = (pos[1], pos[0])
 
         if transition_type == 'circle_in':
+            if self.sounds_handler:
+                self.sounds_handler.play_sfx(transition_type, is_transition=True)
             self.circle(pos, zoom_in=True)
+            self.sounds_handler.stop_sfx(transition_type)
 
         elif transition_type == 'circle_out':
+            if self.sounds_handler:
+                self.sounds_handler.play_sfx(transition_type, is_transition=True)
             self.circle(pos, zoom_in=False)
+            self.sounds_handler.stop_sfx(transition_type)
+
 
         elif transition_type == 'zelda_lr':
             self.zelda(next_scene, reversed=False)

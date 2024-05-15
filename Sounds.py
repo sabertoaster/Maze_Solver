@@ -80,14 +80,15 @@ class SoundsHandler():
             self.turn_on()
             self.bgm.play()
         
-    def play_sfx(self, sfx_name, is_transition=False):
-        if is_transition:
-            pygame.mixer.stop()  
+    def play_sfx(self, sfx_name, is_transition=False):  
         for key, s in self.sfx.items():
             if key == sfx_name:
                 s.play()
                 continue
             s.stop()
+            
+    def stop_sfx(self, sfx_name):
+        self.sfx[sfx_name].stop()
         
     
             

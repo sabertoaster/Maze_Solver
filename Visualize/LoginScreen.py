@@ -91,6 +91,9 @@ class LoginScreen:
                                         (RESOLUTION[1] - register_panel.get_height()) / 2))
         # self.create_font()  # Create font for text input
 
+        # Play BGM
+        self.sounds_handler.play_bgm(SCENE_NAME)
+
         # Start transition effect 9 60 9 190
         self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                                         self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
@@ -99,8 +102,7 @@ class LoginScreen:
         self.transition.transition(transition_type='sign_pop', box=self.sign)
         # pygame.display.flip()
         
-        # Play BGM
-        self.sounds_handler.play_bgm(SCENE_NAME)
+
 
         self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
         

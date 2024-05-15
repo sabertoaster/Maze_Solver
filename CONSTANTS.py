@@ -238,9 +238,8 @@ SOUNDS = {
         'move': 'move.mp3',
         'interact': 'interact.mp3',
         'transition': {
-            'circle_in': 'transition.mp3',
-            'circle_out': 'transition.mp3',
-            'sign_pop': 'transition.mp3',   
+            'circle_in': 'circle_in.mp3',
+            'circle_out': 'circle_out.mp3',
         }
     }
 }
