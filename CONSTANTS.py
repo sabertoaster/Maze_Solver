@@ -118,7 +118,7 @@ SCENES = {
     'Settings': {},
     "Gameplay": {
         "initial_pos": (0, 0),
-        "cell" : (20, 20)
+        "cell" : (40, 40)
     }
 }
 PARAMS = {

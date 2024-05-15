@@ -303,17 +303,17 @@ def Generate_Destination(row, col):
 
 #Convert 2d[Cell] matrix to text file (Tường mỏng -> tường dày)
     #Output: File txt
-def convert(maze: list[list[Cell]], maze_instance: Maze):
+def convert(maze_instance: Maze):
     maze_output = [[' ' for i in range(2 * maze_instance.size[1] - 1)] for j in range(2 * maze_instance.size[0] - 1)]
     for x in range(maze_instance.size[0]):
         for y in range(maze_instance.size[1]):
-            if maze[x][y].walls['left'] and 2 * y - 1 >= 0:
+            if maze_instance.maze[x][y].walls['left'] and 2 * y - 1 >= 0:
                 maze_output[2 * x][2 * y - 1] = '#'
-            if maze[x][y].walls['right'] and 2 * y + 1 < 2 * maze_instance.size[0] - 1:
+            if maze_instance.maze[x][y].walls['right'] and 2 * y + 1 < 2 * maze_instance.size[0] - 1:
                 maze_output[2 * x][2 * y + 1] = '#'
-            if maze[x][y].walls['top'] and 2 * x - 1 >= 0:
+            if maze_instance.maze[x][y].walls['top'] and 2 * x - 1 >= 0:
                 maze_output[2 * x - 1][2 * y] = '#'
-            if maze[x][y].walls['bottom'] and 2 * x + 1 < 2 * maze_instance.size[1] - 1:
+            if maze_instance.maze[x][y].walls['bottom'] and 2 * x + 1 < 2 * maze_instance.size[1] - 1:
                 maze_output[2 * x + 1][2 * y] = '#'
 
             if 2 * x + 1 < 2 * maze_instance.size[0] - 1 and 2 * y + 1 < 2 * maze_instance.size[1] - 1:
