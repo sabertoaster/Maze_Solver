@@ -3,13 +3,14 @@ from Algorithms.Algorithms import *
 from Algorithms.MazeGeneration import Maze, convert as convert_maze
 from GridMapObject import GridMapObject
 from GridMap import GridMap
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FPS
 #from CURR_PLAYER_PARAMS import CURRENT_LEVEL, CURRENT_PLAY_MODE
 # Pre-defined imports
 import sys
 import pygame
 import numpy as np
 import cv2
+import thorpy as tp
 from enum import Enum
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
@@ -33,6 +34,9 @@ class Gameplay:
         # INSTANTIATE ALGORITHMS
         self.algorithms = TotalAlgorithms(Maze)
 
+        # INSTANTIATE PANELS
+        self.init_panel()
+
         # INSTANTIATE PLAYER
     def fill_grid_map(self):
         for i in range(len(self.maze_toString)):
@@ -44,7 +48,7 @@ class Gameplay:
         
     def play(self, player):
         self.player = player
-        print(self.player.grid_map.get_map(self.player.current_scene).get_grid())
+        # print(self.player.grid_map.get_map(self.player.current_scene).get_grid())
         
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
@@ -71,7 +75,6 @@ class Gameplay:
         # INSTANTIATE MAZE
         self.maze = Maze("Wilson", self.maze_size)
         self.maze_toString = convert_maze(self.maze)
-        print(self.maze_toString)
 
         self.grid_map = GridMap("Maze", self.maze_size, (1, 1))
 
@@ -94,19 +97,106 @@ class Gameplay:
                     pygame.draw.rect(self.visual_maze, (255,0,0), ceil_rect)
 
         self.screen.blit(self.visual_maze, (0, 0))
+
+    def init_panel(self):
+        # INSTANTIATE PANELS
+        tp.init(self.screen, tp.theme_classic)
+
+        self.escape_buttons = [tp.Button("Resume"), 
+                               tp.Button("Restart"), 
+                               tp.Button("Save"), 
+                               tp.Button("Auto"), 
+                               tp.Button("Menu"), 
+                               tp.Button("Quit")]
+        
+        # [MASK], Use to recognize whether the escape buttons is pressed
+        self.associated_values = np.full((6,), 0).tolist()
+        
+        self.escape_box = tp.TitleBox("My titled box", self.escape_buttons)
+
+        self.escape_box.center_on(self.screen)
+
+        def click_resume():
+            self.associated_values[0] = 1
+
+        def click_restart():
+            self.associated_values[1] = 1
+
+        def click_save():
+            self.associated_values[2] = 1
+
+        def click_auto():
+            self.associated_values[3] = 1
+
+        def click_menu():
+            self.associated_values[4] = 1
+
+        def click_quit():
+            self.associated_values[5] = 1
+        
+        self.escape_buttons[0].at_unclick = click_resume
+        self.escape_buttons[1].at_unclick = click_restart
+        self.escape_buttons[2].at_unclick = click_save
+        self.escape_buttons[3].at_unclick = click_auto
+        self.escape_buttons[4].at_unclick = click_menu
+        self.escape_buttons[5].at_unclick = click_quit
+
+        def before_gui(): #add here the things to do each frame before blitting gui elements
+            self.screen.fill((250,)*3)
+
+        tp.call_before_gui(before_gui) #tells thorpy to call before_gui() before drawing gui.
+
+        
         
     def visualize_maze(self):
         pass
 
+    
     def toggle_panel(self, event):
-        self.screenCopy.blit(self.screen, (0, 0))
-        while True:
-            for event in pygame.event.get():
-                pass
-                # Handle here
-            # pygame.display.flip()
-            # self.clock.tick(FPS)
-            return None, None
+        def at_refresh():
+            self.screen.fill((255,)*3)
+
+        self.player.deactivate(active=False)
+        m = self.escape_box.get_updater(fps = FPS, esc_quit = True)
+        
+        while m.playing:
+            events = pygame.event.get()
+            mouse_rel = pygame.mouse.get_rel()
+
+            at_refresh()
+            m.update(events = events, mouse_rel = mouse_rel)
+            pygame.display.flip()
+
+            for event in events:
+                if event.type == pygame.QUIT:
+                    m.playing = False
+                if event.type == pygame.KEYDOWN:
+                    key_pressed = event.key
+
+                    if key_pressed == pygame.K_ESCAPE:
+                        return "Menu", SCENES["Menu"]["initial_pos"]
+                    elif key_pressed == pygame.K_m:
+                        m.playing = False
+                
+                if event.type == pygame.MOUSEBUTTONUP:
+                    print(self.associated_values)
+                    if self.associated_values[0]: #If click resume button
+                        self.associated_values = np.full((6,), 0).tolist()
+                        return "Gameplay", self.player.grid_pos
+                    if self.associated_values[1]: #If click restart button
+                        pass
+                    if self.associated_values[2]: #If click save button
+                        pass
+                    if self.associated_values[3]: #If click auto button
+                        pass
+                    if self.associated_values[4]: #If click menu button
+                        return "Menu", SCENES["Menu"]["initial_pos"]
+                    if self.associated_values[5]: #If click quit button
+                        sys.exit(0)
+                        pygame.exit()
+
+        return "Menu", SCENES["Menu"]["initial_pos"]
+
 
 # screen = pygame.display.set_mode((1300, 900))
 # test = Gameplay(screen, (0,0), (9, 9))
