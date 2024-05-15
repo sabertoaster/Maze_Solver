@@ -22,9 +22,10 @@ def create_circular_mask(h, w, center=None, radius=None, bit_size=16):
 
 
 class Transition:
-    def __init__(self, screen, resolution):
+    def __init__(self, screen, resolution, sounds_handler=None):
         self.screen = screen
         self.resolution = resolution
+        self.sounds_handler = sounds_handler
 
     def circle(self, pos, zoom_in=True):  # pos: x, y
         RADIUS = max(calc_distance(pos, (0, 0)),
@@ -131,6 +132,10 @@ class Transition:
             - zelda_ud: Transition effect from up to down
             - zelda_du: Transition effect from down to up
         """
+        #play transition sound effect
+        if self.sounds_handler:
+            self.sounds_handler.play_sfx(transition_type, is_transition=True)
+        
         pos = (pos[1], pos[0])
 
         if transition_type == 'circle_in':

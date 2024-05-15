@@ -1,5 +1,5 @@
 import pygame
-from CONSTANTS import RESOURCE_PATH, SCENES
+from CONSTANTS import RESOURCE_PATH, SOUNDS
 
 class Sounds:
     def __init__(self, file_name):
@@ -52,7 +52,7 @@ class SoundsHandler():
             return
         pygame.mixer.stop()
         self.bgm_name = bgm_name
-        self.bgm = BGM(SCENES[self.bgm_name]['BGM'])
+        self.bgm = BGM(SOUNDS['BGM'][self.bgm_name])
         self.bgm.play()
         
     def turn_on(self):
@@ -77,7 +77,9 @@ class SoundsHandler():
             self.turn_on()
             self.bgm.play()
         
-    def play_sfx(self, sfx_name):
+    def play_sfx(self, sfx_name, is_transition=False):
+        if is_transition:
+            pygame.mixer.stop()  
         for key, s in self.sfx.items():
             if key == sfx_name:
                 s.play()

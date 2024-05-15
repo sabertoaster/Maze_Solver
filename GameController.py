@@ -11,7 +11,7 @@ import cv2
 from enum import Enum
 
 # init hyperparameters here
-from CONSTANTS import FPS, RESOLUTION, CELLS_LIST, MAPS_LIST, SCENES, SFX
+from CONSTANTS import FPS, RESOLUTION, CELLS_LIST, MAPS_LIST, SCENES, SOUNDS
 
 from Sounds import SoundsHandler
 
@@ -37,7 +37,11 @@ class GameController:
         # INSTANTIATE SOUNDS HANDLER
         self.sounds_handler = SoundsHandler()
         self.sounds_handler.turn_on()
-        for key, val in SFX.items():
+        for key, val in SOUNDS['SFX'].items():
+            if key == 'transition':
+                for k, v in val.items():
+                    self.sounds_handler.add_sfx(k, v)
+                continue
             self.sounds_handler.add_sfx(key, val)
 
 

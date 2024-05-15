@@ -59,7 +59,7 @@ class LoginScreen:
         self.sounds_handler = sounds_handler
         
         # Transition effect
-        self.transition = Transition(self.screen, RESOLUTION)
+        self.transition = Transition(self.screen, RESOLUTION, sounds_handler=self.sounds_handler)
 
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
 
