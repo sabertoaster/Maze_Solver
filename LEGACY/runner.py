@@ -4,11 +4,11 @@ import pygame, sys, time
 import copy
 from Minimap import Minimap
 
-sys.path.append('D:\HCMUS\Source\Self_Project\Maze_Solver\Algorithms')
+sys.path.append('D:\Python\Maze_Solver\Algorithms')
 from Algorithms import TotalAlgorithms
 from MazeGeneration import *
 
-sys.path.append('D:\HCMUS\Source\Self_Project\Maze_Solver')
+sys.path.append('D:\Python\Maze_Solver')
 from Player import *
 
 class IO_Basics:

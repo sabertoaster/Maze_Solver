@@ -3,7 +3,7 @@ from queue import PriorityQueue
 import copy
 
 import heapq
-from MazeGeneration import *
+# from Algorithms.MazeGeneration import *
 import sys
 
 class TotalAlgorithms:

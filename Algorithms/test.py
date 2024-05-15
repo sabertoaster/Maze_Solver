@@ -65,7 +65,7 @@ test = Maze('DFS', (10, 10))
 #path1 = depth_first_search(test, (0,0), (49, 49))
 Real_Maze = test
 
-maze = convert(Real_Maze.maze, Real_Maze)
+maze = convert(Real_Maze.maze, Real_Maze)   # Tuong durex to tuong 1 o ly
 
 for x in range(2 * test.size[0] - 1):
     for y in range(2 * test.size[1] - 1):
