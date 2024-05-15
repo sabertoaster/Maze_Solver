@@ -3,7 +3,7 @@ from queue import PriorityQueue
 import copy
 
 import heapq
-from MazeGeneration import *
+# from Algorithms.MazeGeneration import *
 import sys
 
 class TotalAlgorithms:
@@ -77,6 +77,8 @@ class TotalAlgorithms:
             
     def a_star(self, start: tuple[int], end: tuple[int]) -> tuple[list[tuple], list[tuple]]:
         cost_map = heuristic_mapping(self.maze, end)
+
+        print(len(cost_map), len(cost_map[0]))
 
         step = 0
 

@@ -14,4 +14,4 @@ class Line:
 
 class Credit:
     def __init__(self):
-        self.credit = [
+        pass

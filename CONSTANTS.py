@@ -1,3 +1,5 @@
+from enum import Enum
+
 # Game Window Constants
 RESOLUTION = (1200, 800)
 FPS = 60
@@ -114,6 +116,10 @@ SCENES = {
         'initial_pos': (0, 0),
     },
     'Settings': {},
+    "Gameplay": {
+        "initial_pos": (0, 0),
+        "cell" : (20, 20)
+    }
 }
 PARAMS = {
     "resources": "Visualize/Resources/",
@@ -152,10 +158,26 @@ MOVEMENT = {
 }
 
 # Grid Map Object
-CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80)}
-MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings"]
+CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80), "Gameplay": (20, 20)}
+MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"]
 
 # MISCs
 COLORS = {
     'WHITE': (200, 200, 200),
 }
+
+
+# CURRENT PLAY MODE and LEVEL
+class PLAY_MODE(Enum):
+    MANUAL = 0
+    AUTO = 1
+
+
+class LEVEL(Enum):
+    EASY = {"id": 0, "maze_size": (20, 20)}
+    MEDIUM = {"id": 1, "maze_size": (40, 40)}
+    HARD = {"id": 0, "maze_size": (100, 100)}
+
+
+CURRENT_PLAY_MODE = PLAY_MODE.MANUAL
+CURRENT_LEVEL = LEVEL.EASY
