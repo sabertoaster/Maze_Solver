@@ -187,11 +187,9 @@ class Player:
                 self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
                 # self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
-            
-            #sound effect
-            self.sounds_handler.play_sfx("move")
-            
+
             return "Move"
+        self.sounds_handler.play_sfx("bump")
 
     def is_legal_move(self, cmd):
         """

@@ -84,7 +84,7 @@ SCENES = {
         'cell': (80, 80),
 
         'initial_pos': (11, 2),
-        'BGM': 'theme.mp3',
+        'BGM': 'town_bgm.mp3',
     },
 
     'Play': {
@@ -112,7 +112,7 @@ SCENES = {
         'cell': (80, 80),
 
         'initial_pos': (0, 0),
-        'BGM': 'theme.mp3',
+        'BGM': 'town_bgm.mp3',
     },
 
     'Leaderboard': {
@@ -140,7 +140,7 @@ SCENES = {
         'cell': (80, 80),
 
         'initial_pos': (0, 0),
-        'BGM': 'theme.mp3',
+        'BGM': 'town_bgm.mp3',
     },
     'Settings': {
         'BG': 'settings_BG.png',
@@ -148,7 +148,7 @@ SCENES = {
         'HOVER_FRAME': {},
         'cell': (80, 80),
         'initial_pos': (0, 0),   
-        'BGM': 'theme.mp3',
+        'BGM': 'town_bgm.mp3',
     },
     'Play': {
         'BG': 'kitchen_BG.png',
@@ -171,7 +171,7 @@ SCENES = {
         'cell': (80, 80),
 
         'initial_pos': (0, 0),
-        'BGM': 'theme.mp3',
+        'BGM': 'town_bgm.mp3',
     },
 }
 
@@ -229,17 +229,17 @@ AVATAR = {
 
 SOUNDS = {
     'BGM': {
-        'Login': 'theme.mp3',
-        'Menu': 'theme.mp3',
-        'Play': 'theme.mp3',
+        'Login': 'town_bgm.mp3',
+        'Menu': 'house_bgm.mp3',
+        'Play': 'house_bgm.mp3',
 
     },
     'SFX': { 
-        'move': 'move.mp3',
+        'bump': 'bump.mp3',
         'interact': 'interact.mp3',
         'transition': {
-            'circle_in': 'circle_in.mp3',
-            'circle_out': 'circle_out.mp3',
+            'circle_in': 'door_enter.mp3',
+            'circle_out': 'door_enter.mp3',
         }
     }
 }
