@@ -55,7 +55,7 @@ class SoundsHandler():
             active = self.bgm.active
         pygame.mixer.stop()
         self.bgm_name = bgm_name
-        self.bgm = BGM(SOUNDS['BGM'][self.bgm_name])
+        self.bgm = BGM(SOUNDS['BGM'][self.bgm_name], active=active)
         self.bgm.play()
         
     def turn_on(self):
