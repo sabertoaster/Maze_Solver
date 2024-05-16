@@ -9,6 +9,7 @@ from Visualize.ImageProcess import add_element
 from Visualize.Transition import Transition
 from Visualize.MouseEvents import MouseEvents
 from Visualize.HangingSign import HangingSign
+from Visualize.ImageProcess import blur_screen
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
@@ -49,6 +50,9 @@ class MenuScreen:
         self.transition = Transition(self.screen, RESOLUTION, sounds_handler=self.sounds_handler)
         
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
+        self.screenBlur = blur_screen(self.screen)
+        tup = (14, slice(0, 14))
+
 
     def play(self, player):
         """
@@ -179,3 +183,20 @@ class MenuScreen:
                 return name, (1, self.player.get_grid_pos()[1])
             
         return None, None
+
+    def show_credit(self):
+        """
+        Show the credit of the game
+        """
+        self.screen.blit(self.screenBlur, (0, 0))
+        while True:
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.QUIT:
+                    return None
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pl.K_ESCAPE:
+                        return None
+            pygame.display.flip()
+
+
