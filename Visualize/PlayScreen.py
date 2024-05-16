@@ -27,7 +27,7 @@ def drawGrid(screen):
     for x in range(0, RESOLUTION[0], blockSize):
         for y in range(0, RESOLUTION[1], blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, COLORS["WHITE"], rect, 1)
+            pygame.draw.rect(screen, COLORS.WHITE, rect, 1)
 
 
 class PlayScreen:

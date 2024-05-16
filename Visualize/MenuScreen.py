@@ -4,12 +4,12 @@ from pygame_textinput import TextInputVisualizer, TextInputManager
 import numpy as np
 import cv2
 from Visualize.ImageProcess import blur_screen
-from Visualize.ImageProcess import morph_image
-from Visualize.ImageProcess import add_element
+from Visualize.ImageProcess import morph_image, add_element
 from Visualize.Transition import Transition
 from Visualize.MouseEvents import MouseEvents
 from Visualize.HangingSign import HangingSign
-from Visualize.ImageProcess import blur_screen
+
+from Visualize.Credit import Credit, play_credit_sence 
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
@@ -25,7 +25,7 @@ def drawGrid(screen):
     for x in range(0, RESOLUTION[0], blockSize):
         for y in range(0, RESOLUTION[1], blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, COLORS['WHITE'], rect, 1)
+            pygame.draw.rect(screen, COLORS.WHITE, rect, 1)
 
 
 # [PROTOTYPE]
@@ -51,8 +51,6 @@ class MenuScreen:
         
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
         self.screenBlur = blur_screen(self.screen)
-        tup = (14, slice(0, 14))
-
 
     def play(self, player):
         """
@@ -136,9 +134,14 @@ class MenuScreen:
             self.sounds_handler.switch()
         if object == "Skin":
             self.player.switch_skin(self.player.skin)
-            # self.player.re_init(name=self.player.name, scene=self.player.current_scene)
             self.screen.blit(self.frame, (0, 0))
             self.player.update(self.screenCopy)
+        if object == "Credit":
+            credit = Credit()
+            play_credit_sence(credit=credit, screen=self.screen, blur=blur_screen(self.screen))
+            
+            self.player.update(self.screenCopy)
+
 
     def toggle_panel(self, name):
         """
@@ -186,19 +189,8 @@ class MenuScreen:
             
         return None, None
 
-    def show_credit(self):
-        """
-        Show the credit of the game
-        """
-        self.screen.blit(self.screenBlur, (0, 0))
-        while True:
-            events = pygame.event.get()
-            for event in events:
-                if event.type == pygame.QUIT:
-                    return None
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pl.K_ESCAPE:
-                        return None
-            pygame.display.flip()
+
+        
+        
 
 

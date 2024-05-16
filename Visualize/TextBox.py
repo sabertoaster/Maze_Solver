@@ -7,8 +7,6 @@ import cv2
 
 from CONSTANTS import FONTS
 
-
-
 class Color(Enum):
     DEFAULT = (60, 107, 114)
     WHITE = (255, 255, 255)

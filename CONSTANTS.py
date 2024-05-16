@@ -181,9 +181,35 @@ CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboar
 MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"]
 
 # MISCs
-COLORS = {
-    'WHITE': (200, 200, 200),
-}
+class COLORS(Enum):
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    BLUE = (0, 0, 255)
+    YELLOW = (255, 255, 0)
+    CYAN = (0, 255, 255)
+    MAGENTA = (255, 0, 255)
+    ORANGE = (255, 165, 0)
+    PURPLE = (128, 0, 128)
+    PINK = (255, 192, 203)
+    BROWN = (165, 42, 42)
+    GREY = (128, 128, 128)
+    LIGHT_GREY = (211, 211, 211)
+    DARK_GREY = (169, 169, 169)
+    LIGHT_BLUE = (173, 216, 230)
+    LIGHT_GREEN = (144, 238, 144)
+    LIGHT_YELLOW = (255, 255, 224)
+    LIGHT_ORANGE = (255, 160, 122)
+    LIGHT_PURPLE = (221, 160, 221)
+    LIGHT_PINK = (255, 182, 193)
+    LIGHT_BROWN = (210, 105, 30)
+    LIGHT_CYAN = (224, 255, 255)
+    LIGHT_RED = (255, 99, 71)
+    LIGHT_MAGENTA = (255, 182, 193)
+    LIGHT_BLACK = (25, 25, 25)
+
+print(type(COLORS.WHITE.value))
 
 AVATAR = {
     "Tom": {"down": "tom_icon_d.png",
@@ -257,3 +283,19 @@ class LEVEL(Enum):
 
 CURRENT_PLAY_MODE = PLAY_MODE.MANUAL
 CURRENT_LEVEL = LEVEL.EASY
+
+#CREDIT
+CREDIT = {
+    "MEMBERS": {
+        "BU CAC": "KHOA NGUYEN (23122036)",
+        "CAC": "LOZ AN (23122020)",
+        "LOZ BENH": "HUY (23122008)",
+        "MIEN TAY": "KIET (23122039)",
+        "AN THIT LOLI": "HUY MINI (23122033)"
+    },
+    "TEACHERS": {
+        "BEO": "MINHBEO",
+        "CUU EM THAY OI": "TUNGLE"
+    }
+}
+
