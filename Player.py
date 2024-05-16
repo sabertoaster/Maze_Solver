@@ -56,6 +56,9 @@ class Player:
         
         self.sounds_handler = sounds_handler
 
+    def switch_skin(self, skin):
+        lst = list(AVATAR.keys())
+        return lst[(lst.index(skin) + 1) % len(lst)]
 
     def set_current_scene(self, target_scene, initial_pos):
         """
