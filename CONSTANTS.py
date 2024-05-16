@@ -36,7 +36,6 @@ SCENES = {
 
         'cell': (40, 40),
         'initial_pos': (12, 12),
-        'BGM': "theme.mp3"
     },
 
     'Menu': {
@@ -84,7 +83,6 @@ SCENES = {
         'cell': (80, 80),
 
         'initial_pos': (11, 2),
-        'BGM': 'town_bgm.mp3',
     },
 
     'Play': {
@@ -102,7 +100,7 @@ SCENES = {
         },
         
         'DOORS_CLICK_RANGE': {
-          'Menu': [[x,0] for x in range(2, 10)]
+            'Menu': [[x,0] for x in range(2, 10)]
         },
 
         'OBJECTS_POS': {},
@@ -112,7 +110,6 @@ SCENES = {
         'cell': (80, 80),
 
         'initial_pos': (0, 0),
-        'BGM': 'town_bgm.mp3',
     },
 
     'Leaderboard': {
@@ -140,7 +137,6 @@ SCENES = {
         'cell': (80, 80),
 
         'initial_pos': (0, 0),
-        'BGM': 'town_bgm.mp3',
     },
     'Settings': {
         'BG': 'settings_BG.png',
@@ -148,29 +144,6 @@ SCENES = {
         'HOVER_FRAME': {},
         'cell': (80, 80),
         'initial_pos': (0, 0),   
-        'BGM': 'town_bgm.mp3',
-    },
-    'Play': {
-        'BG': 'kitchen_BG.png',
-
-        'DOORS': {
-            (0, 2): "Menu",
-            (0, 3): "Menu",
-            (0, 4): "Menu",
-            (0, 5): "Menu",
-            (0, 6): "Menu",
-            (0, 7): "Menu",
-            (0, 8): "Menu",
-            (0, 9): "Menu",
-        },
-
-        'OBJECTS_POS': {},
-
-        'HOVER_FRAME': {},
-
-        'cell': (80, 80),
-
-        'initial_pos': (0, 0),
         'BGM': 'town_bgm.mp3',
     },
 }

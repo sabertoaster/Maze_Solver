@@ -81,6 +81,9 @@ class MenuScreen:
         while running:
             events = pygame.event.get()
             for event in events:
+                
+                mouse_pos = pygame.mouse.get_pos()
+                
                 if event.type == pygame.QUIT:
                     # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                     #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
@@ -96,9 +99,7 @@ class MenuScreen:
                 if self.chosen_obj:
                     self.object_handler(self.chosen_obj)
                     self.chosen_obj = None
-                    
-                mouse_pos = pygame.mouse.get_pos()
-                
+                                    
                 self.mouse_handler.set_pos(mouse_pos)
 
                 self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_obj)
@@ -129,6 +130,9 @@ class MenuScreen:
         """
         if object == 'Music_box':
             self.sounds_handler.switch()
+            
+        if object == 'Credit':
+            print('sex')
 
     def toggle_panel(self, name):
         """
@@ -144,19 +148,33 @@ class MenuScreen:
                                                 self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                                            transition_type='circle_in')
 
+                # Player re-init
+                self.player.deactivate(active=True)
+                self.player.re_init(name=self.player.name, scene=name)
+                    
                 return name, self.player.get_GridMapObject_Player("Login")
 
             if name == "Leaderboard":
                 self.player.update(self.screen)
-                
                 self.transition.transition(transition_type='zelda_rl', next_scene=name)
-
+                
+                if self.player.get_grid_pos()[1] == 2:
+                    return name, (13, self.player.get_grid_pos()[1] + 1)
+                
+                # Player re-init
+                self.player.deactivate(active=True)
+                self.player.re_init(name=self.player.name, scene=name)
+                    
                 return name, (13, self.player.get_grid_pos()[1])
 
             if name == "Play":
                 self.player.update(self.screen)
 
                 self.transition.transition(transition_type='zelda_lr', next_scene=name)
+
+                # Player re-init
+                self.player.deactivate(active=True)
+                self.player.re_init(name=self.player.name, scene=name)
 
                 return name, (1, self.player.get_grid_pos()[1])
             

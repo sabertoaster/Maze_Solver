@@ -86,7 +86,6 @@ class LeaderboardScreen:
                 if self.chosen_door:
                     next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
                     if next_scene:
-                        player_response = self.player.handle_event(pressed)
                         return next_scene, next_grid_pos
                 
                 mouse_pos = pygame.mouse.get_pos()
@@ -109,11 +108,9 @@ class LeaderboardScreen:
                         pass  # Handle Interact Here
                     if player_response == "Door":
                         self.player.update(self.screenCopy)
-                        self.panel_fl = True
+                        self.pressed = player_response
                         self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
                         
-
-
                     # if self.player.handle_event(pressed):  # Handle interact from player
                     #     pass
                     # if self.player.get_grid_pos() in DOOR_POS[SCENE_NAME]:
@@ -129,5 +126,10 @@ class LeaderboardScreen:
             if name == "Menu":
                 self.player.update(self.screen)
                 self.transition.transition(transition_type='zelda_lr', next_scene=name)
+                
+                # Player re-init
+                self.player.deactivate(active=True)
+                self.player.re_init(name=self.player.name, scene="Menu")
+                
                 return name, (1, self.player.get_grid_pos()[1])
         return None, None

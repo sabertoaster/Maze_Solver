@@ -21,6 +21,7 @@ class MouseEvents:
         self.pos = [x, y]
 
     def click(self):
+        print(self.current_scene)
         
         for key, value in SCENES[self.current_scene]['DOORS_CLICK_RANGE'].items():
             for item in value:

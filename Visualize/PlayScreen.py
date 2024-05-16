@@ -81,16 +81,23 @@ class PlayScreen:
             for event in events:
                 
                 if event.type == pygame.QUIT:
-                    self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                                self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                            transition_type='circle_in')
                     return None, None
                 
                 if self.chosen_door:
                     next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
                     if next_scene:
-                        player_response = self.player.handle_event(pressed)
                         return next_scene, next_grid_pos
+                
+                mouse_pos = pygame.mouse.get_pos()
+                
+                self.mouse_handler.set_pos(mouse_pos)
+
+                self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_obj)
+                
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.chosen_door, self.chosen_obj = self.mouse_handler.click()
+                    events.append(pygame.event.Event(pygame.USEREVENT, {}))
+                    continue
                 
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
@@ -119,5 +126,10 @@ class PlayScreen:
             if name == "Menu":
                 self.player.update(self.screen)
                 self.transition.transition(transition_type='zelda_rl', next_scene=name)
+                
+                # Player re-init
+                self.player.deactivate(active=True)
+                self.player.re_init(name=self.player.name, scene="Menu")
+                
                 return name, (13, self.player.get_grid_pos()[1])
         return None, None

@@ -8,7 +8,7 @@ from Visualize.PlayScreen import PlayScreen as play
 from Visualize.LeaderboardScreen import LeaderboardScreen as leaderboard
 from Sounds import SoundsHandler
 
-from CONSTANTS import RESOLUTION, RESOURCE_PATH
+from CONSTANTS import RESOURCE_PATH
 
 
 class Visualizer:
