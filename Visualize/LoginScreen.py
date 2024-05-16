@@ -8,7 +8,6 @@ from Visualize.TextBox import TextBox, FormManager, Color
 from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
-from Sounds import SoundsHandler
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH
 

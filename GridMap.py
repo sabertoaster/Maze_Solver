@@ -1,6 +1,6 @@
 import pygame
 import numpy as np
-from GridMapObject import GridMapObject 
+from GridMapObject import GridMapObject
 
 
 class GridMap:
@@ -10,7 +10,7 @@ class GridMap:
 
     def __init__(self, name, resolution, cell):
         self.name = name
-        self.grid_map = np.full((resolution[1] // cell[1], resolution[0] // cell[0]),GridMapObject.FREE)
+        self.grid_map = np.full((resolution[1] // cell[1], resolution[0] // cell[0]), GridMapObject.FREE)
 
     def get_grid(self):  # Pass by reference
         return self.grid_map
@@ -49,7 +49,7 @@ class MapManager:
 
             grid[5, 9] = GridMapObject.FREE
             grid[5, 17] = GridMapObject.FREE
-            grid[4, 13] = GridMapObject.DOOR    # LoginScreen.py -> door_pos["Exit"]
+            grid[4, 13] = GridMapObject.DOOR  # LoginScreen.py -> door_pos["Exit"]
 
             # LOG-IN HOUSE
 
@@ -60,15 +60,15 @@ class MapManager:
             # REGISTER HOUSE
 
             grid[6:11, 17:] = [[GridMapObject.WALL]]
-            grid[10, 22] = GridMapObject.DOOR   # LoginScreen.py -> door_pos["Register"]
+            grid[10, 22] = GridMapObject.DOOR  # LoginScreen.py -> door_pos["Register"]
 
             # TREES
 
-            grid[:, :3] = [[GridMapObject.WALL]] #LEFT
-            grid[:, -3:] = [[GridMapObject.WALL]] #RIGHT
+            grid[:, :3] = [[GridMapObject.WALL]]  # LEFT
+            grid[:, -3:] = [[GridMapObject.WALL]]  # RIGHT
 
             # BEACH
-            
+
             grid[-4, :] = [GridMapObject.WALL]
 
         def menuScene():
@@ -79,9 +79,9 @@ class MapManager:
 
             grid = self.map_grids["Menu"].get_grid()
             # DECORATES
-            grid[:3, :4] = [[GridMapObject.WALL]] # clock,etc
-            grid[2, -6] = GridMapObject.WALL # cloth hanger
-            grid[4, 6:9] = [GridMapObject.WALL] # TV
+            grid[:3, :4] = [[GridMapObject.WALL]]  # clock,etc
+            grid[2, -6] = GridMapObject.WALL  # cloth hanger
+            grid[4, 6:9] = [GridMapObject.WALL]  # TV
             grid[5:8, 4:11] = [[GridMapObject.WALL]]
             grid[7, 10] = GridMapObject.FREE
 
@@ -94,7 +94,6 @@ class MapManager:
             grid[:, 0] = [GridMapObject.DOOR]
             grid[:, 14] = [GridMapObject.DOOR]
 
-
             pass
 
         def playScene():
@@ -104,7 +103,7 @@ class MapManager:
             """
             grid = self.map_grids["Play"].get_grid()
 
-            grid[:2, :] = [[GridMapObject.WALL]] # clock,etc
+            grid[:2, :] = [[GridMapObject.WALL]]  # clock,etc
             grid[2, 4:] = [GridMapObject.WALL]
             grid[3, 13:15] = [GridMapObject.WALL]
 
