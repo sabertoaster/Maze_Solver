@@ -32,7 +32,8 @@ class Player:
         self.grid_map = grid_map
 
         self.skin = skin
-        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["down"], SCENES[self.current_scene]["cell"])
+        self.current_direction = 'down'
+        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction], SCENES[self.current_scene]["cell"])
 
         self.ratio = (RESOLUTION[0] // SCENES[self.current_scene]["cell"][0], RESOLUTION[1] // SCENES[self.current_scene]["cell"][1])
 
@@ -58,8 +59,9 @@ class Player:
 
     def switch_skin(self, skin):
         lst = list(AVATAR.keys())
-        return lst[(lst.index(skin) + 1) % len(lst)]
-
+        self.skin = lst[(lst.index(skin) + 1) % len(lst)]
+        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
+                                  resolution=SCENES[self.current_scene]["cell"])
     def set_current_scene(self, target_scene, initial_pos):
         """
         Set current scene
@@ -96,17 +98,21 @@ class Player:
         if self.active:
             response = None
             if key_pressed == pygame.K_RIGHT or key_pressed == pygame.K_d:
-                response = self.move("right")
-                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["right"], resolution=SCENES[self.current_scene]["cell"])
+                self.current_direction = 'right'
+                response = self.move(self.current_direction)
+                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction], resolution=SCENES[self.current_scene]["cell"])
             if key_pressed == pygame.K_LEFT or key_pressed == pygame.K_a:
-                response = self.move("left")
-                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["left"], resolution=SCENES[self.current_scene]["cell"])
+                self.current_direction = 'left'
+                response = self.move(self.current_direction)
+                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction], resolution=SCENES[self.current_scene]["cell"])
             if key_pressed == pygame.K_DOWN or key_pressed == pygame.K_s:
-                response = self.move("down")
-                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["down"], resolution=SCENES[self.current_scene]["cell"])
+                self.current_direction = 'down'
+                response = self.move(self.current_direction)
+                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction], resolution=SCENES[self.current_scene]["cell"])
             if key_pressed == pygame.K_UP or key_pressed == pygame.K_w:
-                response = self.move("up")
-                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["up"], resolution=SCENES[self.current_scene]["cell"])
+                self.current_direction = 'up'
+                response = self.move(self.current_direction)
+                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction], resolution=SCENES[self.current_scene]["cell"])
             if key_pressed == pygame.K_e:
                 self.interact()
                 return "Interact"
@@ -121,7 +127,7 @@ class Player:
         :param screenCopy:
         :return:
         """
-        
+
         self.screen.blit(screenCopy.copy(), (0, 0))
         self.draw(screenCopy)
 
