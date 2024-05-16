@@ -135,6 +135,8 @@ class Player:
         
         self.current_scene = scene
         self.name = name
+        
+        self.current_direction = 'down'
 
         self.name_box = TextBox(screen=self.screen,
                                 position=(0, 0, SCENES[self.current_scene]["cell"][0] * 2, SCENES[self.current_scene]["cell"][1]),

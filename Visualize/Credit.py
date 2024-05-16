@@ -4,10 +4,10 @@ from CONSTANTS import FONTS, RESOLUTION, COLORS, CREDIT as SECTIONS
 
 #size
 SCREEN_WIDTH, SCREEN_HEIGHT = RESOLUTION[0], RESOLUTION[1]
-VERTICAL_SPACING = SCREEN_HEIGHT // 10
 BOX_LENGTH = 1.5
 HEADER_FONT_SIZE = SCREEN_HEIGHT // 25
 CONTENT_FONT_SIZE = SCREEN_HEIGHT // 35
+VERTICAL_SPACING = CONTENT_FONT_SIZE * 2.1
 NORMAL_SPEED = 1
 FAST_SPEED = 5
 FPS = 60
@@ -38,22 +38,45 @@ class Text:
         
 class Box:
     def __init__(self, position, boxes):
+        
+        #initialize the position of the last text
+        
         self.heads = []
         self.bodies = []
-        i = 0
-        step = 0
+        space = 0
+        lines = 0
+        minus = 0
+        self.last_pos = 0
         for head, body in boxes.items():
             if head != "":
-                self.heads.append(Text(head, content_font, (position[0], position[1] + i*VERTICAL_SPACING*BOX_LENGTH), CONTENT_HEAD_FONT_COLOR))
-            if body != "":
-                self.bodies.append(Text(body, content_font, (position[0], position[1] + VERTICAL_SPACING//3 + i*VERTICAL_SPACING*BOX_LENGTH), CONTENT_FONT_COLOR))
-            i += 1
-
+                minus = 0
+                self.heads.append(Text(head, content_font, (position[0], position[1] + space*VERTICAL_SPACING + lines*CONTENT_FONT_SIZE), CONTENT_HEAD_FONT_COLOR))
+            else:
+                minus = -CONTENT_FONT_SIZE
+            #check if body is an array
+            if type(body) == list:
+                for content in body:
+                    if content != "":
+                        self.bodies.append(Text(content, content_font, (position[0], position[1] + minus + space*VERTICAL_SPACING + lines*CONTENT_FONT_SIZE + CONTENT_FONT_SIZE*1.1), CONTENT_FONT_COLOR))
+                    lines += 1
+            else:
+                if body != "":
+                    self.bodies.append(Text(body, content_font, (position[0], position[1] + minus + space*VERTICAL_SPACING + lines*CONTENT_FONT_SIZE + CONTENT_FONT_SIZE*1.1), CONTENT_FONT_COLOR))
+                lines += 1
+            self.last_pos += VERTICAL_SPACING
+            space += 1
+            
+        space -= 1
+        self.last_pos = position[1] + space*VERTICAL_SPACING + minus + lines*CONTENT_FONT_SIZE + CONTENT_FONT_SIZE*1.1 - SCREEN_HEIGHT
+    
+    def get_last_pos(self):
+        return self.last_pos
 class Section:
     def __init__(self, header_text, content_texts, initial_y):
 
-        self.header = Text(header_text, header_font, (SCREEN_WIDTH // 2, SCREEN_HEIGHT + initial_y), HEADER_FONT_COLOR)
-        self.contents = Box((SCREEN_WIDTH // 2, SCREEN_HEIGHT + initial_y + VERTICAL_SPACING), content_texts)
+        self.header = Text(header_text, header_font, (SCREEN_WIDTH // 2, initial_y), HEADER_FONT_COLOR)
+        self.contents = Box((SCREEN_WIDTH // 2,  initial_y + VERTICAL_SPACING), content_texts)
+        self.next_pos = self.contents.get_last_pos()
 
     def update(self, speed):
         self.header.update(speed)
@@ -68,14 +91,36 @@ class Section:
             head.draw(screen)
         for body in self.contents.bodies:
             body.draw(screen)
+    
+    def get_next_pos(self):
+        return self.next_pos
 
 class Credit:
     def __init__(self):
         self.sections = []
-        i = 0
+        next_pos = 0
         for section_name, content in SECTIONS.items():
-            self.sections.append(Section(section_name, content, i * VERTICAL_SPACING))
-            i += (len(content) + 1)*BOX_LENGTH
+            section = Section(section_name, content, SCREEN_HEIGHT + next_pos)
+            self.sections.append(section)
+            next_pos = section.get_next_pos() + VERTICAL_SPACING
+            # if i >= 0:
+            #     self.sections.append(Section(section_name, content, space * VERTICAL_SPACING + (lines - 2*box_num)*(CONTENT_FONT_SIZE + CONTENT_FONT_SIZE*1.1) + i*HEADER_FONT_SIZE))
+            # else:
+            #     self.sections.append(Section(section_name, content, space * VERTICAL_SPACING + (lines - 2*box_num)*(CONTENT_FONT_SIZE + CONTENT_FONT_SIZE*1.1)))
+            # print('section space: ', space * VERTICAL_SPACING + (lines - 2*box_num)*(CONTENT_FONT_SIZE + CONTENT_FONT_SIZE*1.1) + i*HEADER_FONT_SIZE)
+            # current_box_num = len(content)
+            # box_num += current_box_num
+            # space += current_box_num*2
+            # space += 1
+            # for key, value in content.items():
+            #     if type(value) == list:
+            #         lines += len(value)
+            #     elif value != "":
+            #         lines += 1
+            #     if key != "": 
+            #         lines += 1
+            # i += 1
+
     def update(self, speed):
         for section in self.sections:
             section.update(speed)

@@ -137,9 +137,9 @@ class MenuScreen:
             self.screen.blit(self.frame, (0, 0))
             self.player.update(self.screenCopy)
         if object == "Credit":
+            self.player.update(self.screenCopy)
             credit = Credit()
             play_credit_sence(credit=credit, screen=self.screen, blur=blur_screen(self.screen))
-            
             self.player.update(self.screenCopy)
 
 

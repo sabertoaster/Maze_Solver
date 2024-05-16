@@ -285,15 +285,22 @@ CURRENT_LEVEL = LEVEL.EASY
 #CREDIT
 CREDIT = {
     "MEMBERS": {
-        "BU CAC": "KHOA NGUYEN (23122036)",
-        "CAC": "LOZ AN (23122020)",
-        "LOZ BENH": "HUY (23122008)",
-        "MIEN TAY": "KIET (23122039)",
-        "AN THIT LOLI": "HUY MINI (23122033)"
+        "HUY": "(23122008)",
+        "LOZ AN": "(23122020)",
+        "HUY MINI": "(23122033)",
+        "KHOA NGUYEN": "(23122036)",
+        "KIET": "(23122039)",
+    },
+    "ROLES": {
+        "VISUALIZE": ["KHOA NGUYEN", "LOZ AN", "HUY"],
+        "ALGORITHMS": ["KIET", "HUY MINI"]
     },
     "TEACHERS": {
         "BEO": "MINHBEO",
         "CUU EM THAY OI": "TUNGLE"
+    },
+    "ABOUT US": {
+        "": ['GROUP OF 5', 'FRESHMEN', 'HCMUS', 'K23']
     }
 }
 
