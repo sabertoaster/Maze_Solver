@@ -3,8 +3,6 @@ import numpy as np
 import pygame
 from CONSTANTS import SCENES, RESOURCE_PATH
 
-
-
 # Support functions
 def calc_distance(pos1, pos2):
     return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2) ** 0.5
@@ -24,9 +22,10 @@ def create_circular_mask(h, w, center=None, radius=None, bit_size=16):
 
 
 class Transition:
-    def __init__(self, screen, resolution):
+    def __init__(self, screen, resolution, sounds_handler=None):
         self.screen = screen
         self.resolution = resolution
+        self.sounds_handler = sounds_handler
 
     def circle(self, pos, zoom_in=True):  # pos: x, y
         RADIUS = max(calc_distance(pos, (0, 0)),
@@ -35,8 +34,10 @@ class Transition:
                      calc_distance(pos, (self.resolution[1], self.resolution[0])))
 
         tmp = pygame.surfarray.array3d(self.screen.copy())
+        
         rate = 96
         size = 16
+        
         radius = RADIUS if zoom_in else 0
 
         for _ in range(rate):
@@ -131,13 +132,21 @@ class Transition:
             - zelda_ud: Transition effect from up to down
             - zelda_du: Transition effect from down to up
         """
+        
         pos = (pos[1], pos[0])
 
         if transition_type == 'circle_in':
+            if self.sounds_handler:
+                self.sounds_handler.play_sfx(transition_type)
             self.circle(pos, zoom_in=True)
+            self.sounds_handler.stop_sfx(transition_type)
 
         elif transition_type == 'circle_out':
+            if self.sounds_handler:
+                self.sounds_handler.play_sfx(transition_type)
             self.circle(pos, zoom_in=False)
+            self.sounds_handler.stop_sfx(transition_type)
+
 
         elif transition_type == 'zelda_lr':
             self.zelda(next_scene, reversed=False)

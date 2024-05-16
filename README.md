@@ -60,19 +60,20 @@ MAZE_SOLVER
 |   requirements.txt
 |   runner.py
 |
++---Resources
+|   |
+|   +---animation
+|   |
+|   +---file
+|   |
+|   +---fonts
+|
 +---Algorithms
 |      Algorithms.py
 |      MazeGeneration.py
 |
 +---LEGACY
 |
-+---Visualize
-    |
-    +---Resources
-        |
-        +---animation
-        |
-        +---file
-        |
-        \---Fonts
+\---Visualize
+
 ```

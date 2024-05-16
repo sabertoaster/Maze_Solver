@@ -7,11 +7,12 @@ from Visualize.MenuScreen import MenuScreen as menu
 from Visualize.PlayScreen import PlayScreen as play
 from Visualize.LeaderboardScreen import LeaderboardScreen as leaderboard
 from Gameplay import Gameplay
+from Sounds import SoundsHandler
 from CONSTANTS import RESOLUTION, RESOURCE_PATH, CURRENT_PLAY_MODE
 
 
 class Visualizer:
-    def __init__(self, screen, player):
+    def __init__(self, screen, player, sounds_handler):
         """
         A Structure to visualize the game
         :param screen:
@@ -25,7 +26,6 @@ class Visualizer:
         """
         self.screen = screen
         self.player = player
-        self.reset_scene_collection()
         self.logo = pygame.image.load(RESOURCE_PATH + "logo.png")  # Load logo image
 
         self.panel_collection = {  # Pop-up panel, with buttons to choose, information presentation, sths like that
@@ -33,11 +33,16 @@ class Visualizer:
             "GameOver": None,
             "Generic": None
         }
+        
+        self.sounds_handler = sounds_handler
+        
+        self.reset_scene_collection()
+        
     def reset_scene_collection(self):
         self.scenes_collection = {
-            "Login": login(self.screen),
+            "Login": login(self.screen, self.sounds_handler),
             "Register": None,  # Chung với Login
-            "Menu": menu(self.screen),
+            "Menu": menu(self.screen, self.sounds_handler),
             "Play": play(self.screen),  # Chọn mode
             "Leaderboard": leaderboard(self.screen),
             "Settings": None,
@@ -48,7 +53,7 @@ class Visualizer:
         :return:
         """
         pygame.display.set_icon(self.logo)
-        pygame.display.set_caption("Tâm và Gia Huy")
+        pygame.display.set_caption("MINHBEO'S MAZE GAME")
 
     def draw_scene(self, scene_name: str):
         """

@@ -7,6 +7,7 @@ from Visualize.ImageProcess import morph_image
 from Visualize.TextBox import TextBox   
 from pygame_textinput import TextInputManager, TextInputVisualizer
 
+from CONSTANTS import AVATAR
 from CONSTANTS import SCENES, RESOLUTION, RESOURCE_PATH, AVATAR, MOVEMENT
 
 
@@ -15,7 +16,7 @@ class Player:
     This is a class to represent Player Instance
     """
 
-    def __init__(self, screen, grid_map, current_scene, initial_pos, skin="blackTom", player_name='Guest'):
+    def __init__(self, screen, grid_map, current_scene, initial_pos, skin="blackTom", player_name='Guest', sounds_handler=None):
 
         """
         :param screen:
@@ -52,6 +53,9 @@ class Player:
         self.name_length = self.name_box.get_length()
 
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
+        
+        self.sounds_handler = sounds_handler
+
 
     def set_current_scene(self, target_scene, initial_pos):
         """
@@ -118,7 +122,8 @@ class Player:
         self.screen.blit(screenCopy.copy(), (0, 0))
         self.draw(screenCopy)
 
-    def re_init(self, name, scene):
+    def re_init(self, name='Guest', scene='Login'):
+        
         self.current_scene = scene
         self.name = name
 
@@ -184,6 +189,7 @@ class Player:
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
 
             return "Move"
+        self.sounds_handler.play_sfx("bump")
 
     def is_legal_move(self, cmd):
         """
@@ -229,4 +235,4 @@ class Player:
         Interact with the environment
         :return:
         """
-        pass
+        self.sounds_handler.play_sfx('interact')

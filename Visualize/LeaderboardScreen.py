@@ -14,12 +14,6 @@ from Visualize.HangingSign import HangingSign
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
-PARAMS = {
-    "resources": "Visualize/Resources/",
-    "resolution": (1200, 800),  # ratio 3:2
-    "cell": (80, 80)  # 12 cells column, 8 cells row
-}
-
 SCENE_NAME = "Leaderboard"
 
 
@@ -51,7 +45,7 @@ class LeaderboardScreen:
 
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
-
+        
         # Transition effect
         self.transition = Transition(self.screen, RESOLUTION)
 
@@ -72,13 +66,40 @@ class LeaderboardScreen:
         self.player = player
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
-
+        
+        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
+        
+        self.chosen_door = None
+        self.chosen_obj = None
+        self.hovered_obj = None
+        
         running = True
         while running:
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
+                    # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                    #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                    #         transition_type='circle_in')
                     return None, None
+                
+                if self.chosen_door:
+                    next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
+                    if next_scene:
+                        player_response = self.player.handle_event(pressed)
+                        return next_scene, next_grid_pos
+                
+                mouse_pos = pygame.mouse.get_pos()
+                
+                self.mouse_handler.set_pos(mouse_pos)
+
+                self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_obj)
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.chosen_door, self.chosen_obj = self.mouse_handler.click()
+                    events.append(pygame.event.Event(pygame.USEREVENT, {}))
+                    continue
+                
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
                     player_response = self.player.handle_event(pressed)
@@ -90,10 +111,7 @@ class LeaderboardScreen:
                         self.player.update(self.screenCopy)
                         self.panel_fl = True
                         self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
-                        next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
-                        if next_scene:
-                            player_response = self.player.handle_event(pressed)
-                            return next_scene, next_grid_pos
+                        
 
 
                     # if self.player.handle_event(pressed):  # Handle interact from player

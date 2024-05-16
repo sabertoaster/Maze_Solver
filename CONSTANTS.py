@@ -1,11 +1,9 @@
-from enum import Enum
-
 # Game Window Constants
 RESOLUTION = (1200, 800)
 FPS = 60
 
 # Path to Resources
-RESOURCE_PATH = "Visualize/Resources/"
+RESOURCE_PATH = "Resources/"
 
 # Scenes' Constants
 SCENES = {
@@ -18,10 +16,16 @@ SCENES = {
             (22, 10): "Register"
         },
 
+        'DOORS_CLICK_RANGE': {
+            "Login" : [[x, y] for x in range(6, 10) for y in range(3, 9)],
+            "Register" : [[x, y] for x in range(6, 11) for y in range(18, 27)],
+            "Exit" : [[4,13]]
+        },
+        
         'OBJECTS_POS': {
-            "Login": [[x, y] for x in range(6, 10) for y in range(3, 9)],
-            "Register": [[x, y] for x in range(6, 11) for y in range(18, 27)],
-            "Exit": [[4, 13]]
+            "Login" : [[x, y] for x in range(6, 10) for y in range(3, 9)],
+            "Register" : [[x, y] for x in range(6, 11) for y in range(18, 27)],
+            "Exit" : [[4,13]]    
         },
 
         'HOVER_FRAME': {
@@ -32,6 +36,7 @@ SCENES = {
 
         'cell': (40, 40),
         'initial_pos': (12, 12),
+        'BGM': "theme.mp3"
     },
 
     'Menu': {
@@ -57,19 +62,94 @@ SCENES = {
             (14, 8): "Play",
             (14, 9): "Play",
         },
+        
+        'DOORS_CLICK_RANGE': {
+            'Login': [[1,11]],
+            'Leaderboard': [[x,0] for x in range(3, 10)],
+            'Play': [[x,14] for x in range(2, 10)],
+        },
 
         'OBJECTS_POS': {
-            "Login": [[11, 1]],
+            "Music_box": [[x,y] for x in range(1, 3) for y in range(2, 4)],
+            "Credit": [[x,y] for x in range(4, 6) for y in range(6, 9)],
+            "Skin": [[x,9] for x in range(0, 3)],
         },
 
         'HOVER_FRAME': {
+            'Music_box': 'livingRoom_BG_music_box_hover.png',
+            'Credit': 'livingRoom_BG_credit_hover.png',
+            'Skin': 'livingRoom_BG_skin_hover.png',
         },
 
         'cell': (80, 80),
 
         'initial_pos': (11, 2),
+        'BGM': 'town_bgm.mp3',
     },
 
+    'Play': {
+        'BG': 'kitchen_BG.png',
+
+        'DOORS': {
+            (0, 2): "Menu",
+            (0, 3): "Menu",
+            (0, 4): "Menu",
+            (0, 5): "Menu",
+            (0, 6): "Menu",
+            (0, 7): "Menu",
+            (0, 8): "Menu",
+            (0, 9): "Menu",
+        },
+        
+        'DOORS_CLICK_RANGE': {
+          'Menu': [[x,0] for x in range(2, 10)]
+        },
+
+        'OBJECTS_POS': {},
+
+        'HOVER_FRAME': {},
+
+        'cell': (80, 80),
+
+        'initial_pos': (0, 0),
+        'BGM': 'town_bgm.mp3',
+    },
+
+    'Leaderboard': {
+        'BG': 'leaderboard_BG.png',
+
+        'DOORS': {
+            (14, 2): "Menu",
+            (14, 3): "Menu",
+            (14, 4): "Menu",
+            (14, 5): "Menu",
+            (14, 6): "Menu",
+            (14, 7): "Menu",
+            (14, 8): "Menu",
+            (14, 9): "Menu",
+        },
+        
+        'DOORS_CLICK_RANGE': {
+            'Menu': [[x,14] for x in range(2, 10)]
+        },
+
+        'OBJECTS_POS': {},
+
+        'HOVER_FRAME': {},
+
+        'cell': (80, 80),
+
+        'initial_pos': (0, 0),
+        'BGM': 'town_bgm.mp3',
+    },
+    'Settings': {
+        'BG': 'settings_BG.png',
+        'OBJECTS_POS': {},
+        'HOVER_FRAME': {},
+        'cell': (80, 80),
+        'initial_pos': (0, 0),   
+        'BGM': 'town_bgm.mp3',
+    },
     'Play': {
         'BG': 'kitchen_BG.png',
 
@@ -91,44 +171,8 @@ SCENES = {
         'cell': (80, 80),
 
         'initial_pos': (0, 0),
+        'BGM': 'town_bgm.mp3',
     },
-
-    'Leaderboard': {
-        'BG': 'leaderboard_BG.png',
-
-        'DOORS': {
-            (14, 2): "Menu",
-            (14, 3): "Menu",
-            (14, 4): "Menu",
-            (14, 5): "Menu",
-            (14, 6): "Menu",
-            (14, 7): "Menu",
-            (14, 8): "Menu",
-            (14, 9): "Menu",
-        },
-
-        'OBJECTS_POS': {},
-
-        'HOVER_FRAME': {},
-
-        'cell': (80, 80),
-
-        'initial_pos': (0, 0),
-    },
-    'Settings': {},
-    "Gameplay": {
-        "initial_pos": (0, 0),
-        "cell" : (20, 20)
-    }
-}
-PARAMS = {
-    "resources": "Visualize/Resources/",
-    "resolution": (1200, 800),  # ratio 3:2
-    "cell": {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80)},
-    # 12 cells column, 8 cells row
-    "scenes": ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"],
-    "initial_pos": {"Login": (12, 12), "Menu": (11, 2), "Play": (0, 0), "Leaderboard": (0, 0), "Settings": (0, 0),
-                    "Gameplay": (0, 0)}  # need adjusting
 }
 
 # Skins
@@ -151,33 +195,74 @@ AVATAR = {
 
 # Movement
 MOVEMENT = {
-    "left": (-1, 0),
-    "right": (1, 0),
-    "up": (0, -1),
-    "down": (0, 1)
-}
+            "left": (-1, 0),
+            "right": (1, 0),
+            "up": (0, -1),
+            "down": (0, 1)
+        }
 
 # Grid Map Object
-CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80), "Gameplay": (20, 20)}
-MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"]
+CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80)}
+MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings"]
 
 # MISCs
 COLORS = {
     'WHITE': (200, 200, 200),
 }
 
+AVATAR = {
+    "Tom": {"down": "tom_icon_d.png",
+            "right": "tom_icon_r.png",
+            "left": "tom_icon_l.png",
+            "up": "tom_icon_u.png"},
+    
+    "orangeTom": {"down": "orangeTom_icon_d.png",
+                  "right": "orangeTom_icon_r.png",
+                  "left": "orangeTom_icon_l.png",
+                  "up": "orangeTom_icon_u.png"},
 
-# CURRENT PLAY MODE and LEVEL
-class PLAY_MODE(Enum):
-    MANUAL = 0
-    AUTO = 1
+    "blackTom": {"down": "blackTom_icon_d.png",
+                 "right": "blackTom_icon_r.png",
+                 "left": "blackTom_icon_l.png",
+                 "up": "blackTom_icon_u.png"},
+}
 
+SOUNDS = {
+    'BGM': {
+        'Login': {
+            'file_name': 'town_bgm.mp3',
+            'volume': 0.5
+        },
+        'Menu': {
+            'file_name': 'house_bgm.mp3',
+            'volume': 0.5
+        },
+        'Play': {
+            'file_name': 'house_bgm.mp3',
+            'volume': 0.5
+        },
+    },
+    'SFX': { 
+        'bump': {
+            'file_name': 'bump.mp3',
+            'volume': 1.0
+        },
+        'interact': {
+            'file_name': 'interact.mp3',
+            'volume': 1.0
+        },
+        'circle_in': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'circle_out': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+    }
+}
 
-class LEVEL(Enum):
-    EASY = {"id": 0, "maze_size": (20, 20)}
-    MEDIUM = {"id": 1, "maze_size": (40, 40)}
-    HARD = {"id": 0, "maze_size": (100, 100)}
-
-
-CURRENT_PLAY_MODE = PLAY_MODE.MANUAL
-CURRENT_LEVEL = LEVEL.EASY
+FONTS = {
+    'default':  RESOURCE_PATH + 'fonts/PixeloidSans.ttf',
+    'default_bold': RESOURCE_PATH + 'fonts/PixeloidSansBold.ttf',
+}

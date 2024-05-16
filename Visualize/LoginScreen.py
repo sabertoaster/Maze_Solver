@@ -1,9 +1,6 @@
 import json
 import pygame
-import pygame.locals as pl
-from pygame_textinput import TextInputVisualizer, TextInputManager
-import numpy as np
-import cv2
+
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
@@ -11,10 +8,13 @@ from Visualize.TextBox import TextBox, FormManager, Color
 from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
+from Sounds import SoundsHandler
 
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH
+
 
 SCENE_NAME = "Login"
+
 
 # def drawGrid(screen):
 #     """
@@ -33,7 +33,7 @@ class LoginScreen:
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
 
-    def __init__(self, screen):
+    def __init__(self, screen, sounds_handler):
         """
         :param screen:
         :param res_cel:
@@ -42,21 +42,24 @@ class LoginScreen:
 
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
+        
 
         self.text_box = FormManager(self.screen, {
-            "username": {"position": (483, 426, 568, 24), "color": Color.WHITE.value, "maximum_length": 16,
+            "username": {"position": (500, 426, 568, 30), "color": Color.WHITE.value, "maximum_length": 16,
                          "focusable": True, "init_text": ""},  # (x, y, width, height)
-            "password": {"position": (483, 474, 568, 24), "color": Color.WHITE.value, "maximum_length": 32,
+            "password": {"position": (500, 495, 568, 30), "color": Color.WHITE.value, "maximum_length": 16,
                          "focusable": True, "init_text": ""}})  # (x, y, width, height)
 
         # Tạo textbox hiển thị notification cho login/ register screen
         self.notify_text_box = FormManager(self.screen, {
-            "notification": {"position": (483, 530, 568, 48), "color": Color.RED.value, "maximum_length": 50,
+            "notification": {"position": (0, 530, 568, 48), "color": Color.RED.value, "maximum_length": 50,
                              "focusable": False, "init_text": "Test"}
         })
 
+        self.sounds_handler = sounds_handler
+        
         # Transition effect
-        self.transition = Transition(self.screen, RESOLUTION)
+        self.transition = Transition(self.screen, RESOLUTION, sounds_handler=self.sounds_handler)
 
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
 
@@ -68,27 +71,29 @@ class LoginScreen:
         """
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-
+        
         self.player = player
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
-        self.blur = blur_screen(screen=self.screen.copy())
 
         self.panel_fl = False  # CÁI NI Bị DOWN
+        panel_shape = (RESOLUTION[0], RESOLUTION[1])
+        login_panel = pygame.image.load(RESOURCE_PATH + "login_box.png").convert_alpha()
+        register_panel = pygame.image.load(RESOURCE_PATH + "register_box.png").convert_alpha()
 
-        panel_shape = RESOLUTION[0] * 0.95, RESOLUTION[1] * 0.5
-        login_panel = morph_image(RESOURCE_PATH + "login_box.png", panel_shape)
-        register_panel = morph_image(RESOURCE_PATH + "register_box.png", panel_shape)
-
+        self.blur = blur_screen(screen=self.screen)
         self.login_panel = add_element(self.blur, login_panel,
-                                        ((RESOLUTION[0] - panel_shape[0]) / 2,
-                                        (RESOLUTION[1] - panel_shape[1]) / 2))
-
+                                       ((RESOLUTION[0] - login_panel.get_width()) / 2,
+                                        (RESOLUTION[1] - login_panel.get_height()) / 2))
         self.register_panel = add_element(self.blur, register_panel,
-                                          ((RESOLUTION[0] - panel_shape[0]) / 2,
-                                           (RESOLUTION[1] - panel_shape[1] + 11) / 2))  # HANDLE KIEU SUC VAT
+                                       ((RESOLUTION[0] - register_panel.get_width()) / 2,
+                                        (RESOLUTION[1] - register_panel.get_height()) / 2))
         # self.create_font()  # Create font for text input
+
+
+        # Play BGM
+        self.sounds_handler.play_bgm(SCENE_NAME)
 
         # Start transition effect 9 60 9 190
         self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
@@ -97,10 +102,14 @@ class LoginScreen:
 
         self.transition.transition(transition_type='sign_pop', box=self.sign)
         # pygame.display.flip()
+        
+
 
         self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
+        
         self.chosen_door = None
-        self.hovered_door = None
+        self.chosen_obj = None
+        self.hovered_obj = None
 
         self.notify_text_box.set_text("notification", "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
 
@@ -109,13 +118,16 @@ class LoginScreen:
             events = pygame.event.get()
             self.text_box.update(events)
             for event in events:
-                
+
                 mouse_pos = pygame.mouse.get_pos()
-                
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.text_box.focus(mouse_pos)
+                    
                 if event.type == pygame.QUIT:
-                    # pygame.quit()
+                    # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                    #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                    #         transition_type='circle_in')
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
                 if self.chosen_door:
                     if self.panel_fl and event.type == pygame.KEYDOWN:
@@ -129,37 +141,41 @@ class LoginScreen:
                         if self.chosen_door == "Login":
                             self.screen.blit(self.login_panel, (0, 0))
                         if self.chosen_door == "Exit":
+                            # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                            #                                 self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                            #                            transition_type='circle_in')
                             return None, None
                     pygame.display.update()
                     continue
 
-                if not self.chosen_door:
 
-                    self.mouse_handler.set_pos(mouse_pos)
+                self.mouse_handler.set_pos(mouse_pos)
 
-                    self.screenCopy, self.hovered_door = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_door)
+                self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy,
+                                                                                        self.hovered_obj)
 
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        self.chosen_door = self.mouse_handler.click()
-                        continue
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.chosen_door, self.chosen_obj = self.mouse_handler.click()
+                    events.append(pygame.event.Event(pygame.USEREVENT, {}))
+                    continue
 
-                    if event.type == pygame.KEYDOWN:
-                        pressed = event.key
-                        player_response = self.player.handle_event(pressed)
+                if event.type == pygame.KEYDOWN:
+                    pressed = event.key
+                    player_response = self.player.handle_event(pressed)
 
-                        if player_response == "Move":
-                            pass
-                        if player_response == "Interact":
-                            pass  # Handle Interact Here
-                        if player_response == "Door":
-                            # self.panel_fl = True
-                            self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
-                        # if self.player.handle_event(pressed):  # Handle interact from player
-                        #     pass
-                        # if self.player.get_grid_pos() in DOOR_POS[SCENE_NAME]:
-                        #     pass
-                    self.player.update(
-                        self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
+                    if player_response == "Move":
+                        pass
+                    if player_response == "Interact":
+                        pass  # Handle Interact Here
+                    if player_response == "Door":
+                        # self.panel_fl = True
+                        self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
+                    # if self.player.handle_event(pressed):  # Handle interact from player
+                    #     pass
+                    # if self.player.get_grid_pos() in DOOR_POS[SCENE_NAME]:
+                    #     pass
+                self.player.update(
+                    self.screenCopy)  # NEED TO OPTIMIZED, https://stackoverflow.com/questions/61399822/how-to-move-character-in-pygame-without-filling-background
 
     def toggle_panel(self, event, name):
         """
@@ -179,9 +195,7 @@ class LoginScreen:
 
             if name == "Exit":
                 # Play outro animation here
-                self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                                                self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                                           transition_type='circle_in')
+                
                 self.panel_fl = False
                 pygame.quit()
                 exit()
@@ -224,16 +238,16 @@ class LoginScreen:
                             pygame.display.flip()
                             pygame.time.delay(500)
 
-                            # Player re-init
-                            self.player.deactivate(active=True)
-                            self.player.re_init(name=tmp_dic["username"], scene="Menu")
-
                             # Transition effect
                             self.screen.blit(self.screenCopy, (0, 0))
                             pygame.display.flip()
                             self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                                                             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                                                        transition_type='circle_in')
+                            
+                            # Player re-init
+                            self.player.deactivate(active=True)
+                            self.player.re_init(name=tmp_dic["username"], scene="Menu")
 
                             return "Menu", SCENES["Menu"]["initial_pos"]  # [PROTOTYPE]
                         else:
