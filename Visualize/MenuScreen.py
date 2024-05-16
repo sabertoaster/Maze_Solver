@@ -134,9 +134,11 @@ class MenuScreen:
         """
         if object == 'Music_box':
             self.sounds_handler.switch()
-            
-        if object == 'Credit':
-            print('sex')
+        if object == "Skin":
+            self.player.switch_skin(self.player.skin)
+            # self.player.re_init(name=self.player.name, scene=self.player.current_scene)
+            self.screen.blit(self.frame, (0, 0))
+            self.player.update(self.screenCopy)
 
     def toggle_panel(self, name):
         """
