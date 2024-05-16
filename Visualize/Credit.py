@@ -1,8 +1,8 @@
 import pygame
-import sys
 
 from CONSTANTS import FONTS, RESOLUTION, COLORS, CREDIT as SECTIONS
 
+#size
 SCREEN_WIDTH, SCREEN_HEIGHT = RESOLUTION[0], RESOLUTION[1]
 VERTICAL_SPACING = SCREEN_HEIGHT // 10
 BOX_LENGTH = 1.5
@@ -12,6 +12,12 @@ NORMAL_SPEED = 1
 FAST_SPEED = 5
 FPS = 60
 
+#color 
+HEADER_FONT_COLOR = COLORS.CYAN.value
+CONTENT_HEAD_FONT_COLOR = COLORS.YELLOW.value
+CONTENT_FONT_COLOR = COLORS.WHITE.value
+
+#font
 header_font = pygame.font.Font(FONTS["default_bold"], HEADER_FONT_SIZE)
 content_font = pygame.font.Font(FONTS["default"], CONTENT_FONT_SIZE)
 
@@ -38,15 +44,15 @@ class Box:
         step = 0
         for head, body in boxes.items():
             if head != "":
-                self.heads.append(Text(head, content_font, (position[0], position[1] + i*VERTICAL_SPACING*BOX_LENGTH), COLORS.YELLOW.value))
+                self.heads.append(Text(head, content_font, (position[0], position[1] + i*VERTICAL_SPACING*BOX_LENGTH), CONTENT_HEAD_FONT_COLOR))
             if body != "":
-                self.bodies.append(Text(body, content_font, (position[0], position[1] + VERTICAL_SPACING//3 + i*VERTICAL_SPACING*BOX_LENGTH), COLORS.WHITE.value))
+                self.bodies.append(Text(body, content_font, (position[0], position[1] + VERTICAL_SPACING//3 + i*VERTICAL_SPACING*BOX_LENGTH), CONTENT_FONT_COLOR))
             i += 1
 
 class Section:
     def __init__(self, header_text, content_texts, initial_y):
 
-        self.header = Text(header_text, header_font, (SCREEN_WIDTH // 2, SCREEN_HEIGHT + initial_y), COLORS.CYAN.value)
+        self.header = Text(header_text, header_font, (SCREEN_WIDTH // 2, SCREEN_HEIGHT + initial_y), HEADER_FONT_COLOR)
         self.contents = Box((SCREEN_WIDTH // 2, SCREEN_HEIGHT + initial_y + VERTICAL_SPACING), content_texts)
 
     def update(self, speed):

@@ -209,8 +209,6 @@ class COLORS(Enum):
     LIGHT_MAGENTA = (255, 182, 193)
     LIGHT_BLACK = (25, 25, 25)
 
-print(type(COLORS.WHITE.value))
-
 AVATAR = {
     "Tom": {"down": "tom_icon_d.png",
             "right": "tom_icon_r.png",
