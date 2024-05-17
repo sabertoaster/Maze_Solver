@@ -39,8 +39,6 @@ class Text:
 class Box:
     def __init__(self, position, boxes):
         
-        #initialize the position of the last text
-        
         self.heads = []
         self.bodies = []
         space = 0
