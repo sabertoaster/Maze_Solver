@@ -301,6 +301,12 @@ CREDIT = {
     },
     "ABOUT US": {
         "": ['GROUP OF 5', 'FRESHMEN', 'HCMUS', 'K23']
+    },
+    "MINH BEO THE GOAT": {
+        "": ['MINH BEO IS THE BEST TEACHER', 'HE IS THE BEST', 'HE IS THE BEOEST', 'HE IS THE GOAT']
+    },
+    "THANKS FOR PLAYING": {
+        
     }
 }
 
