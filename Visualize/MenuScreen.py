@@ -25,7 +25,7 @@ def drawGrid(screen):
     for x in range(0, RESOLUTION[0], blockSize):
         for y in range(0, RESOLUTION[1], blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, COLORS.WHITE, rect, 1)
+            pygame.draw.rect(screen, COLORS.WHITE.value, rect, 1)
 
 
 # [PROTOTYPE]
@@ -63,6 +63,7 @@ class MenuScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
+        drawGrid(self.screen)
 
         self.player = player
         self.screenCopy = self.screen.copy()
@@ -123,12 +124,14 @@ class MenuScreen:
                     
                     player_response = self.player.handle_event(pressed)
                     if player_response == "Move":
-                        pass
+                        self.hovered_obj = self.player.touched_obj
                     if player_response == "Interact":
-                        pass  # Handle Interact Here
+                        self.chosen_obj = self.player.interacted_obj
+                        if self.chosen_obj:
+                            events.append(pygame.event.Event(pygame.USEREVENT, {}))
+                            continue
                     if player_response == "Door":
                         self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
-                        
 
                     self.player.update(self.screenCopy)
 

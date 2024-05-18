@@ -36,7 +36,7 @@ class MouseEvents:
                 
         return None, None
 
-    def get_hover_frame(self, prev_frame, prev_door=None):
+    def get_hover_frame(self, prev_frame, prev_door=None, player_touch=None):
         if self.idling:
             return prev_frame, prev_door
         door = None
