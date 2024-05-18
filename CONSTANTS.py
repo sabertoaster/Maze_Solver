@@ -71,12 +71,14 @@ SCENES = {
         },
 
         'OBJECTS_POS': {
+            'Login': [[1,11]],
             "Music_box": [[x,y] for x in range(1, 3) for y in range(2, 4)],
             "Credit": [[x,y] for x in range(4, 6) for y in range(6, 9)],
             "Skin": [[x,9] for x in range(0, 3)],
         },
 
         'HOVER_FRAME': {
+            'Login': 'livingRoom_BG_exit_hover.png',
             'Music_box': 'livingRoom_BG_music_box_hover.png',
             'Credit': 'livingRoom_BG_credit_hover.png',
             'Skin': 'livingRoom_BG_skin_hover.png',
