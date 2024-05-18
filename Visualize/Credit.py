@@ -159,7 +159,7 @@ def play_credit_sence(credit, screen, blur):
                         running = False
                 except IndexError:
                     try:
-                        if credit.sections[-1].header.position[1] < -CONTENT_FONT_SIZE:
+                        if credit.sections[-1].header.position[1] < -HEADER_FONT_SIZE:
                             running = False
                     except IndexError:
                         pass
