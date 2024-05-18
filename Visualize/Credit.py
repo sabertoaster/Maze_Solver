@@ -36,6 +36,10 @@ class Text:
     def draw(self, screen):
         screen.blit(self.surface, self.rect)
         
+    def set_position(self, position):
+        self.position = position
+        self.rect = self.surface.get_rect(center=self.position)
+        
 class Box:
     def __init__(self, position, boxes):
         
@@ -92,9 +96,18 @@ class Section:
     
     def get_next_pos(self):
         return self.next_pos
+    
+    def set_position(self, position):
+        self.header.set_position(position)
+        for head in self.contents.heads:
+            head.set_position(position)
+        for body in self.contents.bodies:
+            body.set_position(position)
 
 class Credit:
-    def __init__(self):
+    def __init__(self, sounds_handler):
+        self.sounds_handler = sounds_handler
+        
         self.sections = []
         next_pos = 0
         for section_name, content in SECTIONS.items():
@@ -118,6 +131,14 @@ class Credit:
             #     if key != "": 
             #         lines += 1
             # i += 1
+            
+    def reset(self):
+        self.sections = []
+        next_pos = 0
+        for section_name, content in SECTIONS.items():
+            section = Section(section_name, content, SCREEN_HEIGHT + next_pos)
+            self.sections.append(section)
+            next_pos = section.get_next_pos() + VERTICAL_SPACING
 
     def update(self, speed):
         for section in self.sections:
@@ -127,7 +148,10 @@ class Credit:
         for section in self.sections:
             section.draw(screen)
 
-def play_credit_sence(credit, screen, blur):
+    def play_credit_sence(self, screen, blur):
+        
+        self.sounds_handler.play_bgm("Credit")
+        
         clock = pygame.time.Clock()
 
         running = True
@@ -143,23 +167,28 @@ def play_credit_sence(credit, screen, blur):
             if keys[pygame.K_SPACE]:
                 speed = FAST_SPEED
             if keys[pygame.K_ESCAPE]:
+                self.reset()
                 running = False
+                continue
 
             screen.blit(blur, (0, 0))
 
-            credit.update(speed)
-            credit.draw(screen)
+            self.update(speed)
+            self.draw(screen)
 
             try:
-                if credit.sections[-1].contents.bodies[-1].position[1] < -CONTENT_FONT_SIZE:
+                if self.sections[-1].contents.bodies[-1].position[1] < -CONTENT_FONT_SIZE:
+                    self.reset()    
                     running = False
             except IndexError:
                 try:
-                    if credit.sections[-1].contents.heads[-1].position[1] < -CONTENT_FONT_SIZE:
+                    if self.sections[-1].contents.heads[-1].position[1] < -CONTENT_FONT_SIZE:
+                        self.reset()
                         running = False
                 except IndexError:
                     try:
-                        if credit.sections[-1].header.position[1] < -HEADER_FONT_SIZE:
+                        if self.sections[-1].header.position[1] < -HEADER_FONT_SIZE:
+                            self.reset()  
                             running = False
                     except IndexError:
                         pass
@@ -167,4 +196,5 @@ def play_credit_sence(credit, screen, blur):
 
             clock.tick(FPS)
 
+        self.sounds_handler.play_bgm(self.sounds_handler.prev_bgm_name)
 # 

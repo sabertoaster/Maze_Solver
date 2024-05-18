@@ -9,7 +9,7 @@ from Visualize.Transition import Transition
 from Visualize.MouseEvents import MouseEvents
 from Visualize.HangingSign import HangingSign
 
-from Visualize.Credit import Credit, play_credit_sence 
+from Visualize.Credit import Credit 
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
 
@@ -52,6 +52,8 @@ class MenuScreen:
         
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
         self.screenBlur = blur_screen(self.screen)
+        
+        self.credit = Credit(sounds_handler=self.sounds_handler)
 
     def play(self, player):
         """
@@ -63,7 +65,7 @@ class MenuScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        drawGrid(self.screen)
+        # drawGrid(self.screen)
 
         self.player = player
         self.screenCopy = self.screen.copy()
@@ -124,7 +126,7 @@ class MenuScreen:
                     
                     player_response = self.player.handle_event(pressed)
                     if player_response == "Move":
-                        self.hovered_obj = self.player.touched_obj
+                        pass
                     if player_response == "Interact":
                         self.chosen_obj = self.player.interacted_obj
                         if self.chosen_obj:
@@ -149,8 +151,7 @@ class MenuScreen:
             self.player.update(self.screenCopy)
         if object == "Credit":
             self.player.update(self.screenCopy)
-            credit = Credit()
-            play_credit_sence(credit=credit, screen=self.screen, blur=blur_screen(self.screen))
+            self.credit.play_credit_sence(screen=self.screen, blur=blur_screen(self.screen))
             self.player.update(self.screenCopy)
 
 

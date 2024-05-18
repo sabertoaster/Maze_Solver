@@ -54,6 +54,7 @@ class SoundsHandler():
     def play_bgm(self, bgm_name):
         if self.bgm_name == bgm_name:
             return
+        self.prev_bgm_name = self.bgm_name
         active = True
         if self.bgm:
             active = self.bgm.active

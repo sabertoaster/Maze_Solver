@@ -250,6 +250,10 @@ SOUNDS = {
             'file_name': 'house_bgm.mp3',
             'volume': 0.5
         },
+        'Credit': {
+            'file_name': 'town_bgm.mp3',
+            'volume': 0.5
+        }
     },
     'SFX': { 
         'bump': {
