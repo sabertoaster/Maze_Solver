@@ -56,6 +56,8 @@ class Player:
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
         
         self.sounds_handler = sounds_handler
+        
+        self.interacted_obj = None
 
     def switch_skin(self, skin):
         lst = list(AVATAR.keys())
@@ -99,25 +101,19 @@ class Player:
             response = None
             if key_pressed == pygame.K_RIGHT or key_pressed == pygame.K_d:
                 self.current_direction = 'right'
-                response = self.move(self.current_direction)
-                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction], resolution=SCENES[self.current_scene]["cell"])
             if key_pressed == pygame.K_LEFT or key_pressed == pygame.K_a:
                 self.current_direction = 'left'
-                response = self.move(self.current_direction)
-                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction], resolution=SCENES[self.current_scene]["cell"])
             if key_pressed == pygame.K_DOWN or key_pressed == pygame.K_s:
                 self.current_direction = 'down'
-                response = self.move(self.current_direction)
-                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction], resolution=SCENES[self.current_scene]["cell"])
             if key_pressed == pygame.K_UP or key_pressed == pygame.K_w:
                 self.current_direction = 'up'
-                response = self.move(self.current_direction)
-                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction], resolution=SCENES[self.current_scene]["cell"])
-            if key_pressed == pygame.K_e:
+            elif key_pressed == pygame.K_e:
                 self.interact()
                 return "Interact"
+            
+            response = self.move(self.current_direction)
+            self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction], resolution=SCENES[self.current_scene]["cell"])
             pygame.event.clear()
-            print("Response: ", response)
             return response
         return None
 
@@ -127,7 +123,6 @@ class Player:
         :param screenCopy:
         :return:
         """
-        print('updated')
         self.screen.blit(screenCopy.copy(), (0, 0))
         self.draw(screenCopy)
 
@@ -246,4 +241,9 @@ class Player:
         Interact with the environment
         :return:
         """
+        for key, val in SCENES[self.current_scene]["OBJECTS_TOUCH_RANGE"].items():
+            if self.grid_pos in val:
+                self.interacted_obj = key
+                break
+                
         self.sounds_handler.play_sfx('interact')

@@ -78,6 +78,12 @@ SCENES = {
             "Credit": [[x,y] for x in range(4, 6) for y in range(6, 9)],
             "Skin": [[x,9] for x in range(0, 3)],
         },
+        
+        'OBJECTS_TOUCH_RANGE': { 
+            'Credit': [(6,3), (7,3), (8,3), (5,4), (9,4)],
+            'Music_box': [[x,y] for x in range(4, 6) for y in range(6, 9)],
+            'Skin': [[x,9] for x in range(0, 3)],    
+        },
 
         'HOVER_FRAME': {
             'Login': 'livingRoom_BG_exit_hover.png',
