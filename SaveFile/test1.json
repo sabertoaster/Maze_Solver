@@ -1,12 +1,12 @@
 {
     "player.name": "kiet",
     "player.grid_pos": [
-        4,
-        18
+        17,
+        0
     ],
     "player.visual_pos": [
-        160.00000000000125,
-        719.9999999999762
+        679.9999999999785,
+        5.384581669432009e-14
     ],
     "level": "Easy",
     "mode": "Manual",

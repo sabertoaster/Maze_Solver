@@ -1,6 +1,6 @@
 # Custom imports
 from Algorithms.Algorithms import *
-from Algorithms.MazeGeneration import Maze, convert as convert_maze
+from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_energy
 from GridMapObject import GridMapObject
 from GridMap import GridMap
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
@@ -20,6 +20,8 @@ from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
 from Save import*
 from Player import*
+from random import choice
+
 class Gameplay:
     def __init__(self, screen, start_pos, end_pos,file_name = '', maze_size=(10, 10)):
         self.screen = screen
@@ -92,6 +94,12 @@ class Gameplay:
             self.maze_toString = convert_maze(self.maze)
         else:
             self.maze_toString = data['maze_toString']
+            
+    
+            
+            
+        
+        
     def init_maze(self):
         # INSTANTIATE MAZE
         self.update_maze()
@@ -99,7 +107,8 @@ class Gameplay:
         self.grid_map = GridMap("Maze", self.maze_size, (1, 1))
         
         
-                
+        
+              
         self.cell_size = 40
         self.visual_maze = self.screen.copy()
         self.visual_maze.fill((0, 0, 0))
@@ -112,10 +121,23 @@ class Gameplay:
                 elif self.maze_toString[i][j] == '#':
                     pygame.draw.rect(self.visual_maze, (0,0,0), ceil_rect)
                 elif self.maze_toString[i][j] == 'E':
+                    self.end_pos = (i, j)
                     pygame.draw.rect(self.visual_maze, (255,255,0), ceil_rect)
                 elif self.maze_toString[i][j] == 'S':
+                    self.start_pos = (i, j)
                     pygame.draw.rect(self.visual_maze, (255,0,0), ceil_rect)
 
+
+        test = convert_energy(self.maze_toString)
+        for i in range(len(test)):
+            for j in range(len(test[0])):
+                print(test[i][j], end='')
+            print()
+
+        # A = TotalAlgorithms(self.maze_toString)
+        # print(self.start_pos, self.end_pos)
+        # path, visited = A.dijkstra(self.end_pos, self.start_pos)
+        # print(path)
         self.screen.blit(self.visual_maze, (0, 0))
         
     def visualize_maze(self):

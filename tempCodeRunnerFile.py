@@ -1,1 +1,1 @@
-screenCopy
+print(check_file('test1'))
