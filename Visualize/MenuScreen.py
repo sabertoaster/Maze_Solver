@@ -42,6 +42,7 @@ class MenuScreen:
         """
 
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
+        self.instructions_frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]['BG_instructions'], RESOLUTION)
         self.screen = screen
         
         self.sounds_handler = sounds_handler
@@ -105,7 +106,7 @@ class MenuScreen:
                 self.mouse_handler.set_pos(mouse_pos)
 
                 self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_obj)
-
+                
                 if event.type == pygame.MOUSEBUTTONUP:
                     self.chosen_door, self.chosen_obj = self.mouse_handler.click()
                     events.append(pygame.event.Event(pygame.USEREVENT, {}))
@@ -113,6 +114,13 @@ class MenuScreen:
                 
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
+                    
+                    if pressed == pl.K_SPACE:
+                        self.screen.blit(self.instructions_frame, (0, 0))
+                        self.player.update(self.screen.copy())
+                        pygame.display.flip()
+                        continue
+                    
                     player_response = self.player.handle_event(pressed)
                     if player_response == "Move":
                         pass

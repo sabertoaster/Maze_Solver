@@ -42,6 +42,8 @@ SCENES = {
 
     'Menu': {
         'BG': 'livingRoom_BG.png',
+        
+        'BG_instructions': 'livingRoom_BG_instructions.png',
 
         'DOORS': {
             (11, 1): "Login",

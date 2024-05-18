@@ -127,7 +127,7 @@ class Player:
         :param screenCopy:
         :return:
         """
-
+        print('updated')
         self.screen.blit(screenCopy.copy(), (0, 0))
         self.draw(screenCopy)
 
