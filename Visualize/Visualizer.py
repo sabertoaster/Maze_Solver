@@ -8,7 +8,7 @@ from Visualize.PlayScreen import PlayScreen as play
 from Visualize.LeaderboardScreen import LeaderboardScreen as leaderboard
 from Gameplay import Gameplay
 from CONSTANTS import RESOLUTION, RESOURCE_PATH, CURRENT_PLAY_MODE
-
+from Save import*
 
 class Visualizer:
     def __init__(self, screen, player):
@@ -58,7 +58,8 @@ class Visualizer:
         :return:
         """
         if scene_name == "Gameplay":
-            gameplay_scene = Gameplay(self.screen, (0, 0), (0, 0))
+            file_name = 'test1'
+            gameplay_scene = Gameplay(self.screen, (0, 0), (0, 0), file_name)
             next_scene, next_grid_pos = gameplay_scene.play(player=self.player)
             del gameplay_scene
             return next_scene, next_grid_pos

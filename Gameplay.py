@@ -1,6 +1,6 @@
 # Custom imports
 from Algorithms.Algorithms import *
-from Algorithms.MazeGeneration import Maze, convert as convert_maze
+from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_energy
 from GridMapObject import GridMapObject
 from GridMap import GridMap
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FPS
@@ -19,13 +19,16 @@ from Visualize.TextBox import TextBox, FormManager, Color
 from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
+from Save import*
+from Player import*
+from random import choice
 
 class Gameplay:
-    def __init__(self, screen, start_pos, end_pos, maze_size=(10, 10)):
+    def __init__(self, screen, start_pos, end_pos,file_name = '', maze_size=(10, 10)):
         self.screen = screen
         self.screenCopy = self.screen.copy()
         self.screen.fill((0, 0, 0))  # Black background [PROTOTYPE]
-
+        self.file_name = file_name
         self.maze_size = maze_size
         #CURRENT_LEVEL.value["maze_size"]
         # INSTANTIATE MAZE
@@ -45,10 +48,19 @@ class Gameplay:
                     self.player.grid_map.get_map(self.player.current_scene).get_grid()[i][j] = GridMapObject.WALL
         self.player.ratio = (self.maze_size[0] * 2 - 1,self.maze_size[0] * 2 - 1) 
         
-        
+    def update_player(self):
+        if self.file_name != '':
+            data = read_file(self.file_name)
+            self.player.name = data['player.name']
+            self.player.re_init(self.player.name, "Gameplay")
+            print(self.player.name)
+            self.player.grid_pos = data['player.grid_pos']
+            self.player.visual_pos = data['player.visual_pos']
+            
     def play(self, player):
         self.player = player
-        # print(self.player.grid_map.get_map(self.player.current_scene).get_grid())
+        #print(self.player.grid_map.get_map(self.player.current_scene).get_grid())
+        self.update_player()
         
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
@@ -67,19 +79,29 @@ class Gameplay:
                             return next_scene, next_pos
                     if event.key == pygame.K_m:
                         pass
+                        
+                    if event.key == pygame.K_g:
+                        save = SaveFile(self.maze_toString, self.player)
+                        save.run_save('test1')
+                        
                         # Handle minimap here
                     player_response = self.player.handle_event(event.key)
                     self.player.update(self.screenCopy)
 
+    def update_maze(self):
+        data = read_file(self.file_name)
+        if self.file_name == '':
+            self.maze = Maze("Wilson", self.maze_size)
+            self.maze_toString = convert_maze(self.maze)
+        else:
+            self.maze_toString = data['maze_toString']
+        
     def init_maze(self):
         # INSTANTIATE MAZE
-        self.maze = Maze("Wilson", self.maze_size)
-        self.maze_toString = convert_maze(self.maze)
-
+        self.update_maze()
+        print(self.maze_toString)
         self.grid_map = GridMap("Maze", self.maze_size, (1, 1))
-
-        
-                
+              
         self.cell_size = 40
         self.visual_maze = self.screen.copy()
         self.visual_maze.fill((0, 0, 0))
@@ -92,10 +114,23 @@ class Gameplay:
                 elif self.maze_toString[i][j] == '#':
                     pygame.draw.rect(self.visual_maze, (0,0,0), ceil_rect)
                 elif self.maze_toString[i][j] == 'E':
+                    self.end_pos = (i, j)
                     pygame.draw.rect(self.visual_maze, (255,255,0), ceil_rect)
                 elif self.maze_toString[i][j] == 'S':
+                    self.start_pos = (i, j)
                     pygame.draw.rect(self.visual_maze, (255,0,0), ceil_rect)
 
+
+        test = convert_energy(self.maze_toString)
+        for i in range(len(test)):
+            for j in range(len(test[0])):
+                print(test[i][j], end='')
+            print()
+
+        # A = TotalAlgorithms(self.maze_toString)
+        # print(self.start_pos, self.end_pos)
+        # path, visited = A.dijkstra(self.end_pos, self.start_pos)
+        # print(path)
         self.screen.blit(self.visual_maze, (0, 0))
 
     def init_panel(self):
@@ -146,12 +181,9 @@ class Gameplay:
 
         tp.call_before_gui(before_gui) #tells thorpy to call before_gui() before drawing gui.
 
-        
-        
     def visualize_maze(self):
         pass
 
-    
     def toggle_panel(self, event):
         def at_refresh():
             self.screen.fill((255,)*3)

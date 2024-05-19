@@ -1,7 +1,7 @@
 import pygame
 
 class Minimap:
-    def __init__(self, screen, size, maze, player, resolution, main_surface_size):
+    def __init__(self, screen, size, maze, player, resolution, display_pos):
         '''
         Parameters:
         - maze: Get the maze being played
@@ -17,7 +17,7 @@ class Minimap:
 
         self.resolution = resolution
         
-        self.display_pos = main_surface_size
+        self.display_pos = display_pos
 
         #For pressing M
         self.zoom_percentage = 1
@@ -38,7 +38,7 @@ class Minimap:
             - size: Get the size of the displayed minimap
             '''
 
-            current_player_pos = self.player.pos
+            current_player_pos = self.player.grid_pos
 
             tmp_row = len(self.maze)
             tmp_col = len(self.maze[0])
