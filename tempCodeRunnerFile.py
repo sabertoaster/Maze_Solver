@@ -1,1 +1,1 @@
-grid_map
+print(check_file('test1'))

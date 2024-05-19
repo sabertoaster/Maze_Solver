@@ -1,6 +1,6 @@
 # Custom imports
 from Algorithms.Algorithms import *
-from Algorithms.MazeGeneration import Maze, convert as convert_maze
+from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_energy
 from GridMapObject import GridMapObject
 from GridMap import GridMap
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FPS
@@ -20,13 +20,16 @@ from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
 from Minimap import Minimap
+from Save import*
+from Player import*
+from random import choice
 
 class Gameplay:
-    def __init__(self, screen, start_pos, end_pos, maze_size=(10, 10)):
+    def __init__(self, screen, start_pos, end_pos,file_name = '', maze_size=(10, 10)):
         self.screen = screen
         self.screenCopy = self.screen.copy()
         self.screen.fill((0, 0, 0))  # Black background [PROTOTYPE]
-
+        self.file_name = file_name
         self.maze_size = maze_size
         #CURRENT_LEVEL.value["maze_size"]
         # INSTANTIATE MAZE
@@ -48,14 +51,24 @@ class Gameplay:
                 if self.maze_toString[i][j] == '#':
                     self.player.grid_map.get_map(self.player.current_scene).get_grid()[i][j] = GridMapObject.WALL
         self.player.ratio = (self.maze_size[0] * 2 - 1,self.maze_size[0] * 2 - 1) 
-           
+
+    def update_player(self):
+        if self.file_name != '':
+            data = read_file(self.file_name)
+            self.player.name = data['player.name']
+            self.player.re_init(self.player.name, "Gameplay")
+            print(self.player.name)
+            self.player.grid_pos = data['player.grid_pos']
+            self.player.visual_pos = data['player.visual_pos']
+
     def play(self, player):
         self.player = player
-        self.player.grid_pos = self.maze_start[::-1]
+        self.player.grid_pos = self.start_pos[::-1]
 
         # INSTANTIATE BACKGROUND
         self.init_background()
         # self.screen.blit(self.bg_surface,(0,0))
+        self.update_player()
         
         # INSTANTIATE MINIMAP
         minimap_display_pos = (0, (RESOLUTION[0] - RESOLUTION[1]) // 2)
@@ -93,7 +106,11 @@ class Gameplay:
                             solution_flag = False
 
                             self.show_solution(solution_flag)
-
+                    if event.key == pygame.K_g:
+                        save = SaveFile(self.maze_toString, self.player)
+                        save.run_save('test1')
+                        
+                        # Handle minimap here
                     player_response = self.player.handle_event(event.key)
 
                     # self.screen.blit(self.screenCopy, (0, 0))
@@ -113,12 +130,18 @@ class Gameplay:
 
                     pygame.display.update()
 
+    def update_maze(self):
+        data = read_file(self.file_name)
+        if self.file_name == '':
+            self.maze = Maze("Wilson", self.maze_size)
+            self.maze_toString = convert_maze(self.maze)
+        else:
+            self.maze_toString = data['maze_toString']
+        
     def init_maze(self):
         # INSTANTIATE MAZE
-        self.maze = Maze("Wilson", self.maze_size)
-        
-        self.maze_toString, self.maze_start, self.maze_end = convert_maze(self.maze)
-
+        self.update_maze()
+    
         self.grid_map = GridMap("Maze", self.maze_size, (1, 1))
 
         self.maze_row, self.maze_col = len(self.maze_toString), len(self.maze_toString[0])
@@ -126,6 +149,12 @@ class Gameplay:
         self.cell_size = 10
 
         self.draw_maze()
+
+        # test = convert_energy(self.maze_toString)
+        # for i in range(len(test)):
+        #     for j in range(len(test[0])):
+        #         print(test[i][j], end='')
+        #     print()
 
     def init_background(self):
         self.bg_cell_size = RESOLUTION[1] // self.minimap_grid_size[1]
@@ -164,8 +193,10 @@ class Gameplay:
                 elif self.maze_toString[i][j] == '#':
                     pygame.draw.rect(self.visual_maze, (0,0,0), ceil_rect)
                 elif self.maze_toString[i][j] == 'S':
+                    self.start_pos = (i,j)
                     pygame.draw.rect(self.visual_maze, (255,255,0), ceil_rect)
                 elif self.maze_toString[i][j] == 'E':
+                    self.end_pos = (i,j)
                     pygame.draw.rect(self.visual_maze, (255,0,0), ceil_rect)
 
         self.screen.blit(self.visual_maze, (RESOLUTION[0] - self.visual_maze_resolution[0], 0))
@@ -280,7 +311,7 @@ class Gameplay:
         return None, None
 
     def show_solution(self, flag):
-        trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.maze_end)
+        trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
 
         if flag:
             color = (127,0,255)

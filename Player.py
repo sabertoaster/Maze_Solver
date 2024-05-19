@@ -23,7 +23,7 @@ class Player:
         :param current_scene:
         """
         self.door_pos = None
-
+        self.score = 0
         self.active = True
         self.screen = screen
         self.current_scene = current_scene

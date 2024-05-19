@@ -5,7 +5,7 @@ import numpy as np
 from random import choice
 from random import shuffle
 from random import randint
-
+from Algorithms.Algorithms import *
 
 sys.setrecursionlimit(15000)
 
@@ -338,3 +338,45 @@ def convert(maze_instance: Maze):
 #             sys.exit()
 
 #     pygame.display.update()
+
+def convert_energy(maze: list[list[str]]) ->list[list[str]]:
+        for i in range(len(maze)):
+            for j in range(len(maze[0])):
+                if maze[i][j] == 'E':
+                    end_pos = i, j
+                if maze[i][j] == 'S':
+                    start_pos = i, j
+        A = TotalAlgorithms(maze)
+        print(start_pos, end_pos)
+        path, visited = A.dijkstra(end_pos, start_pos)
+        print(path)
+        
+        cur_pos = 0
+        energy_pos = 5
+        while(cur_pos < len(path)):
+            x, y = path[cur_pos]
+            maze[x][y] = str(energy_pos)
+            tmp = np.random.randint(3, 6)
+            cur_pos += tmp
+            energy_pos = tmp
+        
+        for i in range(len(maze)//3):
+            for j in range(len(maze[0])//3):
+                x, y = i * 4, j * 4
+            
+                distance = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1), (0, 0)]
+                neighbor_list = [(x + dx, y + dy) for dx, dy in distance
+                                 if x + dx >= 0 and x + dx < len(maze) and y + dy >= 0 
+                                 and y + dy < len(maze[0]) and maze[x + dx][y + dy] == ' ']
+                
+                print(i * 4, j * 4, len(neighbor_list))
+                if len(neighbor_list) != 0:
+                    cur_x, cur_y = choice(neighbor_list)
+                    tmp = np.random.randint(1, 6)
+                    check = [(x + dx, y + dy) for dx, dy in distance
+                                 if x + dx >= 0 and x + dx < len(maze) and y + dy >= 0 
+                                 and y + dy < len(maze[0]) and maze[x + dx][y + dy] in ['1', '2', '3', '4', '5']]
+                    if len(check) == 0:
+                        maze[(cur_x)][(cur_y)] = tmp
+        return maze        
+    
