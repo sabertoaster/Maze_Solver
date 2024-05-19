@@ -226,8 +226,13 @@ class BinaryTreeAlgorithm:
                 #print(row, col, self.maze[row][col].walls)
 
 def random_start_end(size):
-    start = randint(0, size[0]), randint(0, size[1])
-    end = randint(0, size[0]), randint(0, size[1])
+    if random.choice([0,1]):
+        start = (random.randint(0, size[0] - 1), 0)
+        end = (random.randint(0, size[0] - 1), size[1] - 1)
+    else:
+        start = (0, random.randint(0, size[1] - 1))
+        end = (size[0] - 1, random.randint(0, size[1] - 1))
+        
     return start, end
 
 
@@ -281,26 +286,7 @@ class Maze:
             tmp.run()
             self.maze = tmp.maze
             self.size = size_maze
-
-def Generate_Destination(row, col):
-    strategy = random.choice([0,1])
-
-    if strategy == 0:
-        x_start = random.randint(0, row - 1)
-        y_start = 0
-
-        x_end = random.randint(0, row - 1)
-        y_end = col - 1
-
-    elif strategy == 1:
-        x_start = 0
-        y_start = random.randint(0, col - 1)
-
-        x_end = row - 1
-        y_end = random.randint(0, col - 1)
-        
-    return x_start, x_end, y_start, y_end
-
+            
 #Convert 2d[Cell] matrix to text file (Tường mỏng -> tường dày)
     #Output: File txt
 def convert(maze_instance: Maze):
@@ -319,12 +305,11 @@ def convert(maze_instance: Maze):
             if 2 * x + 1 < 2 * maze_instance.size[0] - 1 and 2 * y + 1 < 2 * maze_instance.size[1] - 1:
                 maze_output[2 * y + 1][2 * x + 1] = '#'
 
-        
-    x_start, x_end, y_start, y_end = Generate_Destination(2 * maze_instance.size[0] - 1, 2 * maze_instance.size[1] - 1)
+    x_start, y_start, x_end, y_end = maze_instance.start[0] * 2, maze_instance.start[1] * 2, maze_instance.end[0] * 2, maze_instance.end[1] * 2
     
     maze_output[x_start][y_start] = 'S'
     maze_output[x_end][y_end] = 'E'
-    return maze_output
+    return maze_output, (x_start, y_start), (x_end, y_end)
     # for x in range(2 * maze_instance.size[0] - 2):
     #     maze_output[x] = ''.join(maze_output[x]) + '\n'
     # maze_output[2 * maze_instance.size[0] - 2] = ''.join(maze_output[2 * maze_instance.size[0] - 2])

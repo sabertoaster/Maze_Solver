@@ -78,8 +78,6 @@ class TotalAlgorithms:
     def a_star(self, start: tuple[int], end: tuple[int]) -> tuple[list[tuple], list[tuple]]:
         cost_map = heuristic_mapping(self.maze, end)
 
-        print(len(cost_map), len(cost_map[0]))
-
         step = 0
 
         #Each node in the frontier contains:
@@ -161,7 +159,7 @@ def check_valid_move(maze: list[list[str]], cur_pos: tuple[int], visited: list[t
         except IndexError:
             continue
         else:
-            if ((next_stage == ' ') or (next_stage == 'S')) and ((move[0], move[1]) not in visited):
+            if ((next_stage == ' ') or (next_stage == 'E')) and ((move[0], move[1]) not in visited):
                 res.append(move)
 
     return res
