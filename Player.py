@@ -248,9 +248,11 @@ class Player:
         Interact with the environment
         :return:
         """
+        self.sounds_handler.play_sfx('interact')
+        
+        self.interacted_obj = None
         for key, val in SCENES[self.current_scene]["OBJECTS_TOUCH_RANGE"].items():
             if self.grid_pos in val:
                 self.interacted_obj = key
                 break
                 
-        self.sounds_handler.play_sfx('interact')

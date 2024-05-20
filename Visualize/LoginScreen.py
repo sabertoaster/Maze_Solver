@@ -96,7 +96,7 @@ class LoginScreen:
 
         # Start transition effect 9 60 9 190
         self.transition.transition(transition_type='fade', next_scene="Menu")
-        self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SC   ENE_NAME]["cell"][0] / 2,
+        self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                                         self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                                    transition_type='circle_out')  # draw transition effect
 
