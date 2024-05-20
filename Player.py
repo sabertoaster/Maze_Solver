@@ -163,18 +163,19 @@ class Player:
 
                         # [PROTOTYPE] maze_cell_size is used to detect position to put the namebox on
                         # NEED TO ADD THAT PARAMETER IN CONSTANTS.PY 
-    def draw_on_minimap(self, screen, maze_cell_size): #Input the background surface
+    def draw_on_minimap(self, screen, maze_cell_size, ratio): #Input the background surface
         if self.active:
             if self.visualize_direction[0] != self.visualize_direction[1]:
-                self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step,
-                                    self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step)
+                self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / ratio,
+                                    self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / ratio)
 
                 screen.blit(self.avatar, self.visual_pos)
                 self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + maze_cell_size // 2,
                                             self.visual_pos[1] - 1.5 * maze_cell_size))
                 self.name_box.draw_on_minimap(screen, background = True)
+
                 pygame.display.flip()
-                self.visualize_direction = (self.visualize_direction[1], self.visualize_direction[1])
+                
                 return
             
             screen.blit(self.avatar, self.visual_pos)

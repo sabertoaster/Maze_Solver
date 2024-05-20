@@ -309,7 +309,7 @@ def convert(maze_instance: Maze):
     
     maze_output[x_start][y_start] = 'S'
     maze_output[x_end][y_end] = 'E'
-    return maze_output, (x_start, y_start), (x_end, y_end)
+    return maze_output
     # for x in range(2 * maze_instance.size[0] - 2):
     #     maze_output[x] = ''.join(maze_output[x]) + '\n'
     # maze_output[2 * maze_instance.size[0] - 2] = ''.join(maze_output[2 * maze_instance.size[0] - 2])
