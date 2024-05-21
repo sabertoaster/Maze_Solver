@@ -41,7 +41,7 @@ class PlayScreen:
         :param res_cel:
         :param path_resources:
         """
-
+        self.panel_fl = False
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
         
@@ -60,14 +60,20 @@ class PlayScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        drawGrid(screen=self.screen)
+        # drawGrid(screen=self.screen)
         
 
         self.player = player
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
-        self.blur = blur_screen(screen=self.screen.copy())
+
+        load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
+        blur = blur_screen(screen=self.screen)
+        self.load_panel = add_element(blur, load_panel,
+                                             ((RESOLUTION[0] - load_panel.get_width()) / 2,
+                                              (RESOLUTION[1] - load_panel.get_height()) / 2))
+
         
         self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
         
@@ -80,19 +86,34 @@ class PlayScreen:
             events = pygame.event.get()
             for event in events:
 
+                mouse_pos = pygame.mouse.get_pos()
+
                 if event.type == pygame.QUIT:
+                    # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                    #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                    #         transition_type='circle_in')
                     return None, None
 
                 if self.chosen_door:
-                    next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
+                    next_scene, next_grid_pos = self.toggle_panel(self.chosen_door, event)
                     if next_scene:
                         return next_scene, next_grid_pos
 
-                mouse_pos = pygame.mouse.get_pos()
+                if self.chosen_obj:
+                    if not self.panel_fl:
+                        self.screen.blit(self.load_panel, (0, 0))
+                        self.panel_fl = True
+                    elif self.panel_fl and event.type == pygame.KEYDOWN:
+                        next_scene, next_grid_pos = self.toggle_panel(self.chosen_obj, event)
+                        if next_scene:
+                            return next_scene, next_grid_pos
+                    pygame.display.update()
+                    continue
 
                 self.mouse_handler.set_pos(mouse_pos)
 
-                self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_obj)
+                self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy,
+                                                                                       self.hovered_obj)
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     self.chosen_door, self.chosen_obj = self.mouse_handler.click()
@@ -102,22 +123,20 @@ class PlayScreen:
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
                     player_response = self.player.handle_event(pressed)
+
                     if player_response == "Move":
                         pass
                     if player_response == "Interact":
-                        pass  # Handle Interact Here
+                        self.chosen_obj = self.player.interacted_obj
+                        if self.chosen_obj:
+                            events.append(pygame.event.Event(pygame.USEREVENT, {}))
+                            continue
                     if player_response == "Door":
-                        self.player.update(self.screenCopy)
-                        self.panel_fl = True
                         self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
 
-                    # if self.player.handle_event(pressed):  # Handle interact from player
-                    #     pass
-                    # if self.player.get_grid_pos() in DOOR_POS[SCENE_NAME]:
-                    #     pass
                     self.player.update(self.screenCopy)
 
-    def toggle_panel(self, name):
+    def toggle_panel(self, name, event):
         """
         :param name: to know whether if the player step into which door
         :return:
@@ -135,6 +154,12 @@ class PlayScreen:
                 
                 return name, (13, self.player.get_grid_pos()[1])
 
+            if name == "Load":
+                next_scene, next_grid_pos = self.load(event)
+                if next_scene:
+                    self.player.deactivate(active=True)
+                    return next_scene, next_grid_pos
+
             if name == "Easy":
                 pass
 
@@ -144,4 +169,15 @@ class PlayScreen:
             if name == "Hard":
                 pass
 
+        return None, None
+
+    def load(self, event):
+
+        if event.type == pygame.KEYDOWN:
+            # self.screen.blit(self.leaderboard_panel, (0, 0))
+            if event.key == pygame.K_ESCAPE:
+                self.panel_fl = False
+                return "Play", self.player.get_grid_pos()  # [PROTOTYPE]
+
+        pygame.display.update()
         return None, None
