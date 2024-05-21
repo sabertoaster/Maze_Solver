@@ -19,15 +19,15 @@ SCENES = {
         },
 
         'DOORS_CLICK_RANGE': {
-            "Login" : [[x, y] for x in range(6, 10) for y in range(3, 9)],
-            "Register" : [[x, y] for x in range(6, 11) for y in range(18, 27)],
-            "Exit" : [[4,13]]
+            "Login": [[x, y] for x in range(6, 10) for y in range(3, 9)],
+            "Register": [[x, y] for x in range(6, 11) for y in range(18, 27)],
+            "Exit": [[4, 13]]
         },
-        
+
         'OBJECTS_POS': {
-            "Login" : [[x, y] for x in range(6, 10) for y in range(3, 9)],
-            "Register" : [[x, y] for x in range(6, 11) for y in range(18, 27)],
-            "Exit" : [[4,13]]    
+            "Login": [[x, y] for x in range(6, 10) for y in range(3, 9)],
+            "Register": [[x, y] for x in range(6, 11) for y in range(18, 27)],
+            "Exit": [[4, 13]]
         },
 
         'HOVER_FRAME': {
@@ -42,7 +42,7 @@ SCENES = {
 
     'Menu': {
         'BG': 'livingRoom_BG.png',
-        
+
         'BG_instructions': 'livingRoom_BG_instructions.png',
 
         'DOORS': {
@@ -65,24 +65,24 @@ SCENES = {
             (14, 8): "Play",
             (14, 9): "Play",
         },
-        
+
         'DOORS_CLICK_RANGE': {
-            'Login': [[1,11]],
-            'Leaderboard': [[x,0] for x in range(3, 10)],
-            'Play': [[x,14] for x in range(2, 10)],
+            'Login': [[1, 11]],
+            'Leaderboard': [[x, 0] for x in range(3, 10)],
+            'Play': [[x, 14] for x in range(2, 10)],
         },
 
         'OBJECTS_POS': {
-            'Login': [[1,11]],
-            "Music_box": [[x,y] for x in range(1, 3) for y in range(2, 4)],
-            "Credit": [[x,y] for x in range(4, 6) for y in range(6, 9)],
-            "Skin": [[x,9] for x in range(0, 3)],
+            'Login': [[1, 11]],
+            "Music_box": [[x, y] for x in range(1, 3) for y in range(2, 4)],
+            "Credit": [[x, y] for x in range(4, 6) for y in range(6, 9)],
+            "Skin": [[x, 9] for x in range(0, 3)],
         },
-        
-        'OBJECTS_TOUCH_RANGE': { 
-            'Credit': [(6,3), (7,3), (8,3), (5,4), (9,4)],
-            'Music_box': [[x,y] for x in range(4, 6) for y in range(6, 9)],
-            'Skin': [[x,9] for x in range(0, 3)],    
+
+        'OBJECTS_TOUCH_RANGE': {
+            'Credit': [(6, 3), (7, 3), (8, 3), (5, 4), (9, 4)],
+            'Music_box': [[x, y] for x in range(4, 6) for y in range(6, 9)],
+            'Skin': [[x, 9] for x in range(0, 3)],
         },
 
         'HOVER_FRAME': {
@@ -109,15 +109,34 @@ SCENES = {
             (0, 7): "Menu",
             (0, 8): "Menu",
             (0, 9): "Menu",
+
+            (9, 5): "Easy",
+            (10, 5): "Easy",
+
+            (11, 7): "Medium",
+            (12, 7): "Medium",
+
+            (8, 9): "Hard",
+            (9, 9): "Hard",
         },
-        
+
         'DOORS_CLICK_RANGE': {
-            'Menu': [[x,0] for x in range(2, 10)]
+            'Menu': [[x, 0] for x in range(2, 10)]
         },
 
-        'OBJECTS_POS': {},
+        'OBJECTS_POS': {
+            'Easy': [[5, y] for y in range(9, 11)],
+            'Medium': [[7, y] for y in range(11, 13)],
+            'Hard': [[9, y] for y in range(8, 10)],
+            'Load': [[x, y] for x in range(3) for y in range(4, 6)],
+        },
 
-        'HOVER_FRAME': {},
+        'HOVER_FRAME': {
+            'Easy': 'kitchen_BG_easy_hover.png',
+            'Medium': 'kitchen_BG_medium_hover.png',
+            'Hard': 'kitchen_BG_hard_hover.png',
+            'Load': 'kitchen_BG_fridge_hover.png',
+        },
 
         'cell': (80, 80),
 
@@ -137,14 +156,18 @@ SCENES = {
             (14, 8): "Menu",
             (14, 9): "Menu",
         },
-        
+
         'DOORS_CLICK_RANGE': {
-            'Menu': [[x,14] for x in range(2, 10)]
+            'Menu': [[x, 14] for x in range(2, 10)]
         },
 
-        'OBJECTS_POS': {},
+        'OBJECTS_POS': {
+            "Trophy": [[x, y] for x in range(5, 7) for y in range(6, 9)],
+        },
 
-        'HOVER_FRAME': {},
+        'HOVER_FRAME': {
+            "Trophy": 'leaderboard_BG_trophy_hover.png',
+        },
 
         'cell': (80, 80),
 
@@ -155,7 +178,7 @@ SCENES = {
         'OBJECTS_POS': {},
         'HOVER_FRAME': {},
         'cell': (80, 80),
-        'initial_pos': (0, 0),   
+        'initial_pos': (0, 0),
         'BGM': 'town_bgm.mp3',
     },
     "Gameplay": {
@@ -193,15 +216,17 @@ AVATAR = {
 
 # Movement
 MOVEMENT = {
-            "left": (-1, 0),
-            "right": (1, 0),
-            "up": (0, -1),
-            "down": (0, 1)
-        }
+    "left": (-1, 0),
+    "right": (1, 0),
+    "up": (0, -1),
+    "down": (0, 1)
+}
 
 # Grid Map Object
-CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80), "Gameplay": (20, 20)}
+CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80),
+              "Gameplay": (20, 20)}
 MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"]
+
 
 # MISCs
 class COLORS(Enum):
@@ -232,12 +257,13 @@ class COLORS(Enum):
     LIGHT_MAGENTA = (255, 182, 193)
     LIGHT_BLACK = (25, 25, 25)
 
+
 AVATAR = {
     "Tom": {"down": "tom_icon_d.png",
             "right": "tom_icon_r.png",
             "left": "tom_icon_l.png",
             "up": "tom_icon_u.png"},
-    
+
     "orangeTom": {"down": "orangeTom_icon_d.png",
                   "right": "orangeTom_icon_r.png",
                   "left": "orangeTom_icon_l.png",
@@ -268,7 +294,7 @@ SOUNDS = {
             'volume': 0.5
         }
     },
-    'SFX': { 
+    'SFX': {
         'bump': {
             'file_name': 'bump.mp3',
             'volume': 1.0
@@ -289,7 +315,7 @@ SOUNDS = {
 }
 
 FONTS = {
-    'default':  RESOURCE_PATH + 'fonts/PixeloidSans.ttf',
+    'default': RESOURCE_PATH + 'fonts/PixeloidSans.ttf',
     'default_bold': RESOURCE_PATH + 'fonts/PixeloidSansBold.ttf',
 }
 
@@ -333,7 +359,6 @@ CREDIT = {
         "": ['MINH BEO IS THE BEST TEACHER', 'HE IS THE BEST', 'HE IS THE BEOEST', 'HE IS THE GOAT']
     },
     "THANKS FOR PLAYING": {
-        
+
     }
 }
-

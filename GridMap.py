@@ -108,6 +108,10 @@ class MapManager:
             grid[3, 13:15] = [GridMapObject.WALL]
 
             grid[:, 0] = [GridMapObject.DOOR]
+
+            grid[5, 9:11] = [GridMapObject.DOOR]
+            grid[7, 11:13] = [GridMapObject.DOOR]
+            grid[9, 8:10] = [GridMapObject.DOOR]
             pass
 
         def leaderBoardScene():
