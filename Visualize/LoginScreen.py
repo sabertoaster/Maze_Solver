@@ -50,10 +50,7 @@ class LoginScreen:
                          "focusable": True, "init_text": ""}})  # (x, y, width, height)
 
         # Tạo textbox hiển thị notification cho login/ register screen
-        self.notify_text_box = FormManager(self.screen, {
-            "notification": {"position": (0, 530, 568, 48), "color": Color.RED.value, "maximum_length": 50,
-                             "focusable": False, "init_text": "Test"}
-        })
+
 
         self.sounds_handler = sounds_handler
         
@@ -77,7 +74,7 @@ class LoginScreen:
         # Add login panel background
 
         self.panel_fl = False  # CÁI NI Bị DOWN
-        panel_shape = (RESOLUTION[0], RESOLUTION[1])
+        # panel_shape = (RESOLUTION[0], RESOLUTION[1])
         login_panel = pygame.image.load(RESOURCE_PATH + "login_box.png").convert_alpha()
         register_panel = pygame.image.load(RESOURCE_PATH + "register_box.png").convert_alpha()
 
@@ -88,6 +85,11 @@ class LoginScreen:
         self.register_panel = add_element(self.blur, register_panel,
                                        ((RESOLUTION[0] - register_panel.get_width()) / 2,
                                         (RESOLUTION[1] - register_panel.get_height()) / 2))
+
+        self.notify_text_box = FormManager(self.screen, {
+            "notification": {"position": ((RESOLUTION[0] - login_panel.get_width()) / 2, 530, 568, 40), "color": Color.BLACK.value, "maximum_length": 50,
+                             "focusable": False, "init_text": "Test"}
+        })
         # self.create_font()  # Create font for text input
 
 
@@ -184,7 +186,6 @@ class LoginScreen:
         :return:
         """
         if name:
-
             self.player.deactivate(active=False)
             if name == "Login":
                 next_scene, next_grid_pos = self.login(event)
@@ -213,6 +214,7 @@ class LoginScreen:
         """
         Login panel
         """
+        print("hello nigga")
         if event.type == pygame.KEYDOWN:
             self.screen.blit(self.login_panel, (0, 0))
             self.text_box.draw()

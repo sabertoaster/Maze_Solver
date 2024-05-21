@@ -27,7 +27,7 @@ def drawGrid(screen):
     for x in range(0, RESOLUTION[0], blockSize):
         for y in range(0, RESOLUTION[1], blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, COLORS.WHITE, rect, 1)
+            pygame.draw.rect(screen, COLORS.WHITE.value, rect, 1)
 
 
 class PlayScreen:
@@ -60,7 +60,7 @@ class PlayScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        # drawGrid(screen=self.screen)
+        drawGrid(screen=self.screen)
         
 
         self.player = player
@@ -79,26 +79,26 @@ class PlayScreen:
         while running:
             events = pygame.event.get()
             for event in events:
-                
+
                 if event.type == pygame.QUIT:
                     return None, None
-                
+
                 if self.chosen_door:
                     next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
                     if next_scene:
                         return next_scene, next_grid_pos
-                
+
                 mouse_pos = pygame.mouse.get_pos()
-                
+
                 self.mouse_handler.set_pos(mouse_pos)
 
                 self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_obj)
-                
+
                 if event.type == pygame.MOUSEBUTTONUP:
                     self.chosen_door, self.chosen_obj = self.mouse_handler.click()
                     events.append(pygame.event.Event(pygame.USEREVENT, {}))
                     continue
-                
+
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
                     player_response = self.player.handle_event(pressed)
@@ -123,7 +123,9 @@ class PlayScreen:
         :return:
         """
         if name:
+
             if name == "Menu":
+
                 self.player.update(self.screen)
                 self.transition.transition(transition_type='zelda_rl', next_scene=name)
                 
@@ -132,4 +134,14 @@ class PlayScreen:
                 self.player.re_init(name=self.player.name, scene="Menu")
                 
                 return name, (13, self.player.get_grid_pos()[1])
+
+            if name == "Easy":
+                pass
+
+            if name == "Medium":
+                pass
+
+            if name == "Hard":
+                pass
+
         return None, None
