@@ -5,7 +5,7 @@ import numpy as np
 from random import choice
 from random import shuffle
 from random import randint
-
+from Algorithms.Algorithms import *
 
 sys.setrecursionlimit(15000)
 
@@ -226,9 +226,16 @@ class BinaryTreeAlgorithm:
                 #print(row, col, self.maze[row][col].walls)
 
 def random_start_end(size):
-    start = randint(0, size[0]), randint(0, size[1])
-    end = randint(0, size[0]), randint(0, size[1])
+    if random.choice([0,1]):
+        start = (random.randint(0, size[0] - 1), 0)
+        end = (random.randint(0, size[0] - 1), size[1] - 1)
+    else:
+        start = (0, random.randint(0, size[1] - 1))
+        end = (size[0] - 1, random.randint(0, size[1] - 1))
+        
     return start, end
+
+
 class Maze:
     """
     type_generating_maze chọn một trong các ['DFS', 'Kruskal', 'Prim', 'Wilson']
@@ -250,8 +257,10 @@ class Maze:
     def __init__(self, type_generating_maze : str, size_maze : tuple):
         self.start, self.end = random_start_end(size_maze)
         Algorithm = ['DFS', 'Kruskal', 'Wilson', 'Prim','BinaryTree']
+
         if type_generating_maze not in Algorithm:
             type_generating_maze = choice(Algorithm)
+
         if type_generating_maze == 'DFS':
             tmp = DepthFirstSearch(size_maze)
             tmp.run((0,0))
@@ -277,46 +286,26 @@ class Maze:
             tmp.run()
             self.maze = tmp.maze
             self.size = size_maze
-
-def Generate_Destination(row, col):
-    strategy = random.choice([0,1])
-
-    if strategy == 0:
-        x_start = random.randint(0, row - 1)
-        y_start = 0
-
-        x_end = random.randint(0, row - 1)
-        y_end = col - 1
-
-    elif strategy == 1:
-        x_start = 0
-        y_start = random.randint(0, col - 1)
-
-        x_end = row - 1
-        y_end = random.randint(0, col - 1)
-        
-    return x_start, x_end, y_start, y_end
-
+            
 #Convert 2d[Cell] matrix to text file (Tường mỏng -> tường dày)
     #Output: File txt
-def convert(maze: list[list[Cell]], maze_instance: Maze):
+def convert(maze_instance: Maze):
     maze_output = [[' ' for i in range(2 * maze_instance.size[1] - 1)] for j in range(2 * maze_instance.size[0] - 1)]
     for x in range(maze_instance.size[0]):
         for y in range(maze_instance.size[1]):
-            if maze[x][y].walls['left'] and 2 * y - 1 >= 0:
+            if maze_instance.maze[x][y].walls['left'] and 2 * y - 1 >= 0:
                 maze_output[2 * x][2 * y - 1] = '#'
-            if maze[x][y].walls['right'] and 2 * y + 1 < 2 * maze_instance.size[0] - 1:
+            if maze_instance.maze[x][y].walls['right'] and 2 * y + 1 < 2 * maze_instance.size[0] - 1:
                 maze_output[2 * x][2 * y + 1] = '#'
-            if maze[x][y].walls['top'] and 2 * x - 1 >= 0:
+            if maze_instance.maze[x][y].walls['top'] and 2 * x - 1 >= 0:
                 maze_output[2 * x - 1][2 * y] = '#'
-            if maze[x][y].walls['bottom'] and 2 * x + 1 < 2 * maze_instance.size[1] - 1:
+            if maze_instance.maze[x][y].walls['bottom'] and 2 * x + 1 < 2 * maze_instance.size[1] - 1:
                 maze_output[2 * x + 1][2 * y] = '#'
 
             if 2 * x + 1 < 2 * maze_instance.size[0] - 1 and 2 * y + 1 < 2 * maze_instance.size[1] - 1:
                 maze_output[2 * y + 1][2 * x + 1] = '#'
 
-        
-    x_start, x_end, y_start, y_end = Generate_Destination(2 * maze_instance.size[0] - 1, 2 * maze_instance.size[1] - 1)
+    x_start, y_start, x_end, y_end = maze_instance.start[0] * 2, maze_instance.start[1] * 2, maze_instance.end[0] * 2, maze_instance.end[1] * 2
     
     maze_output[x_start][y_start] = 'S'
     maze_output[x_end][y_end] = 'E'
@@ -336,9 +325,7 @@ def convert(maze: list[list[Cell]], maze_instance: Maze):
 
 # Real_Maze = Maze('DFS', (10, 10))
 
-
 # Write_File('D:\Project_Tam&GiaHuy\Maze_Solver\LEGACY', 'maze6.txt', Real_Maze.maze, Real_Maze)
-
 
 #Visualize
 
@@ -351,3 +338,45 @@ def convert(maze: list[list[Cell]], maze_instance: Maze):
 #             sys.exit()
 
 #     pygame.display.update()
+
+def convert_energy(maze: list[list[str]]) ->list[list[str]]:
+        for i in range(len(maze)):
+            for j in range(len(maze[0])):
+                if maze[i][j] == 'E':
+                    end_pos = i, j
+                if maze[i][j] == 'S':
+                    start_pos = i, j
+        A = TotalAlgorithms(maze)
+        print(start_pos, end_pos)
+        path, visited = A.dijkstra(end_pos, start_pos)
+        print(path)
+        
+        cur_pos = 0
+        energy_pos = 5
+        while(cur_pos < len(path)):
+            x, y = path[cur_pos]
+            maze[x][y] = str(energy_pos)
+            tmp = np.random.randint(3, 6)
+            cur_pos += tmp
+            energy_pos = tmp
+        
+        for i in range(len(maze)//3):
+            for j in range(len(maze[0])//3):
+                x, y = i * 4, j * 4
+            
+                distance = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1), (0, 0)]
+                neighbor_list = [(x + dx, y + dy) for dx, dy in distance
+                                 if x + dx >= 0 and x + dx < len(maze) and y + dy >= 0 
+                                 and y + dy < len(maze[0]) and maze[x + dx][y + dy] == ' ']
+                
+                print(i * 4, j * 4, len(neighbor_list))
+                if len(neighbor_list) != 0:
+                    cur_x, cur_y = choice(neighbor_list)
+                    tmp = np.random.randint(1, 6)
+                    check = [(x + dx, y + dy) for dx, dy in distance
+                                 if x + dx >= 0 and x + dx < len(maze) and y + dy >= 0 
+                                 and y + dy < len(maze[0]) and maze[x + dx][y + dy] in ['1', '2', '3', '4', '5']]
+                    if len(check) == 0:
+                        maze[(cur_x)][(cur_y)] = tmp
+        return maze        
+    

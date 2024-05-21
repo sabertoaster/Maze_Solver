@@ -74,6 +74,15 @@ class TextBox:
             self.screen.blit(box, (self.x, self.y))
         self.screen.blit(self.text_input.surface, (self.x, self.y))
 
+    def draw_on_minimap(self, screen, background=False):
+        self.text_input._rerender()
+        if background:
+            width = self.get_length()
+            box = pygame.Surface((width, self.height * 1.2), pygame.SRCALPHA)
+            box.fill((0, 0, 0, 128))
+            screen.blit(box, (self.x, self.y))
+        screen.blit(self.text_input.surface, (self.x, self.y))
+
 
 class FormManager:
     """

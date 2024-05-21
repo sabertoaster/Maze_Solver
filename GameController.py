@@ -9,7 +9,7 @@ import pygame
 import numpy as np
 import cv2
 from enum import Enum
-
+from Save import *
 # init hyperparameters here
 from CONSTANTS import FPS, RESOLUTION, CELLS_LIST, MAPS_LIST, SCENES, SOUNDS
 
@@ -59,12 +59,14 @@ class GameController:
         # INSTANTIATE MAZE
         # pass
 
+
     def run(self):
         self.visualizer.start_visualize()  # [PROTOTYPE]
         # [MAIN GAME LOOP]
         pygame.init()
         
         # play_gif(self.screen) # [PROTOTYPE]
+         
         running = True
         while running:
             for event in pygame.event.get():

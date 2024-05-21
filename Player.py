@@ -24,7 +24,7 @@ class Player:
         :param current_scene:
         """
         self.door_pos = None
-
+        self.score = 0
         self.active = True
         self.screen = screen
         self.current_scene = current_scene
@@ -72,7 +72,7 @@ class Player:
         self.current_scene = target_scene
 
         self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["down"], SCENES[target_scene]["cell"])  # [PROTOTYPE]
-        print(self.grid_map.get_map(self.current_scene).get_grid())
+        # print(self.grid_map.get_map(self.current_scene).get_grid())
         self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["down"], SCENES[target_scene]["cell"])  # [PROTOTYPE]
         self.ratio = (RESOLUTION[0] // SCENES[target_scene]["cell"][0], RESOLUTION[1] // SCENES[target_scene]["cell"][1])
 
@@ -121,6 +121,7 @@ class Player:
                 return "Interact"
             
             pygame.event.clear()
+            # print("Response: ", response)
             return response
         return None
 
@@ -179,6 +180,29 @@ class Player:
             self.name_box.draw(True)
             pygame.display.flip()
 
+                        # [PROTOTYPE] maze_cell_size is used to detect position to put the namebox on
+                        # NEED TO ADD THAT PARAMETER IN CONSTANTS.PY 
+    def draw_on_minimap(self, screen, maze_cell_size, ratio): #Input the background surface
+        if self.active:
+            if self.visualize_direction[0] != self.visualize_direction[1]:
+                self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / ratio,
+                                    self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / ratio)
+
+                screen.blit(self.avatar, self.visual_pos)
+                self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + maze_cell_size // 2,
+                                            self.visual_pos[1] - 1.5 * maze_cell_size))
+                self.name_box.draw_on_minimap(screen, background = True)
+
+                pygame.display.flip()
+                
+                return
+            
+            print(1)
+            screen.blit(self.avatar, self.visual_pos)
+            self.name_box.set_position((self.visual_pos[0] - (self.name_length//2) + maze_cell_size // 2, self.visual_pos[1] - 1.5 * maze_cell_size))
+            self.name_box.draw_on_minimap(screen, background = True)
+            pygame.display.flip()
+        
     def move(self, cmd):
         """
         Move player
