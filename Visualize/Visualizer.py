@@ -58,7 +58,7 @@ class Visualizer:
         :return:
         """
         if scene_name == "Gameplay":
-            file_name = 'test1'
+            file_name = ''
             gameplay_scene = Gameplay(self.screen, (0, 0), (0, 0), file_name)
             next_scene, next_grid_pos = gameplay_scene.play(player=self.player)
             del gameplay_scene

@@ -25,7 +25,7 @@ from Player import*
 from random import choice
 
 class Gameplay:
-    def __init__(self, screen, start_pos, end_pos,file_name = '', maze_size=(10, 10)):
+    def __init__(self, screen, start_pos, end_pos,file_name = '', maze_size=(20, 20)):
         self.screen = screen
         self.screenCopy = self.screen.copy()
         self.screen.fill((0, 0, 0))  # Black background [PROTOTYPE]
@@ -38,12 +38,14 @@ class Gameplay:
         # INSTANTIATE ALGORITHMS
         self.algorithms = TotalAlgorithms(self.maze_toString)
 
+        print(self.maze_toString)
+
         # INSTANTIATE PANELS
         self.init_panel()
 
         # INSTANTIATE PLAYER
 
-        self.minimap_grid_size = (10, 10)
+        self.minimap_grid_size = (20, 20)
 
     def fill_grid_map(self):
         for i in range(len(self.maze_toString)):
@@ -71,8 +73,9 @@ class Gameplay:
         self.update_player()
         
         # INSTANTIATE MINIMAP
-        minimap_display_pos = (0, (RESOLUTION[0] - RESOLUTION[1]) // 2)
-        self.minimap = Minimap(self.screen, RESOLUTION, self.maze_toString, self.minimap_grid_size, self.bg_surface.copy(), self.bg_cell_size , minimap_display_pos, self.player)
+        # minimap_display_pos = (0, (RESOLUTION[0] - RESOLUTION[1]) // 2)
+        minimap_display_pos = (0, 0)
+        self.minimap = Minimap(self.screen, self.maze_toString, self.minimap_grid_size, self.bg_surface.copy(), self.bg_cell_size , minimap_display_pos, self.player)
         self.minimap.update(self.minimap.maze_surface)
 
         self.screenCopy = self.screen.copy()
@@ -102,10 +105,19 @@ class Gameplay:
                     if event.key == pygame.K_x:
                         if not solution_flag:
                             solution_flag = True
+
+                            self.minimap.solution_flag = True
+
+                            self.minimap.update(self.minimap.maze_surface)
                         else:
                             solution_flag = False
 
+                            self.minimap.solution_flag = False
+
+                            self.minimap.update(self.minimap.maze_surface)
+
                             self.show_solution(solution_flag)
+
                     if event.key == pygame.K_g:
                         save = SaveFile(self.maze_toString, self.player)
                         save.run_save('test1')
@@ -119,23 +131,26 @@ class Gameplay:
                     # self.minimap.update(newBG)
                     if player_response == "Move":
                         self.minimap.update(self.minimap.maze_surface)
+
+                        pygame.event.clear()
                     # self.player.update(self.screenCopy)
 
-                    # if solution_flag: 
-                    #     ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
+                    if solution_flag: 
+                        ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
 
-                    #     pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
-
-                    #     self.show_solution(solution_flag)
+                        pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
+                        self.show_solution(solution_flag)
+                        self.minimap.update(self.minimap.maze_surface)
 
                     pygame.display.update()
 
     def update_maze(self):
-        data = read_file(self.file_name)
+
         if self.file_name == '':
             self.maze = Maze("Wilson", self.maze_size)
             self.maze_toString = convert_maze(self.maze)
         else:
+            data = read_file(self.file_name)
             self.maze_toString = data['maze_toString']
         
     def init_maze(self):
@@ -146,8 +161,7 @@ class Gameplay:
 
         self.maze_row, self.maze_col = len(self.maze_toString), len(self.maze_toString[0])
 
-        self.cell_size = 10
-
+        self.cell_size = (RESOLUTION[0] - RESOLUTION[1]) // min(self.maze_row, self.maze_col)
         self.draw_maze()
 
         # test = convert_energy(self.maze_toString)
@@ -199,11 +213,12 @@ class Gameplay:
                     self.end_pos = (i,j)
                     pygame.draw.rect(self.visual_maze, (255,0,0), ceil_rect)
 
+        self.visual_maze_display_pos = (0, RESOLUTION[0] - (RESOLUTION[0] - RESOLUTION[1]) // 2)
         self.screen.blit(self.visual_maze, (RESOLUTION[0] - self.visual_maze_resolution[0], 0))
 
     def init_panel(self):
         # INSTANTIATE PANELS
-        tp.init(self.screen, tp.theme_classic)
+        tp.init(self.screen, tp.theme_game1)
 
         self.escape_buttons = [tp.Button("Resume"), 
                                tp.Button("Restart"), 
@@ -254,9 +269,9 @@ class Gameplay:
 
     def toggle_panel(self, event):
         def at_refresh():
-            self.blur = blur_screen(screen = self.minimap.cut_surface)
+            self.blur = blur_screen(screen = self.minimap.maze_surface)
 
-            self.screen.blit(self.blur, self.minimap.display_pos)
+            self.screen.blit(self.blur, self.minimap.display_pos, (self.minimap.cut_start_pos, self.minimap.cut_area))
 
         self.player.deactivate(active=False)
         m = self.escape_box.get_updater(fps = FPS, esc_quit = True)
@@ -276,19 +291,23 @@ class Gameplay:
                     key_pressed = event.key
 
                     if key_pressed == pygame.K_ESCAPE:
+                        pygame.event.clear()
+
                         self.player.deactivate(active = True)
 
-                        self.screen.blit(self.minimap.cut_surface, self.minimap.display_pos)
+                        self.minimap.update(self.minimap.maze_surface)
                         
                         return None, None
                 
                 if event.type == pygame.MOUSEBUTTONUP:
                     if self.associated_values[0]: #If click resume button
+                        pygame.event.clear()
+
                         self.associated_values[0] = 0
                         
                         self.player.deactivate(active = True)
 
-                        self.screen.blit(self.minimap.cut_surface, self.minimap.display_pos)
+                        self.minimap.update(self.minimap.maze_surface)
 
                         return None, None
                     
@@ -297,7 +316,20 @@ class Gameplay:
                     if self.associated_values[2]: #If click save button
                         pass
                     if self.associated_values[3]: #If click auto button
-                        pass
+                        choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
+                        introduction_text = "Choose the algorithm to solve the maze"
+                        options = tp.AlertWithChoices("Auto Mode Algorithms", choices, introduction_text, choice_mode="v")
+
+                        def clicked():
+                            options.launch_alone() #see _example_launch for more options
+                            print("User has chosen:", options.choice)   
+
+                        self.escape_buttons[3].center_on(self.screen)
+                        self.escape_buttons[3].at_unclick = clicked
+
+                        self.escape_buttons[3].get_updater(fps = FPS, esc_quit = True)
+
+                        return None, None
                     
                     if self.associated_values[4]: #If click menu button
                         self.player.deactivate(active = True)
@@ -311,14 +343,17 @@ class Gameplay:
         return None, None
 
     def show_solution(self, flag):
-        trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+        self.minimap.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
 
+        if not self.minimap.trace_path:
+            return
+        
         if flag:
             color = (127,0,255)
         else:
             color = (255, 255, 255)
-
-        for pos in trace_path:
+            
+        for pos in self.minimap.trace_path:
             ceil_rect = pygame.Rect(pos[1] * self.cell_size, pos[0] * self.cell_size, self.cell_size, self.cell_size)
 
             pygame.draw.rect(self.visual_maze, color, ceil_rect)

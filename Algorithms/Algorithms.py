@@ -11,11 +11,14 @@ class TotalAlgorithms:
         self.maze = maze
 
     def bfs(self, start: tuple[int], end: tuple[int]) -> tuple[list[tuple], list[tuple]]:
+        if start == end:
+            return None, None
+        
         frontier = deque([start])
         visited = []
         trace = dict()
         
-        while True:
+        while frontier:
             cur_pos = frontier[0]
 
             next_move = check_valid_move(self.maze, cur_pos, visited)
@@ -31,11 +34,14 @@ class TotalAlgorithms:
                 return get_solution(trace, start, end), visited
 
     def dfs(self, start: tuple[int], end: tuple[int]) -> tuple[list[tuple], list[tuple]]:
+        if start == end:
+            return None, None
+        
         frontier = deque([start])
         visited = []
         trace = dict()
 
-        while True:
+        while frontier:
             cur_pos = frontier[-1]
             next_move = check_valid_move(self.maze, cur_pos, visited)
             visited.append(frontier.pop())
@@ -50,6 +56,9 @@ class TotalAlgorithms:
             
     #Greedy best first search
     def greedy(self, start: tuple[int], end: tuple[int]) -> tuple[list[tuple], list[tuple]]:
+        if start == end:
+            return None, None
+        
         cost_map = heuristic_mapping(self.maze, end)
         visited = []
         trace = dict()
@@ -60,7 +69,7 @@ class TotalAlgorithms:
         frontier = PriorityQueue()
         frontier.put((cost_map[start[0]][start[1]], start))
 
-        while True:
+        while frontier:
             #Get the current (heuristic value, coordinate) and remove node from the frontier
             cur_vp = frontier.get()
             
@@ -76,6 +85,9 @@ class TotalAlgorithms:
                 trace[move] = cur_vp[1]
             
     def a_star(self, start: tuple[int], end: tuple[int]) -> tuple[list[tuple], list[tuple]]:
+        if start == end:
+            return None, None
+        
         cost_map = heuristic_mapping(self.maze, end)
 
         step = 0
@@ -109,6 +121,9 @@ class TotalAlgorithms:
                 trace[move] = cur_vps[1]
 
     def dijkstra(self, start: tuple[int], end: tuple[int]) -> tuple[list[tuple], list[tuple]]:
+        if start == end:
+            return None, None
+        
         priority = PriorityQueue()
         priority.put((0, start))
         distance = {start : 0}
@@ -159,7 +174,7 @@ def check_valid_move(maze: list[list[str]], cur_pos: tuple[int], visited: list[t
         except IndexError:
             continue
         else:
-            if ((next_stage == ' ') or (next_stage == 'E')) and ((move[0], move[1]) not in visited):
+            if (next_stage != '#') and ((move[0], move[1]) not in visited):
                 res.append(move)
 
     return res

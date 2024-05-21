@@ -1,27 +1,35 @@
 import pygame
 import numpy as np
+from CONSTANTS import RESOLUTION
 
 class Minimap:
-    def __init__(self, screen, resolution, maze, grid_size, maze_surface, maze_cell_size, display_pos, player):
+    def __init__(self, screen, maze, grid_size, maze_surface, maze_cell_size, display_pos, player):
         '''
         Parameters:
         - maze: Get the maze being played
         - player: Get the current instance of player 
         '''
-        self.cell_size = resolution[1] // min(grid_size)
+        self.cell_size = RESOLUTION[1] // min(grid_size)
         self.row, self.col = grid_size
         # self.visual_size = (self.col * maze_cell_size, self.row * maze_cell_size)
 
         self.screen = screen
-        self.resolution = resolution
+        self.resolution = RESOLUTION
+
+        self.player = player
+        self.attach_player()
 
         self.maze = maze
         self.maze_cell_size = maze_cell_size
         self.maze_surface = maze_surface
         self.display_pos = display_pos[::-1]
-        
-        self.player = player
-        self.attach_player()
+
+        #The position where the maze begin to be cut
+        self.cut_start_pos = (int(self.player.visual_pos[0]) - self.cell_size * self.col // 2, int(self.player.visual_pos[1]) - self.cell_size * self.row // 2)
+        self.cut_area = (self.cell_size * self.col, self.cell_size * self.row)
+
+        self.trace_path = None
+        self.solution_flag = False
         
         # self.miniscreen = pygame.Surface((self.col * self.cell_size, resolution[1]))
 
@@ -68,9 +76,7 @@ class Minimap:
         # y_start = current_player_pos[1] - int((size[1] // 2) * self.zoom_percentage)
         # y_end = current_player_pos[1] + int((size[1] // 2) * self.zoom_percentage)
 
-        # for i in range(x_start, x_end):
-        #     for j in range(y_start, y_end):
-        #         ceil_rect = pygame.Rect((j - y_start) * self.cell_size, (i - x_start) * self.cell_size, self.cell_size, self.cell_size)
+        # ceil_rect = pygame.Rect((j - y_start) * self.cell_size, (i - x_start) * self.cell_size, self.cell_size, self.cell_size)
 
         if self.player.active:
             if self.player.visualize_direction[0] != self.player.visualize_direction[1]:
@@ -79,37 +85,49 @@ class Minimap:
                 # self.screen.blit(self.cut_surface, self.display_pos) 
                 
                 # pygame.display.update() 
-                rate = 8
+                rate = 24
                 for i in range(0, rate, 4):
-                    self.cut_surface = self.cut_maze(screenCopy, rate // 4 + 1 - (rate % 4 == 0))
+                    self.new_background = self.cut_maze(screenCopy, rate // 4 + 1 - (rate % 4 == 0))
 
-                    self.screen.blit(self.cut_surface, self.display_pos) 
+                    self.screen.blit(self.new_background, self.display_pos, (self.cut_start_pos, self.cut_area)) 
+
+                    self.cut_start_pos = (int(self.player.visual_pos[0]) - self.cell_size * self.col // 2, int(self.player.visual_pos[1]) - self.cell_size * self.row // 2)
                     
                     pygame.display.flip()
 
-                print(self.player.grid_pos)
                 self.player.visualize_direction = (self.player.visualize_direction[1], self.player.visualize_direction[1])
                 return
 
-            self.cut_surface = self.cut_maze(screenCopy)
+            self.new_background = self.cut_maze(screenCopy)
 
-            self.screen.blit(self.cut_surface, self.display_pos) 
+            self.screen.blit(self.new_background, self.display_pos, (self.cut_start_pos, self.cut_area)) 
             
             pygame.display.update() 
+            
+    def draw_solution(self, screen):
+        if self.trace_path:
+            for pos in self.trace_path:
+                ceil_rect = pygame.Rect((self.col // 2 + pos[1]) * self.cell_size, (self.row // 2 + pos[0]) * self.cell_size, self.cell_size, self.cell_size)
+
+                pygame.draw.rect(screen, (127, 0, 255), ceil_rect)
             
 
     def cut_maze(self, screen, ratio = 1):
         copy_screen = screen.copy()
 
+        if self.solution_flag:
+            self.draw_solution(copy_screen)
+
         self.player.draw_on_minimap(copy_screen, self.cell_size, ratio)
         #Convert surface to numpy array
-        maze_surface = pygame.surfarray.array3d(copy_screen)
+        return copy_screen
+        # maze_surface = pygame.surfarray.array3d(copy_screen)
 
         #Get a local area of the maze surrounding players
         # maze_surface = maze_surface[self.maze_cell_size * (self.player.grid_pos[0]) : self.maze_cell_size * (self.player.grid_pos[0] + self.row)
         #                             ,self.maze_cell_size * (self.player.grid_pos[1]) : self.maze_cell_size * (self.player.grid_pos[1] + self.col)]
         
-        maze_surface = maze_surface[int(self.player.visual_pos[0]) - self.cell_size * self.col // 2 : int(self.player.visual_pos[0]) + self.cell_size * self.col // 2
-                                    ,int(self.player.visual_pos[1]) - self.cell_size * self.row // 2 : int(self.player.visual_pos[1]) + self.cell_size * self.row // 2]
+        # maze_surface = maze_surface[int(self.player.visual_pos[0]) - self.cell_size * self.col // 2 : int(self.player.visual_pos[0]) + self.cell_size * self.col // 2
+        #                             ,int(self.player.visual_pos[1]) - self.cell_size * self.row // 2 : int(self.player.visual_pos[1]) + self.cell_size * self.row // 2]
 
-        return pygame.surfarray.make_surface(maze_surface)
+        # return pygame.surfarray.make_surface(maze_surface)
