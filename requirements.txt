@@ -3,3 +3,4 @@ opencv-python
 jsons
 pygame
 pygame-textinput
+thorpy

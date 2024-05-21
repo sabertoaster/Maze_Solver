@@ -102,7 +102,6 @@ class FormManager:
         """
         self.text_boxes = dict.fromkeys(list_of_textbox.keys())
         for key, value in list_of_textbox.items():
-            print(value["maximum_length"])
             self.text_boxes[key] = {
                 "box": TextBox(screen=screen, position=value["position"], font_color=value["color"],
                                manager=TextInputManager(validator=lambda input_s: len(input_s) <= value["maximum_length"]),
@@ -136,7 +135,6 @@ class FormManager:
         Draw text input
         """
         for key, value in self.text_boxes.items():
-            print('draw', key, ":", value["box"].get_current_text())
             value["box"].draw()
 
     def set_text(self, key, text) -> None:
@@ -145,7 +143,6 @@ class FormManager:
         key: str -> name of text box
         """
         self.text_boxes[key]["box"].set_text(text)
-        print('set', key, ":", text, self.text_boxes[key]["box"].get_current_text())
 
     def get_current_text(self) -> Dict[str, str]:
         """

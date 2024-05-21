@@ -124,6 +124,7 @@ class PlayScreen:
         """
         if name:
 
+
             if name == "Menu":
 
                 self.player.update(self.screen)
@@ -135,13 +136,37 @@ class PlayScreen:
                 
                 return name, (13, self.player.get_grid_pos()[1])
 
+            if name == "Load":
+                # Handle load scenes here
+                return "Gameplay", (0, 0)
+
+            # current_profile.json format
+            # {
+            #     "username": "a",
+            #     "level": "Easy",
+            #     "mode": "Manual",
+            #     "score": 0,
+            #     "maze": ""
+            #     "player_pos": (-1, -1)
+            #     "end_pos": (-1, -1)
+            # }
+
             if name == "Easy":
-                pass
+                print("Easy")
+                return "Gameplay", (0, 0)
 
             if name == "Medium":
-                pass
+                print("Medium")
+                return "Gameplay", (0, 0)
 
             if name == "Hard":
-                pass
+                print("Hard")
+                return "Gameplay", (0, 0)
 
         return None, None
+
+    def set_current_mode(self, mode):
+        """
+        Set the current mode of the game into the ```current_profile.json```
+        """
+        self.current_mode = mode
