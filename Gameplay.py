@@ -50,14 +50,14 @@ class Gameplay:
                     self.player.grid_map.get_map(self.player.current_scene).get_grid()[i][j] = GridMapObject.FREE
         self.player.ratio = (self.maze_size[0] * 2 - 1, self.maze_size[0] * 2 - 1)
 
-    def update_player(self):
-        if self.file_name != '':
-            data = read_file(self.file_name)
-            self.player.name = data['player.name']
-            self.player.re_init(self.player.name, "Gameplay")
-            print(self.player.name)
-            self.player.grid_pos = data['player.grid_pos']
-            self.player.visual_pos = data['player.visual_pos']
+    # def update_player(self):
+    #     if self.file_name != '':
+    #         data = read_file(self.file_name)
+    #         self.player.name = data['player.name']
+    #         self.player.re_init(self.player.name, "Gameplay")
+    #         print(self.player.name)
+    #         self.player.grid_pos = data['player.grid_pos']
+    #         self.player.visual_pos = data['player.visual_pos']
 
     def get_data(self):
         with open("current_profile.json") as fi:
@@ -66,6 +66,16 @@ class Gameplay:
             self.player.re_init(self.player.name, "Gameplay")
             self.player.grid_pos = data['player.grid_pos']
             self.player.visual_pos = data['player.visual_pos']
+            if (data["level"] == "Easy"):
+                self.maze_size = (10, 10)
+                self.minimap_grid_size = (20, 20)
+            elif (data["level"] == "Medium"):
+                self.maze_size = (20, 20)
+                self.minimap_grid_size = (20, 20)
+            elif (data["level"] == "Hard"):
+                self.maze_size = (50, 50)
+                self.minimap_grid_size = (20, 20)
+            SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
             if data["maze_toString"]:
                 self.maze_toString = data["maze_toString"]
 
@@ -153,13 +163,13 @@ class Gameplay:
 
                     pygame.display.update()
 
-    def update_maze(self):
-        if self.file_name == '':
-            self.maze = Maze("Wilson", self.maze_size)
-            self.maze_toString = convert_maze(self.maze)
-        else:
-            data = read_file(self.file_name)
-            self.maze_toString = data['maze_toString']
+    # def update_maze(self):
+    #     if self.file_name == '':
+    #         self.maze = Maze("Wilson", self.maze_size)
+    #         self.maze_toString = convert_maze(self.maze)
+    #     else:
+    #         data = read_file(self.file_name)
+    #         self.maze_toString = data['maze_toString']
 
     def init_maze(self):
         # INSTANTIATE MAZE

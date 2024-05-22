@@ -118,6 +118,7 @@ class Minimap:
                 return "DOWN"
             elif dy < 0:
                 return "UP"
+            return "UP"
 
 
         footprint = pygame.image.load(RESOURCE_PATH + "footprint.png").convert_alpha()
