@@ -12,7 +12,7 @@ from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
 
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, CircularLinkedList
 
 SCENE_NAME = "Leaderboard"
 
@@ -31,6 +31,8 @@ def drawGrid(screen):
 
 
 # [PROTOTYPE]
+list_level = CircularLinkedList(["Easy", "Medium", "Hard"])
+panel_buttons = ((8,5), (8,9)) # left right
 
 class LeaderboardScreen:
     """
@@ -51,6 +53,23 @@ class LeaderboardScreen:
         self.transition = Transition(self.screen, RESOLUTION)
 
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
+        
+        leaderboard_panel_easy = pygame.image.load(RESOURCE_PATH + "leaderboard_easy.png").convert_alpha()
+        leaderboard_panel_medium = pygame.image.load(RESOURCE_PATH + "leaderboard_medium.png").convert_alpha()
+        leaderboard_panel_hard = pygame.image.load(RESOURCE_PATH + "leaderboard_hard.png").convert_alpha()
+        blur = blur_screen(screen=self.frame)
+        self.current_level_leaderboard_panel = list_level.pop()
+        self.leaderboard_panel = {
+            "Easy": add_element(blur, leaderboard_panel_easy,
+                                             ((RESOLUTION[0] - leaderboard_panel_easy.get_width()) / 2,
+                                              (RESOLUTION[1] - leaderboard_panel_easy.get_height()) / 2)),
+            "Medium": add_element(blur, leaderboard_panel_medium,
+                                               ((RESOLUTION[0] - leaderboard_panel_medium.get_width()) / 2,
+                                                (RESOLUTION[1] - leaderboard_panel_medium.get_height()) / 2)),
+            "Hard": add_element(blur, leaderboard_panel_hard,
+                                                ((RESOLUTION[0] - leaderboard_panel_hard.get_width()) / 2,
+                                                (RESOLUTION[1] - leaderboard_panel_hard.get_height()) / 2)),
+        }
 
     def play(self, player):
         """
@@ -62,14 +81,9 @@ class LeaderboardScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        # drawGrid(screen=self.screen)
+        drawGrid(screen=self.screen)
 
-        leaderboard_panel = pygame.image.load(RESOURCE_PATH + "leaderboard.png").convert_alpha()
-        blur = blur_screen(screen=self.screen)
-        self.leaderboard_panel = add_element(blur, leaderboard_panel,
-                                             ((RESOLUTION[0] - leaderboard_panel.get_width()) / 2,
-                                              (RESOLUTION[1] - leaderboard_panel.get_height()) / 2))
-
+        
         # Draw Player
         self.player = player
         self.screenCopy = self.screen.copy()
@@ -95,19 +109,12 @@ class LeaderboardScreen:
                     return None, None
 
                 if self.chosen_door:
-                    next_scene, next_grid_pos = self.toggle_panel(self.chosen_door, event)
+                    next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
                     if next_scene:
                         return next_scene, next_grid_pos
 
                 if self.chosen_obj:
-                    if not self.panel_fl:
-                        self.screen.blit(self.leaderboard_panel, (0, 0))
-                        self.panel_fl = True
-                    elif self.panel_fl and event.type == pygame.KEYDOWN:
-                        next_scene, next_grid_pos = self.toggle_panel(self.chosen_obj, event)
-                        if next_scene:
-                            return next_scene, next_grid_pos
-                    pygame.display.update()
+                    self.handle_objects(self.chosen_obj)
                     continue
 
                 self.mouse_handler.set_pos(mouse_pos)
@@ -136,11 +143,21 @@ class LeaderboardScreen:
 
                     self.player.update(self.screenCopy)
 
-    def toggle_panel(self, name, event):
+    def handle_objects(self, obj):
+        """
+        Handle the objects
+        :param obj:
+        :return:
+        """
+        if obj == "Trophy":
+            self.trophy()
+
+    def toggle_panel(self, name):
         """
         :param name: to know whether if the player step into which door
         :return:
         """
+        
         if name:
             self.player.deactivate(active=False)
             if name == "Menu":
@@ -149,30 +166,57 @@ class LeaderboardScreen:
                 self.transition.transition(transition_type='zelda_lr', next_scene=name)
 
                 # Player re-init
-
                 self.player.re_init(name=self.player.name, scene="Menu")
 
                 return name, (1, self.player.get_grid_pos()[1])
 
-            if name == "Trophy":
-                next_scene, next_grid_pos = self.leaderboard(event)
-                if next_scene:
-                    self.player.deactivate(active=True)
-                    return next_scene, next_grid_pos
-
         return None, None
 
-    def leaderboard(self, event):
+    def trophy(self):
         """
         Leaderboard
         :return:
         """
-        if event.type == pygame.KEYDOWN:
-            # self.screen.blit(self.leaderboard_panel, (0, 0))
-            if event.key == pygame.K_ESCAPE:
-                self.panel_fl = False
-                return "Leaderboard", self.player.get_grid_pos()  # [PROTOTYPE]
-
+        self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
         pygame.display.update()
-
-        return None, None
+        
+        running = True
+        while running:
+            events = pygame.event.get()
+            
+            
+            for event in events:
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    
+                mouse_pos = pygame.mouse.get_pos()
+                mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.screen.blit(self.frame, (0, 0))
+                        self.player.update(self.screenCopy)
+                        self.chosen_obj = None
+                        running = False
+                        break
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        self.current_level_leaderboard_panel = list_level.pop()
+                        self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
+                        pygame.display.update()
+                        continue
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        self.current_level_leaderboard_panel = list_level.back()
+                        self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
+                        pygame.display.update()
+                        continue
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if mouse_grid_pos == panel_buttons[0]:
+                        self.current_level_leaderboard_panel = list_level.back()
+                        self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
+                        pygame.display.update()
+                        continue
+                    elif mouse_grid_pos == panel_buttons[1]:
+                        self.current_level_leaderboard_panel = list_level.pop()
+                        self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
+                        pygame.display.update()
+                        continue

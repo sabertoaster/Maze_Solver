@@ -89,9 +89,7 @@ class MenuScreen:
         while running:
             events = pygame.event.get()
             for event in events:
-                
-                print(self.show_instructions, 'show_instructions')
-                
+                                
                 mouse_pos = pygame.mouse.get_pos()
                 
                 if event.type == pygame.QUIT:
