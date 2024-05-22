@@ -44,7 +44,7 @@ class PlayScreen:
         self.panel_fl = False
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
-        
+
         # Transition effect
         self.transition = Transition(self.screen, RESOLUTION)
 
@@ -61,7 +61,6 @@ class PlayScreen:
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
         # drawGrid(screen=self.screen)
-        
 
         self.player = player
         self.screenCopy = self.screen.copy()
@@ -71,12 +70,11 @@ class PlayScreen:
         load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
         blur = blur_screen(screen=self.screen)
         self.load_panel = add_element(blur, load_panel,
-                                             ((RESOLUTION[0] - load_panel.get_width()) / 2,
-                                              (RESOLUTION[1] - load_panel.get_height()) / 2))
+                                      ((RESOLUTION[0] - load_panel.get_width()) / 2,
+                                       (RESOLUTION[1] - load_panel.get_height()) / 2))
 
-        
         self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
-        
+
         self.chosen_obj = None
         self.chosen_door = None
         self.hovered_obj = None
@@ -97,11 +95,16 @@ class PlayScreen:
                 if self.chosen_door:
                     next_scene, next_grid_pos = self.toggle_panel(self.chosen_door, event)
                     if next_scene:
+                        # self.transition.transition(pos=(next_grid_pos[0] * SCENES[next_scene]["cell"][0],
+                        #                                 next_grid_pos[1] * SCENES[next_scene]["cell"][0]),
+                        #                            transition_type="hole",
+                        #                            next_scene=next_scene)
                         return next_scene, next_grid_pos
 
                 if self.chosen_obj:
                     if not self.panel_fl:
-                        self.screen.blit(self.load_panel, (0, 0))
+                        if self.chosen_obj == "Load":
+                            self.screen.blit(self.load_panel, (0, 0))
                         self.panel_fl = True
                     elif self.panel_fl and event.type == pygame.KEYDOWN:
                         next_scene, next_grid_pos = self.toggle_panel(self.chosen_obj, event)
@@ -143,32 +146,30 @@ class PlayScreen:
         """
         if name:
 
-
             if name == "Menu":
-
                 self.player.update(self.screen)
                 self.transition.transition(transition_type='zelda_rl', next_scene=name)
-                
+
                 # Player re-init
                 self.player.deactivate(active=True)
                 self.player.re_init(name=self.player.name, scene="Menu")
-                
+
                 return name, (13, self.player.get_grid_pos()[1])
 
             if name == "Load":
                 # Handle load scenes here
                 return "Gameplay", (0, 0)
 
-            # current_profile.json format
-            # {
-            #     "username": "a",
-            #     "level": "Easy",
-            #     "mode": "Manual",
-            #     "score": 0,
-            #     "maze": ""
-            #     "player_pos": (-1, -1)
-            #     "end_pos": (-1, -1)
-            # }
+                # current_profile.json format
+                # {
+                #     "username": "a",
+                #     "level": "Easy",
+                #     "mode": "Manual",
+                #     "score": 0,
+                #     "maze": ""
+                #     "player_pos": (-1, -1)
+                #     "end_pos": (-1, -1)
+                # }
                 next_scene, next_grid_pos = self.load(event)
                 if next_scene:
                     self.player.deactivate(active=True)
@@ -191,19 +192,21 @@ class PlayScreen:
 
         return None, None
 
-    def set_current_mode(self, mode):
+    def set_current_mode(self, level):
         """
         Set the current mode of the game into the ```current_profile.json```
         """
         current_profile = {
             "player.name": self.player.name,
-            "level": "Easy",
-            "mode": mode,
+            "level": level,
+            "mode": "Manual",
             "score": 0,
-            "player.grid_pos": (-1, -1),
-            "player.visual_pos": (-1, -1),
-
+            "player.grid_pos": [-1, -1],
+            "player.visual_pos": [-1, -1],
+            "maze_toString": []
         }
+        with open("current_profile.json", "w") as fi:
+            json.dump(current_profile, fi, indent=4)
 
     def load(self, event):
 

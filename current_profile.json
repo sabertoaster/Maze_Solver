@@ -1,7 +1,15 @@
-{   
-    "username" : "a",
+{
+    "player.name": "apcs",
     "level": "Easy",
-    "mode" : "Manual",
+    "mode": "Manual",
     "score": 0,
-    "maze" : ""
+    "player.grid_pos": [
+        -1,
+        -1
+    ],
+    "player.visual_pos": [
+        -1,
+        -1
+    ],
+    "maze_toString": []
 }
