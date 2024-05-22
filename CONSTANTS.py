@@ -30,7 +30,7 @@ SCENES = {
             "Exit": [[4, 13]]
         },
         
-        'OBJECTS_INTERACTIVE_RANGE': {
+        'OBJECTS_TOUCH_RANGE': {
             
         },
         
@@ -83,7 +83,7 @@ SCENES = {
             "Skin": [[x, 9] for x in range(0, 3)],
         },
 
-        'OBJECTS_INTERACTIVE_RANGE': {
+        'OBJECTS_TOUCH_RANGE': {
             'Credit': [(6, 3), (7, 3), (8, 3), (5, 4), (9, 4)],
             'Music_box': [[x, y] for x in range(4, 6) for y in range(6, 9)],
             'Skin': [[x, 9] for x in range(0, 3)],
@@ -135,7 +135,7 @@ SCENES = {
             'Load': [[x, y] for x in range(3) for y in range(4, 6)],
         },
         
-        'OBJECTS_INTERACTIVE_RANGE': {
+        'OBJECTS_TOUCH_RANGE': {
             
         },
 
@@ -173,7 +173,7 @@ SCENES = {
             "Trophy": [[x, y] for x in range(5, 7) for y in range(6, 9)],
         },
         
-        'OBJECTS_INTERACTIVE_RANGE': {
+        'OBJECTS_TOUCH_RANGE': {
             
         },
 
@@ -190,7 +190,7 @@ SCENES = {
         'DOORS': {},
         'DOORS_CLICK_RANGE': {},
         'OBJECTS_POS': {},
-        'OBJECTS_INTERACTIVE_RANGE': {},
+        'OBJECTS_TOUCH_RANGE': {},
         'HOVER_FRAME': {},
         'cell': (80, 80),
         'initial_pos': (0, 0),
