@@ -25,7 +25,7 @@ class GameController:
     def __init__(self):
         pygame.init()
         pygame.key.set_repeat(200, 125)
-        initial_scene = "Gameplay"
+        initial_scene = "Login"
         self.game_state_manager = GameStateManager(initial_scene)  # [PROTOTYPE]
         self.clock = pygame.time.Clock()  # Define a variable to control the main loop
         self.screen = pygame.display.set_mode(

@@ -183,7 +183,7 @@ SCENES = {
     },
     "Gameplay": {
         "initial_pos": (0, 0),
-        "cell" : (40,40)
+        "cell" : (40, 40)
     }
 }
 PARAMS = {
@@ -223,8 +223,7 @@ MOVEMENT = {
 }
 
 # Grid Map Object
-CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80),
-              "Gameplay": (20, 20)}
+CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80), "Gameplay": (1,1)}
 MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"]
 
 
