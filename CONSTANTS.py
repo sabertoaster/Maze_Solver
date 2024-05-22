@@ -29,11 +29,7 @@ SCENES = {
             "Register": [[x, y] for x in range(6, 11) for y in range(18, 27)],
             "Exit": [[4, 13]]
         },
-        
-        'OBJECTS_TOUCH_RANGE': {
-            
-        },
-        
+
         'HOVER_FRAME': {
             "Login": "miniTown_BG_login_hover.png",
             "Register": "miniTown_BG_register_hover.png",
@@ -134,10 +130,6 @@ SCENES = {
             'Hard': [[9, y] for y in range(8, 10)],
             'Load': [[x, y] for x in range(3) for y in range(4, 6)],
         },
-        
-        'OBJECTS_TOUCH_RANGE': {
-            
-        },
 
         'HOVER_FRAME': {
             'Easy': 'kitchen_BG_easy_hover.png',
@@ -172,10 +164,6 @@ SCENES = {
         'OBJECTS_POS': {
             "Trophy": [[x, y] for x in range(5, 7) for y in range(6, 9)],
         },
-        
-        'OBJECTS_TOUCH_RANGE': {
-            
-        },
 
         'HOVER_FRAME': {
             "Trophy": 'leaderboard_BG_trophy_hover.png',
@@ -187,10 +175,7 @@ SCENES = {
     },
     'Settings': {
         'BG': 'settings_BG.png',
-        'DOORS': {},
-        'DOORS_CLICK_RANGE': {},
         'OBJECTS_POS': {},
-        'OBJECTS_TOUCH_RANGE': {},
         'HOVER_FRAME': {},
         'cell': (80, 80),
         'initial_pos': (0, 0),

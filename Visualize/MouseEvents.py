@@ -36,49 +36,22 @@ class MouseEvents:
                 
         return None, None
 
-    def get_hover_frame(self, prev_frame, prev_obj=None):
-        print('self.player.touched_obj:: ', self.player.touched_obj)
-        if self.player.touched_obj:
-            if self.player.touched_obj != prev_obj:
-                frame = morph_image(RESOURCE_PATH + SCENES[self.current_scene]['HOVER_FRAME'][self.player.touched_obj], RESOLUTION)
-                self.screen = frame.convert()
-                screenCopy = self.screen.copy()
-                self.player.update(screenCopy)
-                                
-                return screenCopy, self.player.touched_obj
-            else:
-                return prev_frame, prev_obj 
-
-        obj = None
-        if not self.player.touched_obj:
-            for key in SCENES[self.current_scene]['OBJECTS_POS'].keys():
-                if self.pos in SCENES[self.current_scene]['OBJECTS_POS'][key]:
-                    obj = key
-                    break
-            
+    def get_hover_frame(self, prev_frame, prev_door=None, player_touch=None):
         if self.idling:
-            if not self.player.touched_obj and prev_obj and not obj:
-                self.screen = self.original_frame
-                screenCopy = self.screen.copy()
-                self.player.update(screenCopy)
-                self.player_touching_prev = None
-                return screenCopy, None
-            # if not self.player_touching and obj:
-            #     frame = morph_image(RESOURCE_PATH + SCENES[self.current_scene]['HOVER_FRAME'][obj], RESOLUTION)
-            #     self.screen = frame.convert()
-            #     screenCopy = self.screen.copy()
-            #     self.player.update(screenCopy)
-            #     return screenCopy, obj
-            return prev_frame, prev_obj
-        
-                 
-        if obj != prev_obj:
+            return prev_frame, prev_door
+        door = None
+        for key in SCENES[self.current_scene]['OBJECTS_POS'].keys():
+            if self.pos in SCENES[self.current_scene]['OBJECTS_POS'][key]:
+                door = key
+                break
+
+        if door != prev_door:
             frame = self.original_frame
-            if obj:
-                frame = morph_image(RESOURCE_PATH + SCENES[self.current_scene]['HOVER_FRAME'][obj], RESOLUTION)
+            if door is not None:
+                frame = morph_image(RESOURCE_PATH + SCENES[self.current_scene]['HOVER_FRAME'][door], RESOLUTION)
             self.screen = frame.convert()
             screenCopy = self.screen.copy()
             self.player.update(screenCopy)
-            return screenCopy, obj
+            return screenCopy, door
         else:
-            return prev_frame, obj
+            return prev_frame, door
