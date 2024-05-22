@@ -85,7 +85,7 @@ class LeaderboardScreen:
         while running:
             events = pygame.event.get()
             for event in events:
-
+                
                 mouse_pos = pygame.mouse.get_pos()
 
                 if event.type == pygame.QUIT:
@@ -167,7 +167,6 @@ class LeaderboardScreen:
         Leaderboard
         :return:
         """
-        print("Hello nigga")
         if event.type == pygame.KEYDOWN:
             # self.screen.blit(self.leaderboard_panel, (0, 0))
             if event.key == pygame.K_ESCAPE:

@@ -76,17 +76,21 @@ class MenuScreen:
         # Play BGM
         self.sounds_handler.play_bgm(SCENE_NAME)
 
+        self.show_instructions = [False]
 
-        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
+        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, self.show_instructions)
         
         self.chosen_obj = None
         self.chosen_door = None
         self.hovered_obj = None
-        print(self.player.visual_pos)
+
+
         running = True
         while running:
             events = pygame.event.get()
             for event in events:
+                
+                print(self.show_instructions, 'show_instructions')
                 
                 mouse_pos = pygame.mouse.get_pos()
                 
@@ -119,10 +123,20 @@ class MenuScreen:
                     pressed = event.key
                     
                     if pressed == pl.K_SPACE:
-                        self.screen.blit(self.instructions_frame, (0, 0))
-                        self.player.update(self.screen.copy())
-                        pygame.display.flip()
-                        continue
+                        if not self.show_instructions[0]:
+                            self.screen.blit(self.instructions_frame, (0, 0))
+                            self.screenCopy = self.screen.copy()
+                            self.player.update(self.screen.copy())
+                            pygame.display.flip()
+                            
+                            self.show_instructions[0] = True
+                        else:
+                            self.screen.blit(self.frame, (0, 0))
+                            self.screenCopy = self.screen.copy()
+                            self.player.update(self.screen.copy())
+                            pygame.display.flip()
+                            
+                            self.show_instructions[0] = False
                     
                     player_response = self.player.handle_event(pressed)
                     if player_response == "Move":
