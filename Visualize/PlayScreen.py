@@ -1,4 +1,4 @@
-1import json
+import json
 import pygame
 import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
@@ -176,14 +176,17 @@ class PlayScreen:
 
             if name == "Easy":
                 print("Easy")
+                self.set_current_mode("Easy")
                 return "Gameplay", (0, 0)
 
             if name == "Medium":
                 print("Medium")
+                self.set_current_mode("Medium")
                 return "Gameplay", (0, 0)
 
             if name == "Hard":
                 print("Hard")
+                self.set_current_mode("Hard")
                 return "Gameplay", (0, 0)
 
         return None, None
@@ -192,7 +195,16 @@ class PlayScreen:
         """
         Set the current mode of the game into the ```current_profile.json```
         """
-        self.current_mode = mode
+        current_profile = {
+            "player.name": self.player.name,
+            "level": "Easy",
+            "mode": mode,
+            "score": 0,
+            "player.grid_pos": (-1, -1),
+            "player.visual_pos": (-1, -1),
+
+        }
+
     def load(self, event):
 
         if event.type == pygame.KEYDOWN:
