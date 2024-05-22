@@ -1,4 +1,5 @@
 # CURRENT PLAY MODE and LEVEL
+from enum import Enum
 class PLAY_MODE(Enum):#Enum
     MANUAL = 0
     AUTO = 1

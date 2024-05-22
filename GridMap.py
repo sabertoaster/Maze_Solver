@@ -108,6 +108,10 @@ class MapManager:
             grid[3, 13:15] = [GridMapObject.WALL]
 
             grid[:, 0] = [GridMapObject.DOOR]
+
+            grid[5, 9:11] = [GridMapObject.DOOR]
+            grid[7, 11:13] = [GridMapObject.DOOR]
+            grid[9, 8:10] = [GridMapObject.DOOR]
             pass
 
         def leaderBoardScene():
@@ -120,7 +124,7 @@ class MapManager:
             # WALL
             grid[:3, :] = [[GridMapObject.WALL]]
             grid[:9, :2] = [[GridMapObject.WALL]]
-            grid[4, 3] = GridMapObject.WALL
+            grid[4, 2] = GridMapObject.WALL
             grid[5:7, 6:9] = [[GridMapObject.WALL]]
 
             grid[:, 14] = [GridMapObject.DOOR]

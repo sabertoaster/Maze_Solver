@@ -1,6 +1,6 @@
 import pygame
 import numpy as np
-from CONSTANTS import RESOLUTION
+from CONSTANTS import RESOLUTION, RESOURCE_PATH
 
 class Minimap:
     def __init__(self, screen, maze, grid_size, maze_surface, maze_cell_size, display_pos, player):
@@ -91,7 +91,7 @@ class Minimap:
 
                     self.screen.blit(self.new_background, self.display_pos, (self.cut_start_pos, self.cut_area)) 
 
-                    self.cut_start_pos = (int(self.player.visual_pos[0]) - self.cell_size * self.col // 2, int(self.player.visual_pos[1]) - self.cell_size * self.row // 2)
+                    self.cut_start_pos = (self.player.visual_pos[0] - self.cell_size * self.col / 2, self.player.visual_pos[1] - self.cell_size * self.row / 2)
                     
                     pygame.display.flip()
 
@@ -105,11 +105,36 @@ class Minimap:
             pygame.display.update() 
             
     def draw_solution(self, screen):
-        if self.trace_path:
-            for pos in self.trace_path:
-                ceil_rect = pygame.Rect((self.col // 2 + pos[1]) * self.cell_size, (self.row // 2 + pos[0]) * self.cell_size, self.cell_size, self.cell_size)
+        def get_directions(pos1, pos2):
 
-                pygame.draw.rect(screen, (127, 0, 255), ceil_rect)
+            dx = pos1[0] - pos2[0]
+            dy = pos1[1] - pos2[1]
+
+            if dx > 0:
+                return "RIGHT"
+            elif dx < 0:
+                return "LEFT"
+            elif dy > 0:
+                return "DOWN"
+            elif dy < 0:
+                return "UP"
+
+
+        footprint = pygame.image.load(RESOURCE_PATH + "footprint.png").convert_alpha()
+
+        footprints = {
+            "UP": pygame.transform.rotate(footprint, 270),
+            "DOWN": pygame.transform.rotate(footprint, 90),
+            "LEFT": pygame.transform.rotate(footprint, 180),
+            "RIGHT": pygame.transform.rotate(footprint, 0)
+        }
+
+        if self.trace_path:
+            for i in range(len(self.trace_path) - 1):
+                direction = get_directions(self.trace_path[i], self.trace_path[i + 1])
+                screen.blit(footprints[direction], ((self.col // 2 + self.trace_path[i][1]) * self.cell_size, (self.row // 2 + self.trace_path[i][0]) * self.cell_size + 20))
+            screen.blit(footprints[get_directions(self.trace_path[-1], self.player.grid_pos)], ((self.col // 2 + self.trace_path[-1][1]) * self.cell_size, (self.row // 2 + self.trace_path[-1][0]) * self.cell_size + 20))
+
             
 
     def cut_maze(self, screen, ratio = 1):

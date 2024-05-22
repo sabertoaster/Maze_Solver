@@ -1,8 +1,11 @@
-import cv2
+# import random
+from itertools import cycle
 import numpy as np
 import pygame
-from CONSTANTS import SCENES, RESOURCE_PATH
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, AVATAR
+from Visualize.ImageProcess import morph_image
 
+import random
 
 
 # Support functions
@@ -24,30 +27,33 @@ def create_circular_mask(h, w, center=None, radius=None, bit_size=16):
 
 
 class Transition:
-    def __init__(self, screen, resolution):
+    def __init__(self, screen, resolution, sounds_handler=None, player=None):
         self.screen = screen
-        self.resolution = resolution
+        self.sounds_handler = sounds_handler
+        self.player = player
 
     def circle(self, pos, zoom_in=True):  # pos: x, y
         RADIUS = max(calc_distance(pos, (0, 0)),
-                     calc_distance(pos, (0, self.resolution[0])),
-                     calc_distance(pos, (self.resolution[1], 0)),
-                     calc_distance(pos, (self.resolution[1], self.resolution[0])))
+                     calc_distance(pos, (0, RESOLUTION[0])),
+                     calc_distance(pos, (RESOLUTION[1], 0)),
+                     calc_distance(pos, (RESOLUTION[1], RESOLUTION[0])))
 
         tmp = pygame.surfarray.array3d(self.screen.copy())
+
         rate = 96
         size = 16
+
         radius = RADIUS if zoom_in else 0
 
         for _ in range(rate):
             radius += -1 * 1 * RADIUS / rate if zoom_in else 1 * 1 * RADIUS / rate
 
             # Create mask
-            filter = create_circular_mask(h=self.resolution[0], w=self.resolution[1], center=pos, radius=radius,
+            filter = create_circular_mask(h=RESOLUTION[0], w=RESOLUTION[1], center=pos, radius=radius,
                                           bit_size=size)
             filter = filter.repeat(size, 0)
             filter = filter.repeat(size, 1)
-            filter = filter.reshape((self.resolution[0], self.resolution[1], 1)).repeat(3, axis=2)
+            filter = filter.reshape((RESOLUTION[0], RESOLUTION[1], 1)).repeat(3, axis=2)
 
             self.screen.blit(pygame.surfarray.make_surface(tmp * filter), (0, 0))
             pygame.display.flip()
@@ -60,7 +66,7 @@ class Transition:
         for _ in range(rate):
             self.screen.blit(screen_copy, (0, 0))
             self.screen.blit(box, (0, 0),
-                             (0, box_shape[1] - (_ + 1) * box_shape[1] / rate, self.resolution[0], self.resolution[1]))
+                             (0, box_shape[1] - (_ + 1) * box_shape[1] / rate, RESOLUTION[0], RESOLUTION[1]))
             pygame.display.update()
             pygame.time.delay(10)
 
@@ -68,55 +74,99 @@ class Transition:
 
         for _ in range(rate):
             self.screen.blit(screen_copy, (0, 0))
-            self.screen.blit(box, (0, 0), (0, (_ + 1) * box_shape[1] / rate, self.resolution[0], self.resolution[1]))
+            self.screen.blit(box, (0, 0), (0, (_ + 1) * box_shape[1] / rate, RESOLUTION[0], RESOLUTION[1]))
             pygame.display.update()
             pygame.time.delay(10)
 
     def zelda(self, next_scene, reversed, direction='h'):
         rate = 96
         if direction == 'h':
-            zelda = pygame.Surface((self.resolution[0] * 2, self.resolution[1]), pygame.SRCALPHA)
+            zelda = pygame.Surface((RESOLUTION[0] * 2, RESOLUTION[1]), pygame.SRCALPHA)
         elif direction == 'v':
-            zelda = pygame.Surface((self.resolution[0], self.resolution[1] * 2), pygame.SRCALPHA)
+            zelda = pygame.Surface((RESOLUTION[0], RESOLUTION[1] * 2), pygame.SRCALPHA)
 
         next_scene_screen = pygame.image.load(RESOURCE_PATH + SCENES[next_scene]["BG"]).convert_alpha()
 
         if reversed:
             if direction == 'h':
                 zelda.blit(next_scene_screen, (0, 0))
-                zelda.blit(self.screen, (self.resolution[0], 0))
+                zelda.blit(self.screen, (RESOLUTION[0], 0))
             elif direction == 'v':
                 zelda.blit(next_scene_screen, (0, 0))
-                zelda.blit(self.screen, (0, self.resolution[1]))
-
+                zelda.blit(self.screen, (0, RESOLUTION[1]))
         else:
             if direction == 'h':
                 zelda.blit(self.screen, (0, 0))
-                zelda.blit(next_scene_screen, (self.resolution[0], 0))
+                zelda.blit(next_scene_screen, (RESOLUTION[0], 0))
             elif direction == 'v':
                 zelda.blit(self.screen, (0, 0))
-                zelda.blit(next_scene_screen, (0, self.resolution[1]))
+                zelda.blit(next_scene_screen, (0, RESOLUTION[1]))
 
         for scroll in range(rate):
             if reversed:
                 if direction == 'h':
                     self.screen.blit(zelda, (0, 0), (
-                        self.resolution[0] - (scroll + 1) * self.resolution[0] / rate, 0, self.resolution[0],
-                        self.resolution[1]))
+                        RESOLUTION[0] - (scroll + 1) * RESOLUTION[0] / rate, 0, RESOLUTION[0],
+                        RESOLUTION[1]))
                 elif direction == 'v':
                     self.screen.blit(zelda, (0, 0),
-                                     (0, self.resolution[1] - (scroll + 1) * self.resolution[1] / rate,
-                                      self.resolution[0], self.resolution[1]))
-
+                                     (0, RESOLUTION[1] - (scroll + 1) * RESOLUTION[1] / rate,
+                                      RESOLUTION[0], RESOLUTION[1]))
 
             else:
                 if direction == 'h':
                     self.screen.blit(zelda, (0, 0),
-                                     ((scroll + 1) * self.resolution[0] / rate, 0, self.resolution[0],
-                                      self.resolution[1]))
+                                     ((scroll + 1) * RESOLUTION[0] / rate, 0, RESOLUTION[0],
+                                      RESOLUTION[1]))
                 elif direction == 'v':
                     self.screen.blit(zelda, (0, 0), (
-                        0, (scroll + 1) * self.resolution[1] / rate, self.resolution[0], self.resolution[1]))
+                        0, (scroll + 1) * RESOLUTION[1] / rate, RESOLUTION[0], RESOLUTION[1]))
+
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+    def hole(self, pos, next_scene):
+        rate = 96
+        # tmp_screen for handling the transition
+        tmp_screen = pygame.Surface((RESOLUTION[0], RESOLUTION[1] * 3), pygame.SRCALPHA)
+
+        tmp_screen.fill((0, 0, 0))
+
+        tmp_screen.blit(self.screen, (0, 0))
+
+        next_scene_screen = pygame.image.load(RESOURCE_PATH + SCENES[next_scene]["BG"]).convert_alpha()
+        tmp_screen.blit(next_scene_screen, (0, RESOLUTION[1] * 2))
+
+        for _ in range(rate):
+            self.screen.blit(tmp_screen, (0, 0), (0, (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0], RESOLUTION[1]))
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+            player_sprite = morph_image(RESOURCE_PATH + AVATAR[self.player.skin]["down"],
+                                        SCENES[self.player.current_scene]["cell"])
+
+        for _ in range(rate):
+            self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1], RESOLUTION[0], RESOLUTION[1]))
+            self.screen.blit(pygame.transform.rotate(player_sprite, (_ + 1) * 360 / rate),
+                             (pos[0], (_ + 1) * pos[1] / rate))
+
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+        for _ in range(rate):
+            self.screen.blit(tmp_screen, (0, 0),
+                             (0, RESOLUTION[1] + (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0], RESOLUTION[1]))
+            self.screen.blit(pygame.transform.rotate(player_sprite, (_ + 1) * 360 / rate), pos)
+
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+        tmp_screen.blit(player_sprite, (pos[0], pos[1] + RESOLUTION[1] * 2))
+
+        for _ in range(rate):
+            self.screen.blit(tmp_screen,
+                             (0 + random.randint(-3, 3), 0 + random.randint(-3, 3)),
+                             (0, RESOLUTION[1] * 2, RESOLUTION[0], RESOLUTION[1]))
 
             pygame.display.flip()
             pygame.time.delay(10)
@@ -131,13 +181,21 @@ class Transition:
             - zelda_ud: Transition effect from up to down
             - zelda_du: Transition effect from down to up
         """
+
         pos = (pos[1], pos[0])
 
         if transition_type == 'circle_in':
+            if self.sounds_handler:
+                self.sounds_handler.play_sfx(transition_type)
             self.circle(pos, zoom_in=True)
+            self.sounds_handler.stop_sfx(transition_type)
 
         elif transition_type == 'circle_out':
+            if self.sounds_handler:
+                self.sounds_handler.play_sfx(transition_type)
             self.circle(pos, zoom_in=False)
+            self.sounds_handler.stop_sfx(transition_type)
+
 
         elif transition_type == 'zelda_lr':
             self.zelda(next_scene, reversed=False)
@@ -153,5 +211,9 @@ class Transition:
 
         elif transition_type == "sign_pop":
             self.sign_pop(box)
+
+        elif transition_type == 'hole':
+            pos = (pos[1], pos[0])
+            self.hole(pos, next_scene)
 
         pygame.event.clear()
