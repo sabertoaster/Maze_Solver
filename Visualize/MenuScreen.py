@@ -82,7 +82,7 @@ class MenuScreen:
         self.chosen_obj = None
         self.chosen_door = None
         self.hovered_obj = None
-        print(self.player.visual_pos)
+
         running = True
         while running:
             events = pygame.event.get()

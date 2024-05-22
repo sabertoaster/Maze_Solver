@@ -194,10 +194,9 @@ class LoginScreen:
 
                 if next_scene:
                     self.player.deactivate(active=True)
-                    self.transition.transition(pos=(next_grid_pos[0] * SCENES[next_scene]["cell"][0],
-                                                    next_grid_pos[1] * SCENES[next_scene]["cell"][0]),
-                                               transition_type='hole',
-                                               next_scene=next_scene)
+                    self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                                                    self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                                               transition_type='circle_in')
                     return next_scene, next_grid_pos
 
             if name == "Exit":
