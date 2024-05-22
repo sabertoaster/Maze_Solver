@@ -54,8 +54,7 @@ class LoginScreen:
 
         self.sounds_handler = sounds_handler
         
-        # Transition effect
-        self.transition = Transition(self.screen, RESOLUTION, sounds_handler=self.sounds_handler)
+
 
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
 
@@ -72,6 +71,9 @@ class LoginScreen:
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
+
+        # Transition effect
+        self.transition = Transition(self.screen, RESOLUTION, sounds_handler=self.sounds_handler, player=self.player)
 
         self.panel_fl = False  # CÁI NI Bị DOWN
         # panel_shape = (RESOLUTION[0], RESOLUTION[1])
@@ -192,6 +194,10 @@ class LoginScreen:
 
                 if next_scene:
                     self.player.deactivate(active=True)
+                    self.transition.transition(pos=(next_grid_pos[0] * SCENES[next_scene]["cell"][0],
+                                                    next_grid_pos[1] * SCENES[next_scene]["cell"][0]),
+                                               transition_type='hole',
+                                               next_scene=next_scene)
                     return next_scene, next_grid_pos
 
             if name == "Exit":
@@ -214,7 +220,7 @@ class LoginScreen:
         """
         Login panel
         """
-        print("hello nigga")
+        #("hello nigga")
         if event.type == pygame.KEYDOWN:
             self.screen.blit(self.login_panel, (0, 0))
             self.text_box.draw()
@@ -242,9 +248,9 @@ class LoginScreen:
                             # Transition effect
                             self.screen.blit(self.screenCopy, (0, 0))
                             pygame.display.flip()
-                            self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                                                            self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                                                       transition_type='circle_in')
+                            # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                            #                                 self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                            #                            transition_type='circle_in')
                             
                             # Player re-init
                             self.player.deactivate(active=True)
@@ -278,7 +284,7 @@ class LoginScreen:
                 return "Login", self.player.get_grid_pos()
 
             if event.key == pygame.K_RETURN:
-                # print(self.text_box.get_all_text())
+                # #(self.text_box.get_all_text())
                 with open('user_profile.json', 'r+') as file:
                     try:
                         data = json.load(file)
