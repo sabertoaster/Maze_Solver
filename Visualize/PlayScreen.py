@@ -160,7 +160,7 @@ class PlayScreen:
 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name=self.player.name, scene="Menu")
+                self.player.re_init(name=self.player.name, scene="Menu", dir=self.player.current_direction)
 
                 return name, (13, self.player.get_grid_pos()[1])
 

@@ -73,17 +73,23 @@ class Gameplay:
             self.maze_mode = data['mode']
             self.maze_score = data["score"]
             self.maze_time = data["time"]
+
             if (data["level"] == "Easy"):
                 self.maze_size = (10, 10)
                 self.minimap_grid_size = (20, 20)
+
             elif (data["level"] == "Medium"):
                 self.maze_size = (20, 20)
                 self.minimap_grid_size = (20, 20)
+
             elif (data["level"] == "Hard"):
                 self.maze_size = (50, 50)
-                self.minimap_grid_size = (40,40)
+                self.minimap_grid_size = (40, 40)
+
             SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
+
             self.player.re_init(self.player.name, "Gameplay")
+            print(self.player.avatar.get_size())
             if data["maze_toString"]:
                 self.maze_toString = data["maze_toString"]
 
@@ -157,6 +163,7 @@ class Gameplay:
         self.player = player
         self.get_data()
 
+
         # INSTANTIATE MAZE
         self.init_maze()
 
@@ -185,19 +192,21 @@ class Gameplay:
 
         self.screenCopy = self.screen.copy()
 
-        self.transition = Transition(self.screen, RESOLUTION, player=self.player)
-        self.transition.transition(transition_type="hole",
-                                   pos=(400, 400),
-                                   prev_scene="Play")
+        # self.transition = Transition(self.screen, RESOLUTION, player=self.player)
+        # self.transition.transition(transition_type="hole",
+        #                            pos=(400, 400),
+        #                            prev_scene="Play")
+
 
         self.minimap.update(self.minimap.maze_surface)
+
+        pygame.display.update()
         # self.minimap.update(self.screenCopy)
         # self.player.update(self.screenCopy)
 
         self.fill_grid_map()
 
         while True:
-            
             self.update_time()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -237,9 +246,9 @@ class Gameplay:
                     if player_response == "Move":
                         self.maze_step += 1
                         pygame.event.clear()
-                    if self.solution_flag:
-                        ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
-                        pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
+                    # if self.solution_flag:
+                    #     ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
+                    #     pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
 
                     self.minimap.update(self.minimap.maze_surface)
                     self.visualize_maze(self.visual_maze, self.solution_flag)
@@ -302,7 +311,7 @@ class Gameplay:
         maze_surface = pygame.Surface(((self.maze_row) * (self.bg_cell_size), ((self.maze_col) * self.bg_cell_size)),
                                       pygame.SRCALPHA, 32).convert_alpha()
 
-        start = morph_image(RESOURCE_PATH + "start.png", (self.bg_cell_size, self.bg_cell_size))
+        start = pygame.image.load(RESOURCE_PATH + "start.png").convert_alpha()
         end = morph_image(RESOURCE_PATH + "jerry_icon.png", (self.bg_cell_size, self.bg_cell_size))
         walls = [
             "cave_wall_1.png",
@@ -359,7 +368,10 @@ class Gameplay:
                     maze_surface.blit(img, pos)
 
                 elif self.maze_toString[i][j] == 'S':
-                    maze_surface.blit(start, pos)
+
+                    maze_surface.blit(start,
+                                      (pos[0] + (self.bg_cell_size - start.get_width()) / 2,
+                                       pos[1] + (self.bg_cell_size - start.get_height()) / 2))
 
                 elif self.maze_toString[i][j] == 'E':
                     maze_surface.blit(end, pos)
