@@ -22,7 +22,7 @@ from Minimap import Minimap
 from Save import *
 from Player import *
 from random import choice
-
+import time
 
 class Gameplay:
     def __init__(self, screen, start_pos, end_pos, file_name='', maze_size=(20, 20)):
@@ -35,7 +35,10 @@ class Gameplay:
 
         # INSTANTIATE PANELS
         self.init_panel()
-
+        self.start_time = time.time()
+        self.maze_time = 0
+        self.maze_score = 0
+        self.maze_step = 0
         # INSTANTIATE SAVE FLAGS
         self.save_fl = False
 
@@ -69,6 +72,7 @@ class Gameplay:
             self.maze_level = data['level']
             self.maze_mode = data['mode']
             self.maze_score = data["score"]
+            self.maze_time = data["time"]
             if (data["level"] == "Easy"):
                 self.maze_size = (10, 10)
                 self.minimap_grid_size = (20, 20)
@@ -96,6 +100,8 @@ class Gameplay:
                 "level": self.maze_level,
                 "mode": self.maze_mode,
                 "score": self.maze_score,
+                "time": round(self.maze_time, 3), 
+                "step": self.maze_step,
                 "maze_toString": self.maze_toString
             }
             try:
@@ -123,6 +129,8 @@ class Gameplay:
                 "level": self.maze_level,
                 "mode": self.maze_mode,
                 "score": self.maze_score,
+                "time": round(self.maze_time, 3),
+                "step": self.maze_step,
                 "maze_toString": self.maze_toString
             }
             with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
@@ -139,7 +147,11 @@ class Gameplay:
         # except:
         #     with open(self.player.name + ".json", "w+") as fi:
 
-
+    def update_time(self):
+        current_time = time.time()
+        self.maze_time += float(current_time - self.start_time)
+        self.start_time = current_time
+        
     def play(self, player):
 
         self.player = player
@@ -176,7 +188,8 @@ class Gameplay:
         self.fill_grid_map()
 
         while True:
-
+            
+            self.update_time()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.exit()
@@ -185,8 +198,12 @@ class Gameplay:
                     if event.key == pygame.K_ESCAPE:
                         # Disable spamming button
                         pygame.key.set_repeat()
+                        start_pause_time = time.time()
                         next_scene, next_pos = self.toggle_panel()
                         # Enable spamming button again
+                        end_pause_time = time.time()
+                        pause_time = float(end_pause_time - start_pause_time)
+                        self.maze_time -= pause_time
                         pygame.key.set_repeat(200, 125)
                         
                         if next_scene:
@@ -209,8 +226,24 @@ class Gameplay:
 
                         # Handle minimap here
                     player_response = self.player.handle_event(event.key)
+                    # key_pressed = event.key
+                    # if key_pressed == pygame.K_s or key_pressed == pygame.K_DOWN:
+                    #     if self.player.is_legal_move('down'):
+                    #         score += 1
+                    # if key_pressed == pygame.K_w or key_pressed == pygame.K_UP:
+                    #     if self.player.is_legal_move('up'):
+                    #         score += 1
+                    # if key_pressed == pygame.K_a or key_pressed == pygame.K_LEFT:
+                    #     if self.player.is_legal_move('left'):
+                    #         score += 1
+                    # if key_pressed == pygame.K_d or key_pressed == pygame.K_RIGHT:
+                    #     if self.player.is_legal_move('right'):
+                    #         score += 1
                     
+                    print('score', self.maze_score)
+                    print('time', self.maze_step)
                     if player_response == "Move":
+                        self.maze_step += 1
                         pygame.event.clear()
                     if self.solution_flag:
                         ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
@@ -396,7 +429,7 @@ class Gameplay:
             m.update(events = events, mouse_rel = mouse_rel)
             pygame.display.flip()
             
-            for event in events:
+            for event in events:     
                 if event.type == pygame.QUIT:
                     m.playing = False
                 if event.type == pygame.KEYDOWN:
@@ -478,6 +511,7 @@ class Gameplay:
                          (self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size))
 
         return copy_screen
+    
              
 # screen = pygame.display.set_mode((1300, 900))
 # test = Gameplay(screen, (0,0), (9, 9))

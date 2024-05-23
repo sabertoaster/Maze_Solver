@@ -12,6 +12,7 @@
         "level": "Easy",
         "mode": "Manual",
         "score": 0,
+        "time": 0,
         "maze_toString": [
             [
                 " ",
