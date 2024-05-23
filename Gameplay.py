@@ -100,7 +100,7 @@ class Gameplay:
                 "level": self.maze_level,
                 "mode": self.maze_mode,
                 "score": self.maze_score,
-                "time": round(self.maze_time, 3), 
+                "time": round(self.maze_time, 2), 
                 "step": self.maze_step,
                 "maze_toString": self.maze_toString
             }
@@ -129,7 +129,7 @@ class Gameplay:
                 "level": self.maze_level,
                 "mode": self.maze_mode,
                 "score": self.maze_score,
-                "time": round(self.maze_time, 3),
+                "time": round(self.maze_time, 2),
                 "step": self.maze_step,
                 "maze_toString": self.maze_toString
             }
