@@ -46,8 +46,8 @@ class Minimap:
         
         self.player.visual_step = self.cell_size * self.player.grid_step
 
-        self.player.visual_pos = ((self.player.grid_pos[0] + self.col // 2) * self.cell_size
-                                  ,(self.player.grid_pos[1] + self.row // 2) * self.cell_size)
+        self.player.visual_pos = ((self.player.grid_pos[0] + self.col // 2 + 1 / 2) * self.cell_size
+                                  ,(self.player.grid_pos[1] + self.row // 2 + 1 / 2) * self.cell_size)
         
         self.player.name_box.set_position((self.player.visual_pos[0] - (self.player.name_length // 2) + self.cell_size // 2,
                                             self.player.visual_pos[1] - 1.5 * self.cell_size))
@@ -64,7 +64,9 @@ class Minimap:
         
         # self.screen.blit(screenCopy.copy(), (0,0))
         self.draw(screenCopy)
-    
+
+    def init_at_start(self, screenCopy):
+        self.draw_without_player(screenCopy)
 
     def draw(self, screenCopy):
         '''
@@ -102,8 +104,48 @@ class Minimap:
 
             self.screen.blit(self.new_background, self.display_pos, (self.cut_start_pos, self.cut_area)) 
             
-            pygame.display.update() 
-            
+            pygame.display.update()
+
+    def draw_without_player(self, screenCopy):
+        '''
+        Input:
+        - size: Get the size of the displayed minimap
+        '''
+        # x_start = current_player_pos[0] - int((size[0] // 2) * self.zoom_percentage)
+        # x_end = current_player_pos[0] + int((size[0] // 2) * self.zoom_percentage)
+        # y_start = current_player_pos[1] - int((size[1] // 2) * self.zoom_percentage)
+        # y_end = current_player_pos[1] + int((size[1] // 2) * self.zoom_percentage)
+
+        # ceil_rect = pygame.Rect((j - y_start) * self.cell_size, (i - x_start) * self.cell_size, self.cell_size, self.cell_size)
+
+        if self.player.active:
+            if self.player.visualize_direction[0] != self.player.visualize_direction[1]:
+                # self.cut_surface = self.cut_maze(screenCopy)
+
+                # self.screen.blit(self.cut_surface, self.display_pos)
+
+                # pygame.display.update()
+                rate = 24
+                for i in range(0, rate, 4):
+                    self.new_background = self.screen_without_player(screenCopy)
+
+                    self.screen.blit(self.new_background, self.display_pos, (self.cut_start_pos, self.cut_area))
+
+                    self.cut_start_pos = (self.player.visual_pos[0] - self.cell_size * self.col / 2,
+                                          self.player.visual_pos[1] - self.cell_size * self.row / 2)
+
+                    pygame.display.flip()
+
+                # self.player.visualize_direction = (
+                # self.player.visualize_direction[1], self.player.visualize_direction[1])
+                return
+
+            self.new_background = self.screen_without_player(screenCopy)
+
+            self.screen.blit(self.new_background, self.display_pos, (self.cut_start_pos, self.cut_area))
+
+            pygame.display.update()
+
     def draw_solution(self, screen):
         def get_directions(pos1, pos2):
 
@@ -157,3 +199,11 @@ class Minimap:
         #                             ,int(self.player.visual_pos[1]) - self.cell_size * self.row // 2 : int(self.player.visual_pos[1]) + self.cell_size * self.row // 2]
 
         # return pygame.surfarray.make_surface(maze_surface)
+
+    def screen_without_player(self, screen):
+        copy_screen = screen.copy()
+
+        if self.solution_flag:
+            self.draw_solution(copy_screen)
+
+        return copy_screen
