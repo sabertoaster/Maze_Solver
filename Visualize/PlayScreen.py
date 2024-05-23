@@ -12,7 +12,7 @@ from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
 
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FONTS
 
 SCENE_NAME = "Play"
 
@@ -67,7 +67,14 @@ class PlayScreen:
         self.player.update(self.screenCopy)
         # Add login panel background
 
+
+        # Load panel momentos
         load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
+        self.load_card_bg = pygame.image.load(RESOURCE_PATH + "load_card.png").convert_alpha()
+        self.load_card_pos = [(100, 260), (640, 260), (380, 520)]
+        self.load_cards = self.get_data_and_fill_in_load_panel(self.load_card_bg, self.load_card_pos)
+        # Load panel momentos
+
         blur = blur_screen(screen=self.screenCopy)
         self.load_panel = add_element(blur, load_panel,
                                       ((RESOLUTION[0] - load_panel.get_width()) / 2,
@@ -105,6 +112,7 @@ class PlayScreen:
                     if not self.panel_fl:
                         if self.chosen_obj == "Load":
                             self.screen.blit(self.load_panel, (0, 0))
+                            self.visualize_savefile_panel()
                         self.panel_fl = True
                     elif self.panel_fl and event.type == pygame.KEYDOWN:
                         next_scene, next_grid_pos = self.toggle_panel(self.chosen_obj, event)
@@ -210,6 +218,9 @@ class PlayScreen:
 
     def load(self, event):
 
+        # INSERT MOUSEMOTION EVENT HERE
+
+        # INSERT MOUSEMOTION EVENT HERE
         if event.type == pygame.KEYDOWN:
             # self.screen.blit(self.leaderboard_panel, (0, 0))
             if event.key == pygame.K_ESCAPE:
@@ -218,3 +229,46 @@ class PlayScreen:
 
         pygame.display.update()
         return None, None
+
+    def visualize_savefile_panel(self):
+        """
+        Visualize the save file panel
+        :return:
+        """
+        for i, card in enumerate(self.load_cards):
+            self.screen.blit(card, self.load_card_pos[i])
+        pygame.display.flip()
+
+    def get_data_and_fill_in_load_panel(self, template, position_lst):
+        """
+        Get the data from the save file and fill in the load panel
+        :param template:
+        """
+        try:
+            cards = []
+            with open("./SaveFile/" + self.player.name + ".json", "r+") as fi:
+                print("FUCK YOUR MOM" + self.player.name)
+                data = json.load(fi)
+                for i in range(0, min(len(data), len(position_lst))):
+                    card = template.copy()
+                    cards.append(self.fill_in_data(card, data[i]))
+            return cards
+        except:
+            print("DIT ME MINH BEO")
+            return []
+
+    def fill_in_data(self, card, data):
+        """
+        Fill in the data into the card
+        :param card:
+        :param data:
+        :return:
+        """
+        font = pygame.font.Font(FONTS["default"], 15)
+        text = font.render("Save No." + str(data["id"]), True, (10, 10, 10))
+        card.blit(text, (225, 25))
+        # text = font.render(str(data["step"]), 1, (10, 10, 10))
+        # card.blit(text, (20, 100))
+        # text = font.render(str(data["time"]), 1, (10, 10, 10))
+        # card.blit(text, (20, 100))
+        return card
