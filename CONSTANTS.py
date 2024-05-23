@@ -187,8 +187,6 @@ SCENES = {
     },
     'Settings': {
         'BG': 'settings_BG.png',
-        'DOORS': {},
-        'DOORS_CLICK_RANGE': {},
         'OBJECTS_POS': {},
         'OBJECTS_INTERACT_RANGE': {},
         'HOVER_FRAME': {},
