@@ -201,6 +201,7 @@ class PlayScreen:
             "level": level,
             "mode": "Manual",
             "score": 0,
+            "time": 0,
             "player.grid_pos": [-1, -1],
             "player.visual_pos": [-1, -1],
             "maze_toString": []

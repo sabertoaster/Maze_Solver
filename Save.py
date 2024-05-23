@@ -16,6 +16,7 @@ class SaveFile:
             "level": "Easy",
             "mode": "Manual",
             "score": player.score,
+            "time": player.maze_time,
             'maze_toString': maze_toString,
         }
 
