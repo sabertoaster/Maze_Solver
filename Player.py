@@ -130,9 +130,6 @@ class Player:
                 self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
                                           resolution=SCENES[self.current_scene]["cell"])
 
-            elif key_pressed == pygame.K_e:
-                self.interact()
-                return "Interact"
 
             pygame.event.clear()
             # print("Response: ", response)
@@ -292,16 +289,16 @@ class Player:
         """
         self.active = active
 
-    def interact(self):
-        """
-        Interact with the environment
-        :return:
-        """
-        self.sounds_handler.play_sfx('interact')
-        
-        self.interacted_obj = None
-        for key, val in SCENES[self.current_scene]["OBJECTS_TOUCH_RANGE"].items():
-            if self.grid_pos in val:
-                self.interacted_obj = key
-                break
+    # def interact(self):
+    #     """
+    #     Interact with the environment
+    #     :return:
+    #     """
+    #     self.sounds_handler.play_sfx('interact')
+    #
+    #     self.interacted_obj = None
+    #     for key, val in SCENES[self.current_scene]["OBJECTS_TOUCH_RANGE"].items():
+    #         if self.grid_pos in val:
+    #             self.interacted_obj = key
+    #             break
                 
