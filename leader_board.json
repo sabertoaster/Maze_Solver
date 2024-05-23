@@ -1,0 +1,20 @@
+{
+    "hard": {
+        "kiet": 9,
+        "huy": 16,
+        "khoa": 11,
+        "an": 12
+    },
+    "medium": {
+        "kiet": 0,
+        "huy": 7,
+        "khoa": 2,
+        "an": 3
+    },
+    "easy":{
+        "kiet": 7,
+        "huy": 15,
+        "khoa": 23,
+        "an": 9
+    }
+}

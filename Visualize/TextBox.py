@@ -77,6 +77,15 @@ class TextBox:
     def set_color(self, color):
         self.text_input.font_color = color
 
+    def draw_on_minimap(self, screen, background=False):
+        self.text_input._rerender()
+        if background:
+            width = self.get_length()
+            box = pygame.Surface((width, self.height * 1.2), pygame.SRCALPHA)
+            box.fill((0, 0, 0, 128))
+            screen.blit(box, (self.x, self.y))
+        screen.blit(self.text_input.surface, (self.x, self.y))
+
 
 class FormManager:
     """
@@ -96,7 +105,6 @@ class FormManager:
         """
         self.text_boxes = dict.fromkeys(list_of_textbox.keys())
         for key, value in list_of_textbox.items():
-            print(value["maximum_length"])
             self.text_boxes[key] = {
                 "box": TextBox(screen=screen, position=value["position"], font_color=value["color"],
                                manager=TextInputManager(validator=lambda input_s: len(input_s) <= value["maximum_length"]),

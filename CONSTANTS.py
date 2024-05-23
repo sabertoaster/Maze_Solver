@@ -194,6 +194,19 @@ SCENES = {
         'initial_pos': (0, 0),
         'BGM': 'town_bgm.mp3',
     },
+    "Gameplay": {
+        "initial_pos": (0, 0),
+        "cell" : (40, 40)
+    }
+}
+PARAMS = {
+    "resources": "Visualize/Resources/",
+    "resolution": (1200, 800),  # ratio 3:2
+    "cell": {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80)},
+    # 12 cells column, 8 cells row
+    "scenes": ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"],
+    "initial_pos": {"Login": (12, 12), "Menu": (11, 2), "Play": (0, 0), "Leaderboard": (0, 0), "Settings": (0, 0),
+                    "Gameplay": (0, 0)}  # need adjusting
 }
 
 # Skins
@@ -223,9 +236,8 @@ MOVEMENT = {
 }
 
 # Grid Map Object
-CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80),
-              "Gameplay": (20, 20)}
-MAPS_LIST = [key for key in SCENES.keys() if key != "Settings"]
+CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80), "Gameplay": (1,1)}
+MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"]
 
 
 # MISCs

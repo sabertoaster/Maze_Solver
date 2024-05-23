@@ -166,7 +166,8 @@ class LeaderboardScreen:
                 self.transition.transition(transition_type='zelda_lr', next_scene=name)
 
                 # Player re-init
-                self.player.re_init(name=self.player.name, scene="Menu")
+
+                self.player.re_init(name=self.player.name, scene="Menu", dir=self.player.current_direction)
 
                 return name, (1, self.player.get_grid_pos()[1])
 
@@ -183,7 +184,6 @@ class LeaderboardScreen:
         running = True
         while running:
             events = pygame.event.get()
-            
             
             for event in events:
                 if event.type == pygame.QUIT:

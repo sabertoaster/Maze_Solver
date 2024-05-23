@@ -68,6 +68,7 @@ class MenuScreen:
         # drawGrid(self.screen)
 
         self.player = player
+        self.player.re_init(name=self.player.name, scene=SCENE_NAME)
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
@@ -174,7 +175,7 @@ class MenuScreen:
         """
         if name:
             
-            self.player.re_init(name=self.player.name, scene=name)
+            self.player.re_init(name=self.player.name, scene=name, dir=self.player.current_direction)
             
             if name == "Login":
                 self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
@@ -183,7 +184,7 @@ class MenuScreen:
 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name=self.player.name, scene=name)
+                self.player.re_init(name="Guest", scene=name, dir=self.player.current_direction)
                     
                 return name, self.player.get_GridMapObject_Player("Login")
 
@@ -196,7 +197,7 @@ class MenuScreen:
                 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name=self.player.name, scene=name)
+                self.player.re_init(name=self.player.name, scene=name, dir=self.player.current_direction)
                     
                 return name, (13, self.player.get_grid_pos()[1])
 
@@ -207,7 +208,7 @@ class MenuScreen:
 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name=self.player.name, scene=name)
+                self.player.re_init(name=self.player.name, scene=name, dir=self.player.current_direction)
 
                 return name, (1, self.player.get_grid_pos()[1])
             
