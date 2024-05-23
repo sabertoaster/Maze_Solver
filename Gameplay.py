@@ -1,6 +1,6 @@
 # Custom imports
 from Algorithms.Algorithms import *
-from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_energy
+from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_energy, maze_copy
 from GridMapObject import GridMapObject
 from GridMap import GridMap
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FPS
@@ -38,7 +38,7 @@ class Gameplay:
         # INSTANTIATE ALGORITHMS
         self.algorithms = TotalAlgorithms(self.maze_toString)
 
-        print(self.maze_toString)
+        # print(self.maze_toString)
 
         # INSTANTIATE PANELS
         self.init_panel()
@@ -59,7 +59,7 @@ class Gameplay:
             data = read_file(self.file_name)
             self.player.name = data['player.name']
             self.player.re_init(self.player.name, "Gameplay")
-            print(self.player.name)
+            # print(self.player.name)
             self.player.grid_pos = data['player.grid_pos']
             self.player.visual_pos = data['player.visual_pos']
 
@@ -164,11 +164,18 @@ class Gameplay:
         self.cell_size = (RESOLUTION[0] - RESOLUTION[1]) // min(self.maze_row, self.maze_col)
         self.draw_maze()
 
+        
+            
+        test = convert_energy((maze_copy(self.maze_toString)))
+        for i in range(len(test)):
+            for j in range(len(test[0])):
+                print(test[i][j], end='')
+            print()
         # test = convert_energy(self.maze_toString)
-        # for i in range(len(test)):
-        #     for j in range(len(test[0])):
-        #         print(test[i][j], end='')
-        #     print()
+        
+
+        testAlgo = TotalAlgorithms(test)
+        print(testAlgo.path_energy(5, self.start_pos, self.end_pos))
 
     def init_background(self):
         self.bg_cell_size = RESOLUTION[1] // self.minimap_grid_size[1]

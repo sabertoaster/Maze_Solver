@@ -339,7 +339,8 @@ def convert(maze_instance: Maze):
 
 #     pygame.display.update()
 
-def convert_energy(maze: list[list[str]]) ->list[list[str]]:
+def convert_energy(maze_ref) ->list[list[str]]:
+        maze = maze_copy(maze_ref)
         for i in range(len(maze)):
             for j in range(len(maze[0])):
                 if maze[i][j] == 'E':
@@ -379,4 +380,13 @@ def convert_energy(maze: list[list[str]]) ->list[list[str]]:
                     if len(check) == 0:
                         maze[(cur_x)][(cur_y)] = tmp
         return maze        
-    
+
+
+def maze_copy(maze_ref) -> list[list[str]]:
+    maze = []
+    for i in range(len(maze_ref)):
+        tmp = []
+        for j in range(len(maze_ref[0])):
+            tmp.append(maze_ref[i][j])
+        maze.append(tmp)
+    return maze
