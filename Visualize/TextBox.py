@@ -54,9 +54,6 @@ class TextBox:
     def set_text(self, text):
         self.text_input.value = text
 
-    def set_text(self, text):
-        self.text_input.value = text
-
     def get_current_text(self):
         return self.text_input.value
 
@@ -73,6 +70,12 @@ class TextBox:
             box.fill((0, 0, 0, 128))
             self.screen.blit(box, (self.x, self.y))
         self.screen.blit(self.text_input.surface, (self.x, self.y))
+        
+    def get_text(self):
+        return self.text_input.value
+    
+    def set_color(self, color):
+        self.text_input.font_color = color
 
 
 class FormManager:
@@ -127,6 +130,12 @@ class FormManager:
         Draw text input
         """
         for key, value in self.text_boxes.items():
+            if key == "password":
+                tmp = value["box"].get_text()
+                value["box"].set_text("*" * len(value["box"].get_current_text()))
+                value["box"].draw()
+                value["box"].set_text(tmp)
+                continue
             print('draw', key, ":", value["box"].get_current_text())
             value["box"].draw()
 
@@ -137,6 +146,9 @@ class FormManager:
         """
         self.text_boxes[key]["box"].set_text(text)
         print('set', key, ":", text, self.text_boxes[key]["box"].get_current_text())
+        
+    def set_color(self, key, color):
+        self.text_boxes[key]["box"].set_color(color)
 
     def get_current_text(self) -> Dict[str, str]:
         """
@@ -150,3 +162,5 @@ class FormManager:
         Get all text from text input
         """
         return {key: value["box"].get_current_text() for key, value in self.text_boxes.items()}
+    
+

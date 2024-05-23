@@ -89,7 +89,7 @@ class LoginScreen:
                                         (RESOLUTION[1] - register_panel.get_height()) / 2))
 
         self.notify_text_box = FormManager(self.screen, {
-            "notification": {"position": ((RESOLUTION[0] - login_panel.get_width()) / 2, 530, 568, 40), "color": Color.BLACK.value, "maximum_length": 50,
+            "notification": {"position": ((RESOLUTION[0] - login_panel.get_width()) // 2 + 85, 550, 568, 40), "color": Color.BLACK.value, "maximum_length": 50,
                              "focusable": False, "init_text": "Test"}
         })
         # self.create_font()  # Create font for text input
@@ -115,7 +115,7 @@ class LoginScreen:
         self.chosen_obj = None
         self.hovered_obj = None
 
-        self.notify_text_box.set_text("notification", "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
+        self.notify_text_box.set_text("notification", "The username has been registered, please register another username")
 
         running = True
         while running:
@@ -241,6 +241,7 @@ class LoginScreen:
                         if diction["password"] == tmp_dic["password"]:
                             #("Login successfully")
                             # Notification
+                            self.notify_text_box.set_color("notification", Color.GREEN.value)
                             self.notify_text_box.set_text("notification", "Login successfully")
                             self.notify_text_box.draw()
                             pygame.display.flip()
@@ -260,6 +261,7 @@ class LoginScreen:
                             return "Menu", SCENES["Menu"]["initial_pos"]  # [PROTOTYPE]
                         else:
                             #("Password is incorrect, please try again")
+                            self.notify_text_box.set_color("notification", Color.RED.value)
                             self.notify_text_box.set_text("notification", "Password is incorrect, please try again")
                             self.notify_text_box.draw()
                             break
@@ -296,7 +298,7 @@ class LoginScreen:
 
                         if cur_input["password"] == "":
                             #("Vui long nhap mat khau")
-                            self.notify_text_box.set_text("notification", "Vui long nhap mat khau")
+                            self.notify_text_box.set_text("notification", "Please enter password")
                             self.notify_text_box.draw()
 
                             # pygame.display.flip()
@@ -307,8 +309,9 @@ class LoginScreen:
                         for dic in data:
                             if dic["username"] == cur_input["username"]:
                                 #("Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
+                                self.notify_text_box.set_color("notification", Color.RED.value)
                                 self.notify_text_box.set_text("notification",
-                                                              "Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
+                                                              "The username has been registered, please register another username")
                                 self.notify_text_box.draw()
 
                                 return None, None
@@ -318,7 +321,7 @@ class LoginScreen:
                         cur_input = self.text_box.get_all_text()
                         if cur_input["password"] == "":
                             #("Vui long nhap mat khau")
-                            self.notify_text_box.set_text("notification", "Vui long nhap mat khau")
+                            self.notify_text_box.set_text("notification", "Please enter password")
                             self.notify_text_box.draw()
 
                             # pygame.display.flip()
@@ -332,7 +335,8 @@ class LoginScreen:
                     json.dump(data, file, indent=4)
 
                     #("Dang ki thanh cong")
-                    self.notify_text_box.set_text("notification", "Dang ki thanh cong")
+                    self.notify_text_box.set_color("notification", Color.GREEN.value)
+                    self.notify_text_box.set_text("notification", "Register successfully")
                     self.notify_text_box.draw()
                 file.close()
 
