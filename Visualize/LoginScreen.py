@@ -68,6 +68,7 @@ class LoginScreen:
         pygame.display.flip()
         
         self.player = player
+        self.player.re_init(name=self.player.name, scene=SCENE_NAME, dir=self.player.current_direction)
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background

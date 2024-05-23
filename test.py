@@ -17,7 +17,6 @@ alert = tp.AlertWithChoices("Some title", choices, more_text, choice_mode="h")
 
 def my_func():
     alert.launch_alone() #see _example_launch for more options
-    print("User has chosen:", alert.choice)
 
 launcher = tp.Button("Click here to make a choice")
 launcher.center_on(screen)

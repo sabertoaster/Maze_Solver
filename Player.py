@@ -79,7 +79,6 @@ class Player:
 
         self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["down"],
                                   SCENES[target_scene]["cell"])  # [PROTOTYPE]
-        # print(self.grid_map.get_map(self.current_scene).get_grid())
         self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["down"],
                                   SCENES[target_scene]["cell"])  # [PROTOTYPE]
         self.ratio = (
@@ -132,7 +131,6 @@ class Player:
 
 
             pygame.event.clear()
-            # print("Response: ", response)
             return response
         return None
 
@@ -151,7 +149,7 @@ class Player:
         self.name = name
 
         self.current_direction = dir
-        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][dir],
+        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
                                   SCENES[self.current_scene]["cell"])  # [PROTOTYPE]
 
 
@@ -204,7 +202,6 @@ class Player:
             if self.visualize_direction[0] != self.visualize_direction[1]:
                 self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / ratio,
                                    self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / ratio)
-                print(self.grid_step)
 
                 screen.blit(self.avatar, self.visual_pos)
                 self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + maze_cell_size // 2,

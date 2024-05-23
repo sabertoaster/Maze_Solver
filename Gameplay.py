@@ -89,7 +89,6 @@ class Gameplay:
             SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
 
             self.player.re_init(self.player.name, "Gameplay")
-            print(self.player.avatar.get_size())
             if data["maze_toString"]:
                 self.maze_toString = data["maze_toString"]
 
@@ -114,7 +113,6 @@ class Gameplay:
                 with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
                     try:
                         file_data = json.load(fi)
-                        print(file_data)
                         data["id"] = len(file_data)
                         file_data.append(data)
                     except json.JSONDecodeError:

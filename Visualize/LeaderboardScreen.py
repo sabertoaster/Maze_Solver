@@ -81,11 +81,11 @@ class LeaderboardScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        drawGrid(screen=self.screen)
 
         
         # Draw Player
         self.player = player
+        self.player.re_init(name=self.player.name, scene=SCENE_NAME, dir=self.player.current_direction)
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
 
@@ -114,7 +114,8 @@ class LeaderboardScreen:
                         return next_scene, next_grid_pos
 
                 if self.chosen_obj:
-                    self.handle_objects(self.chosen_obj)
+                    self.handle_object(self.chosen_obj)
+                    self.chosen_obj = None
                     continue
 
                 self.mouse_handler.set_pos(mouse_pos)
@@ -143,7 +144,7 @@ class LeaderboardScreen:
 
                     self.player.update(self.screenCopy)
 
-    def handle_objects(self, obj):
+    def handle_object(self, obj):
         """
         Handle the objects
         :param obj:
@@ -167,7 +168,7 @@ class LeaderboardScreen:
 
                 # Player re-init
 
-                self.player.re_init(name=self.player.name, scene="Menu", dir=self.player.current_direction)
+                self.player.re_init(name=self.player.name, scene="Menu", dir='right')
 
                 return name, (1, self.player.get_grid_pos()[1])
 
@@ -196,7 +197,6 @@ class LeaderboardScreen:
                     if event.key == pygame.K_ESCAPE:
                         self.screen.blit(self.frame, (0, 0))
                         self.player.update(self.screenCopy)
-                        self.chosen_obj = None
                         running = False
                         break
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:

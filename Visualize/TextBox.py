@@ -144,7 +144,6 @@ class FormManager:
                 value["box"].draw()
                 value["box"].set_text(tmp)
                 continue
-            print('draw', key, ":", value["box"].get_current_text())
             value["box"].draw()
 
     def set_text(self, key, text) -> None:
@@ -153,7 +152,6 @@ class FormManager:
         key: str -> name of text box
         """
         self.text_boxes[key]["box"].set_text(text)
-        print('set', key, ":", text, self.text_boxes[key]["box"].get_current_text())
         
     def set_color(self, key, color):
         self.text_boxes[key]["box"].set_color(color)

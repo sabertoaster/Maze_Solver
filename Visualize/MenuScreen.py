@@ -68,7 +68,7 @@ class MenuScreen:
         # drawGrid(self.screen)
 
         self.player = player
-        self.player.re_init(name=self.player.name, scene=SCENE_NAME)
+        self.player.re_init(name=self.player.name, scene=SCENE_NAME, dir=self.player.current_direction)
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
@@ -101,13 +101,13 @@ class MenuScreen:
                 
                 if self.chosen_door:
                     next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
-
                     if next_scene:
                         return next_scene, next_grid_pos
                 
                 if self.chosen_obj:
-                    self.object_handler(self.chosen_obj)
+                    self.handle_object(self.chosen_obj)
                     self.chosen_obj = None
+                    continue
                                     
                 self.mouse_handler.set_pos(mouse_pos)
 
@@ -150,7 +150,7 @@ class MenuScreen:
 
                     self.player.update(self.screenCopy)
 
-    def object_handler(self, object):
+    def handle_object(self, object):
         """
         Handle object
         :param object:
@@ -184,7 +184,7 @@ class MenuScreen:
 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name="Guest", scene=name, dir=self.player.current_direction)
+                self.player.re_init(name="Guest", scene=name)
                     
                 return name, self.player.get_GridMapObject_Player("Login")
 
@@ -197,7 +197,7 @@ class MenuScreen:
                 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name=self.player.name, scene=name, dir=self.player.current_direction)
+                self.player.re_init(name=self.player.name, scene=name, dir='left')
                     
                 return name, (13, self.player.get_grid_pos()[1])
 
@@ -208,7 +208,7 @@ class MenuScreen:
 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name=self.player.name, scene=name, dir=self.player.current_direction)
+                self.player.re_init(name=self.player.name, scene=name, dir='right')
 
                 return name, (1, self.player.get_grid_pos()[1])
             

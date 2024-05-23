@@ -125,7 +125,10 @@ SCENES = {
         },
 
         'DOORS_CLICK_RANGE': {
-            'Menu': [[x, 0] for x in range(2, 10)]
+            'Menu': [[x, 0] for x in range(2, 10)],
+            'Easy': [[5, y] for y in range(9, 11)],
+            'Medium': [[7, y] for y in range(11, 13)],
+            'Hard': [[9, y] for y in range(8, 10)],
         },
 
         'OBJECTS_POS': {
@@ -196,7 +199,8 @@ SCENES = {
     },
     "Gameplay": {
         "initial_pos": (0, 0),
-        "cell" : (40, 40)
+        'OBJECTS_INTERACT_RANGE': {},
+        "cell" : (40, 40),
     }
 }
 PARAMS = {
