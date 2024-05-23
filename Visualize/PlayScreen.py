@@ -99,16 +99,10 @@ class PlayScreen:
                     if next_scene:
                         return next_scene, next_grid_pos
 
-                if self.chosen_obj:
-                    if not self.panel_fl:
-                        self.screen.blit(self.load_panel, (0, 0))
-                        self.panel_fl = True
-                    elif self.panel_fl and event.type == pygame.KEYDOWN:
-                        next_scene, next_grid_pos = self.toggle_panel(self.chosen_obj, event)
-                        if next_scene:
-                            return next_scene, next_grid_pos
-                    pygame.display.update()
-                    continue
+                if self.chosen_door:
+                    next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
+                    if next_scene:
+                        return next_scene, next_grid_pos
 
                 self.mouse_handler.set_pos(mouse_pos)
 
@@ -136,7 +130,16 @@ class PlayScreen:
 
                     self.player.update(self.screenCopy)
 
-    def toggle_panel(self, name, event):
+    def handle_object(self, event):
+        """
+        Handle the object
+        :param event:
+        :return:
+        """
+        if self.chosen_obj == 'Load':
+            self.load()
+
+    def toggle_panel(self, name):
         """
         :param name: to know whether if the player step into which door
         :return:
@@ -154,12 +157,6 @@ class PlayScreen:
                 
                 return name, (13, self.player.get_grid_pos()[1])
 
-            if name == "Load":
-                next_scene, next_grid_pos = self.load(event)
-                if next_scene:
-                    self.player.deactivate(active=True)
-                    return next_scene, next_grid_pos
-
             if name == "Easy":
                 pass
 
@@ -172,12 +169,26 @@ class PlayScreen:
         return None, None
 
     def load(self, event):
-
-        if event.type == pygame.KEYDOWN:
-            # self.screen.blit(self.leaderboard_panel, (0, 0))
-            if event.key == pygame.K_ESCAPE:
-                self.panel_fl = False
-                return "Play", self.player.get_grid_pos()  # [PROTOTYPE]
-
+        
+        self.screen.blit(self.load_panel, (0, 0))
         pygame.display.update()
-        return None, None
+        
+        running = True
+        while running:
+            events = pygame.event.get()
+            
+            for event in events:
+                if event.type == pygame.QUIT:
+                    running = False
+                    pygame.quit()
+                    
+                mouse_pos = pygame.mouse.get_pos()
+                mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
+
+                if event.type == pygame.KEYDOWN:
+
+                    if event.key == pygame.K_ESCAPE:
+                        self.screen.blit(self.frame, (0, 0))
+                        self.player.update(self.screenCopy)
+                        self.chosen_obj = None
+                        running = False
