@@ -353,7 +353,9 @@ class Gameplay:
                 pos = (j * self.bg_cell_size, i * self.bg_cell_size)
 
                 if self.maze_toString[i][j] == '#':
-                    img = pygame.image.load(RESOURCE_PATH + walls[np.random.randint(0, len(walls))]).convert_alpha()
+                    # img = pygame.image.load(RESOURCE_PATH + walls[np.random.randint(0, len(walls))]).convert_alpha()
+                    img = morph_image(RESOURCE_PATH + walls[np.random.randint(0, len(walls))],
+                                      (self.bg_cell_size, self.bg_cell_size * 2))
                     maze_surface.blit(img, pos)
 
                 elif self.maze_toString[i][j] == 'S':
@@ -470,7 +472,21 @@ class Gameplay:
                 if self.associated_values[1]: #If click restart button
                     pass
                 if self.associated_values[2]: #If click save button
-                    pass
+                    self.associated_values[2] = 0
+                    self.save_data()
+                    self.save_fl = True  # Set save flag to True
+                    # if self.associated_values[3]: #If click auto button
+                    # choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
+                    # introduction_text = "Choose the algorithm to solve the maze"
+                    # options = tp.AlertWithChoices("Auto Mode Algorithms", choices, introduction_text, choice_mode="v")
+                    # def clicked():
+                    #     options.launch_alone() #see _example_launch for more options
+                    #     print("User has chosen:", options.choice)
+                    # self.escape_buttons[3].center_on(self.screen)
+                    # self.escape_buttons[3].at_unclick = clicked
+                    # self.escape_buttons[3].get_updater(fps = FPS, esc_quit = True)
+                    # return None, None
+
                 if self.associated_values[3]: #If click menu button
                     self.player.deactivate(active = True)
 

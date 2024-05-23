@@ -265,11 +265,15 @@ class PlayScreen:
         :param data:
         :return:
         """
-        font = pygame.font.Font(FONTS["default"], 15)
+        font = pygame.font.Font(FONTS["default_bold"], 20)
         text = font.render("Save No." + str(data["id"]), True, (10, 10, 10))
-        card.blit(text, (225, 25))
-        # text = font.render(str(data["step"]), 1, (10, 10, 10))
-        # card.blit(text, (20, 100))
-        # text = font.render(str(data["time"]), 1, (10, 10, 10))
-        # card.blit(text, (20, 100))
+        card.blit(text, (175, 25))
+        
+        font = pygame.font.Font(FONTS["default_bold"], 30)
+        text = font.render(data["level"], 1, (10, 10, 10))
+        card.blit(text, (50, 50))
+        text = font.render(str(data["step"]), 1, (10, 10, 10))
+        card.blit(text, (115, 100))
+        text = font.render(str(data["time"]), 1, (10, 10, 10))
+        card.blit(text, (115, 150))
         return card
