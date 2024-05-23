@@ -68,7 +68,7 @@ class PlayScreen:
         # Add login panel background
 
         load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
-        blur = blur_screen(screen=self.screen)
+        blur = blur_screen(screen=self.screenCopy)
         self.load_panel = add_element(blur, load_panel,
                                       ((RESOLUTION[0] - load_panel.get_width()) / 2,
                                        (RESOLUTION[1] - load_panel.get_height()) / 2))
@@ -158,7 +158,7 @@ class PlayScreen:
 
             if name == "Load":
                 # Handle load scenes here
-                return "Gameplay", (0, 0)
+                # return "Gameplay", (0, 0)
 
                 # current_profile.json format
                 # {
