@@ -274,7 +274,7 @@ class Gameplay:
         self.grid_map = GridMap("Maze", self.maze_size, (1, 1))
 
         self.maze_row, self.maze_col = len(self.maze_toString), len(self.maze_toString[0])
-        self.cell_size = (RESOLUTION[0] - RESOLUTION[1]) / min(self.maze_row, self.maze_col)
+        self.cell_size = (RESOLUTION[0] - RESOLUTION[1]) // min(self.maze_row, self.maze_col)
 
         self.visual_maze_resolution = (self.maze_row * self.cell_size, self.maze_col * self.cell_size)
         self.visual_maze = pygame.Surface(self.visual_maze_resolution)
