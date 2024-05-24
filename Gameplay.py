@@ -117,12 +117,21 @@ class Gameplay:
 
         self.visualize_maze(self.visual_maze, self.solution_flag)
         self.fill_grid_map()
+        
+        self.auto_choice = "BFS"
+        self.init_auto_button()
 
+        auto_button_launcher = self.auto_button.get_updater()
+        
         while True:
-
-            for event in pygame.event.get():
+            events = pygame.event.get()
+            mouse_rel = pygame.mouse.get_rel()
+            
+            auto_button_launcher.update(events = events, mouse_rel = mouse_rel)
+            
+            for event in events:
                 if event.type == pygame.QUIT:
-                    pygame.exit()
+                    pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -143,8 +152,8 @@ class Gameplay:
                         self.solution_flag = not self.solution_flag
                         self.minimap.solution_flag = not self.minimap.solution_flag
 
-                        self.minimap.update(self.minimap.maze_surface)
-                        self.visualize_maze(self.visual_maze, self.solution_flag)
+                        self.update_screen()
+                        
                     if event.key == pygame.K_g:
                         save = SaveFile(self.maze_toString, self.player)
                         save.run_save('test1')
@@ -158,10 +167,9 @@ class Gameplay:
                         ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
                         pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
 
-                    self.minimap.update(self.minimap.maze_surface)
-                    self.visualize_maze(self.visual_maze, self.solution_flag)
-
-                    pygame.display.update()
+                    self.update_screen()
+                    
+                pygame.display.update()
 
     # def update_maze(self):
     #     if self.file_name == '':
@@ -278,6 +286,10 @@ class Gameplay:
 
         return copy_visual_maze
 
+    def update_screen(self):
+        self.minimap.update(self.minimap.maze_surface)
+        self.visualize_maze(self.visual_maze, self.solution_flag)
+        
     def init_panel(self):
         # INSTANTIATE PANELS
         tp.init(self.screen, tp.theme_game1)
@@ -346,8 +358,8 @@ class Gameplay:
                     if key_pressed == pygame.K_ESCAPE:
                         self.player.deactivate(active = True)
 
-                        self.minimap.update(self.minimap.maze_surface)
-                        self.visualize_maze(self.visual_maze, self.solution_flag)
+                        self.update_screen()
+                        pygame.display.update()
                         
                         return None, None
                 
@@ -357,8 +369,8 @@ class Gameplay:
                     self.associated_values[0] = 0                    
                     self.player.deactivate(active = True)
 
-                    self.minimap.update(self.minimap.maze_surface)
-                    self.visualize_maze(self.visual_maze, self.solution_flag)
+                    self.update_screen()
+                    pygame.display.update()
 
                     return None, None
                 
@@ -366,21 +378,6 @@ class Gameplay:
                     pass
                 if self.associated_values[2]: #If click save button
                     pass
-                # if self.associated_values[3]: #If click auto button
-                    # choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
-                    # introduction_text = "Choose the algorithm to solve the maze"
-                    # options = tp.AlertWithChoices("Auto Mode Algorithms", choices, introduction_text, choice_mode="v")
-
-                    # def clicked():
-                    #     options.launch_alone() #see _example_launch for more options
-                    #     print("User has chosen:", options.choice)   
-
-                    # self.escape_buttons[3].center_on(self.screen)
-                    # self.escape_buttons[3].at_unclick = clicked
-
-                    # self.escape_buttons[3].get_updater(fps = FPS, esc_quit = True)
-
-                    # return None, None
                 
                 if self.associated_values[3]: #If click menu button
                     self.player.deactivate(active = True)
@@ -389,21 +386,82 @@ class Gameplay:
                 
                 if self.associated_values[4]: #If click quit button
                     sys.exit(0)
-                    pygame.exit()
+                    pygame.quit()
         
         return None, None
+    
+    def init_auto_button(self):
+        choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
+        options = tp.AlertWithChoices("Auto Mode Algorithms", choices, choice_mode="v")
+        options.set_topleft(RESOLUTION[1] + (RESOLUTION[0] - RESOLUTION[1]) // 2 - 120, RESOLUTION[1] // 2 + 100)
+
+        #Use to display background around auto button when clicked
+        copy_screen = self.screen.copy()
+        copy_screen.blit(self.minimap.new_background, self.minimap.display_pos, (self.minimap.cut_start_pos, self.minimap.cut_area))
+        copy_screen.blit(self.visual_maze, self.visual_maze_display_pos)
+        
+        def auto_background():
+            blur = blur_screen(screen = copy_screen)
+        def clicked_func():
+            options.launch_alone(auto_background) #see _example_launch for more options
+            
+            self.auto_choice = options.choice
+            
+            if not self.auto_choice:
+                self.auto_choice = 'BFS'
+            
+            self.screen.fill((0,0,0))
+            # self.auto_button.update(events)
+            self.update_screen()
+            
+            pygame.display.update()
+            
+        self.auto_button = tp.Button("Auto Mode")
+        self.auto_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
+        self.auto_button.at_unclick = clicked_func
+        
+        # self.auto_button_feat = tp.DropDownListButton(("BFS", "DFS", "A*", "Greedy", "Dijkstra"),
+        #                         title=None, #by default, will take the first value
+        #                         choice_mode="v", #'v' for vertical or 'h' for horizontal
+        #                         align="center", #how to align choices in the list
+        #                         launch_nonblocking=True, #launch mode
+        #                         size_limit=("auto","auto"), #limit size of the list of options
+        #                         all_same_width=True, #all choices same width
+        #                         generate_shadow=(True, "auto"))#[0] : does generate shadow ? [1] : fast method or accurate method ? you can set [1] = "auto"
+        
+        # self.auto_button_title = tp.Labelled("Auto Mode", self.auto_button_feat)
+        
+        # self.auto_button = tp.Box([self.auto_button_title])
+        # def clicked_func():
+        #     self.screen.fill((0,0,0))
+        #     self.update_screen()
+        # #     self.auto_button.launch_nonblocking() #see _example_launch for more options
+            
+        # self.auto_button.set_topleft(RESOLUTION[1] + (RESOLUTION[0] - RESOLUTION[1]) // 2 - 90, RESOLUTION[1] // 2 + 50)
+        # self.auto_button.at_unclick = clicked_func
 
     def show_solution(self, screen):
         copy_screen = screen.copy()
 
-        self.minimap.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+        if self.auto_choice == "BFS":
+            self.minimap.trace_path, _ = self.algorithms.bfs(self.player.grid_pos[::-1], self.end_pos)
+        elif self.auto_choice == "DFS":
+            self.minimap.trace_path, _ = self.algorithms.dfs(self.player.grid_pos[::-1], self.end_pos)
+        elif self.auto_choice == "A*":
+            self.minimap.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+        elif self.auto_choice == "Greedy":
+            self.minimap.trace_path, _ = self.algorithms.greedy(self.player.grid_pos[::-1], self.end_pos)
+        elif self.auto_choice == "Dijkstra":
+            self.minimap.trace_path, _ = self.algorithms.dijkstra(self.player.grid_pos[::-1], self.end_pos)
         
         if not self.minimap.trace_path:
             return screen
         
+        self.minimap.trace_path.append(self.end_pos)
+        
         color = (127,0,255)
             
-        for pos in self.minimap.trace_path:
+        for pos in self.minimap.trace_path[:-1]:
             ceil_rect = pygame.Rect(pos[1] * self.cell_size, pos[0] * self.cell_size, self.cell_size, self.cell_size)
 
             pygame.draw.rect(copy_screen, color, ceil_rect)
