@@ -241,11 +241,11 @@ class Player:
                 # self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
 
-            self.touched_obj = None
-            for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
-                if self.grid_pos in val:
-                    self.touched_obj = key
-                    break
+            # self.touched_obj = None
+            # for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
+            #     if self.grid_pos in val:
+            #         self.touched_obj = key
+            #         break
             
             return "Move"
         self.sounds_handler.play_sfx("bump")
@@ -289,16 +289,16 @@ class Player:
         """
         self.active = active
 
-    def interact(self):
-        """
-        Interact with the environment
-        :return:
-        """
-        self.sounds_handler.play_sfx('interact')
+    # def interact(self):
+    #     """
+    #     Interact with the environment
+    #     :return:
+    #     """
+    #     self.sounds_handler.play_sfx('interact')
         
-        self.interacted_obj = None
-        for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
-            if self.grid_pos in val:
-                self.interacted_obj = key
-                break
+    #     self.interacted_obj = None
+    #     for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
+    #         if self.grid_pos in val:
+    #             self.interacted_obj = key
+    #             break
                 
