@@ -67,7 +67,6 @@ class PlayScreen:
         self.player.update(self.screenCopy)
         # Add login panel background
 
-
         # Load panel momentos
         load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
         self.load_card_bg = pygame.image.load(RESOURCE_PATH + "load_card.png").convert_alpha()
@@ -252,7 +251,6 @@ class PlayScreen:
         font = pygame.font.Font(FONTS["default_bold"], 20)
         text = font.render("Save No." + str(data["id"]), True, (10, 10, 10))
         card.blit(text, (175, 25))
-        
         font = pygame.font.Font(FONTS["default_bold"], 30)
         text = font.render(data["level"], 1, (10, 10, 10))
         card.blit(text, (50, 50))
