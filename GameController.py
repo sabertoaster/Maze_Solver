@@ -38,7 +38,7 @@ class GameController:
 
         # INSTANTIATE SOUNDS HANDLER
         self.sounds_handler = SoundsHandler()
-        self.sounds_handler.turn_off()
+        self.sounds_handler.turn_on()
         for key, val in SOUNDS['SFX'].items():
             self.sounds_handler.add_sfx(key, val['file_name'])
 
