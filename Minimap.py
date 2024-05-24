@@ -135,12 +135,9 @@ class Minimap:
 
                     self.cut_start_pos = (self.player.visual_pos[0] - self.cell_size * self.col / 2,
                                           self.player.visual_pos[1] - self.cell_size * self.row / 2)
-                    pygame.time.delay(5)
-                    pygame.display.flip()
 
             self.new_background = self.screen_without_player(screenCopy)
             self.screen.blit(self.new_background, self.display_pos, (self.cut_start_pos, self.cut_area))
-            pygame.display.update()
 
     def draw_solution(self, screen):
         def get_directions(pos1, pos2):

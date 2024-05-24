@@ -89,7 +89,6 @@ class Gameplay:
             SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
 
             self.player.re_init(self.player.name, "Gameplay")
-            print(self.player.avatar.get_size())
             if data["maze_toString"]:
                 self.maze_toString = data["maze_toString"]
 
@@ -97,7 +96,7 @@ class Gameplay:
                 self.maze = Maze("Wilson", self.maze_size)
                 self.maze_toString = convert_maze(self.maze)
 
-    def save_data(self):
+    def save_data(self, is_win=False):
         if not self.save_fl:
             data = {
                 "player.name": self.player.name,
@@ -105,7 +104,7 @@ class Gameplay:
                 "player.visual_pos": self.player.visual_pos,
                 "level": self.maze_level,
                 "mode": self.maze_mode,
-                "score": self.maze_score,
+                "score": self.maze_score + 100 if is_win else self.maze_score,
                 "time": round(self.maze_time, 2), 
                 "step": self.maze_step,
                 "maze_toString": self.maze_toString
@@ -134,7 +133,7 @@ class Gameplay:
                 "player.visual_pos": self.player.visual_pos,
                 "level": self.maze_level,
                 "mode": self.maze_mode,
-                "score": self.maze_score,
+                "score": self.maze_score + 100 if is_win else self.maze_score,
                 "time": round(self.maze_time, 2),
                 "step": self.maze_step,
                 "maze_toString": self.maze_toString
@@ -163,9 +162,10 @@ class Gameplay:
         self.player = player
         self.get_data()
 
-
         # INSTANTIATE MAZE
+
         self.init_maze()
+        print(self.visual_maze.get_size())
 
         # INSTANTIATE PLAYER
         self.set_start_pos()
@@ -178,6 +178,7 @@ class Gameplay:
         # INSTANTIATE BACKGROUND
         self.init_background()
 
+
         # INSTANTIATE MINIMAP
         # minimap_display_pos = (0, (RESOLUTION[0] - RESOLUTION[1]) // 2)
         minimap_display_pos = (0, 0)
@@ -186,6 +187,7 @@ class Gameplay:
         self.minimap.init_at_start(self.minimap.maze_surface)
 
         self.solution_flag = False
+
 
         self.visualize_maze(self.visual_maze, self.solution_flag)
 
@@ -244,6 +246,10 @@ class Gameplay:
                     player_response = self.player.handle_event(event.key)
                     if player_response == "Move":
                         self.maze_step += 1
+                        if self.player.get_grid_pos()[::-1] == self.end_pos:
+
+                            self.save_data(is_win=True)
+                            # return "Win", SCENES["Win"]["initial_pos"]
                         pygame.event.clear()
                     # if self.solution_flag:
                     #     ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
@@ -269,7 +275,7 @@ class Gameplay:
         self.grid_map = GridMap("Maze", self.maze_size, (1, 1))
 
         self.maze_row, self.maze_col = len(self.maze_toString), len(self.maze_toString[0])
-        self.cell_size = (RESOLUTION[0] - RESOLUTION[1]) // min(self.maze_row, self.maze_col)
+        self.cell_size = (RESOLUTION[0] - RESOLUTION[1]) / min(self.maze_row, self.maze_col)
 
         self.visual_maze_resolution = (self.maze_row * self.cell_size, self.maze_col * self.cell_size)
         self.visual_maze = pygame.Surface(self.visual_maze_resolution)
@@ -392,8 +398,8 @@ class Gameplay:
             copy_screen = self.show_solution(copy_screen)
 
         copy_screen = self.draw_player(copy_screen)
-
-        self.screen.blit(copy_screen, (RESOLUTION[0] - self.visual_maze_resolution[0], 0))
+        print(copy_screen.get_width(), copy_screen.get_height())
+        self.screen.blit(copy_screen, (RESOLUTION[0] - copy_screen.get_width(), 0))
 
 
     def init_panel(self):
