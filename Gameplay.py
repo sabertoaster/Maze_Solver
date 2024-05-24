@@ -41,8 +41,10 @@ class Gameplay:
         self.maze_time = 0
         self.maze_score = 0
         self.maze_step = 0
+        self.maze_id = -1
         # INSTANTIATE SAVE FLAGS
         self.save_fl = False
+        self.old_save = False
 
         self.minimap_grid_size = (20, 20)
         SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
@@ -94,14 +96,44 @@ class Gameplay:
 
             self.player.re_init(self.player.name, "Gameplay")
             if data["maze_toString"]:
+                self.old_save = True
                 self.maze_toString = data["maze_toString"]
-
+                self.old_save = True
+                self.maze_step = data["step"]
+                self.maze_time = data["time"]
+                self.maze_id = data["id"]
             else:
                 self.maze = Maze("Wilson", self.maze_size)
                 self.maze_toString = convert_maze(self.maze)
 
     def save_data(self, is_win=False):
         snapshot = self.minimap.get_snapshot()
+        if self.old_save:
+            data = {
+                "player.name": self.player.name,
+                "player.grid_pos": self.player.grid_pos,
+                "player.visual_pos": self.player.visual_pos,
+                "level": self.maze_level,
+                "mode": self.maze_mode,
+                "score": self.maze_score + 100 if is_win else self.maze_score,
+                "time": round(self.maze_time, 2),
+                "step": self.maze_step,
+                "maze_toString": self.maze_toString
+            }
+            with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
+                try:
+                    file_data = json.load(fi)
+                    data["id"] = self.maze_id
+                    file_data[self.maze_id] = data
+                except json.JSONDecodeError:
+                    file_data = [data]
+                fi.seek(0)
+                open("SaveFile\\" + self.player.name + ".json", 'w').close()
+                json.dump(file_data, fi, indent=4)
+                pygame.image.save(snapshot, "SaveFile\\" + self.player.name + str(data["id"]) + ".png")
+            return
+
+
         if not self.save_fl:
             data = {
                 "player.name": self.player.name,
@@ -114,16 +146,19 @@ class Gameplay:
                 "step": self.maze_step,
                 "maze_toString": self.maze_toString
             }
+
             try:
                 with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
                     try:
                         file_data = json.load(fi)
-                        data["id"] = file_data[-1]["id"] + 1
+                        self.maze_id = file_data[-1]["id"] + 1
+                        data["id"] = self.maze_id
                         file_data.append(data)
                     except json.JSONDecodeError:
                         data["id"] = 0
                         file_data = [data]
                     fi.seek(0)
+                    open("SaveFile\\" + self.player.name + ".json", 'w').close()
                     json.dump(file_data, fi, indent=4)
                     pygame.image.save(snapshot, "SaveFile\\" + self.player.name + str(data["id"]) + ".png")
             except FileNotFoundError:
@@ -147,11 +182,12 @@ class Gameplay:
             with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
                 try:
                     file_data = json.load(fi)
-                    data["id"] = file_data[-1]["id"]
+                    data["id"] = self.maze_id
                     file_data[-1] = (data)
                 except json.JSONDecodeError:
                     file_data = [data]
                 fi.seek(0)
+                open("SaveFile\\" + self.player.name + ".json", 'w').close()
                 json.dump(file_data, fi, indent=4)
                 pygame.image.save(snapshot, "SaveFile\\" + self.player.name + str(data["id"]) + ".png")
 
@@ -395,6 +431,14 @@ class Gameplay:
         self.bg_surface.blit(maze_surface,((screen_size[0] - maze_surface.get_width()) // 2, (screen_size[1] - maze_surface.get_height()) // 2))
 
     def set_start_pos(self):
+        if self.old_save == True:
+            self.start_pos = self.player.grid_pos[::-1]
+            for i in range(self.maze_row):
+                for j in range(self.maze_col):
+                    if self.maze_toString[i][j] == 'E':
+                        self.end_pos = (i, j)
+                        break
+            return
         for i in range(self.maze_row):
             for j in range(self.maze_col):
                 if self.maze_toString[i][j] == 'S':
