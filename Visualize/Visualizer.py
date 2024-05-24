@@ -43,8 +43,8 @@ class Visualizer:
             "Login": login(self.screen, self.sounds_handler),
             "Register": None,  # Chung với Login
             "Menu": menu(self.screen, self.sounds_handler),
-            "Play": play(self.screen),  # Chọn mode
-            "Leaderboard": leaderboard(self.screen),
+            "Play": play(self.screen, self.sounds_handler),  # Chọn mode
+            "Leaderboard": leaderboard(self.screen, self.sounds_handler),
             "Settings": None,
         }
     def start_visualize(self):

@@ -200,7 +200,7 @@ class Gameplay:
 
         self.screenCopy = self.screen.copy()
 
-        self.transition = Transition(self.screen, RESOLUTION, player=self.player)
+        self.transition = Transition(self.screen, RESOLUTION, player=self.player, sounds_handler=self.sounds_handler)
         self.transition.transition(transition_type="hole",
                                    pos=(400, 400),
                                    prev_scene="Play")

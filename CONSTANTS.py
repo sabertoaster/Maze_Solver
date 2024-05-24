@@ -129,6 +129,7 @@ SCENES = {
             'Easy': [[5, y] for y in range(9, 11)],
             'Medium': [[7, y] for y in range(11, 13)],
             'Hard': [[9, y] for y in range(8, 10)],
+            'Load': [[x, y] for x in range(3) for y in range(4, 6)],
         },
 
         'OBJECTS_POS': {

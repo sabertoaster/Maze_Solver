@@ -38,7 +38,7 @@ class PlayScreen:
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
 
-    def __init__(self, screen):
+    def __init__(self, screen, sounds_hanlder):
         """
         :param screen:
         :param res_cel:
@@ -47,9 +47,11 @@ class PlayScreen:
         self.panel_fl = False
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
+        
+        self.sounds_handler = sounds_hanlder
 
         # Transition effect
-        self.transition = Transition(self.screen, RESOLUTION)
+        self.transition = Transition(self.screen, RESOLUTION, sounds_handler=self.sounds_handler)
 
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
 
@@ -73,8 +75,8 @@ class PlayScreen:
 
         # Load panel momentos
         load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
-        self.load_card_bg = pygame.image.load(RESOURCE_PATH + "load_card.png").convert_alpha()
-        self.load_cards = self.get_data_and_fill_in_load_panel(self.load_card_bg, cards_top_left)
+        self.load_card = pygame.image.load(RESOURCE_PATH + "load_card.png").convert_alpha()
+        self.load_cards = self.get_data_and_fill_in_load_panel(self.load_card, cards_top_left)
         self.card_hover_frame = pygame.image.load(RESOURCE_PATH + "load_card_hover.png").convert_alpha()
         
         self.saved_games = {
@@ -97,8 +99,6 @@ class PlayScreen:
         self.chosen_door = None
         self.hovered_obj = None
         
-        self.chosen_loaded_game = None
-
         running = True
         while running:
             events = pygame.event.get()
@@ -111,6 +111,7 @@ class PlayScreen:
 
                 if self.chosen_door:
                     next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
+                    self.chosen_door = None
                     if next_scene:
                         return next_scene, next_grid_pos
 
@@ -151,8 +152,8 @@ class PlayScreen:
         :param event:
         :return:
         """
-        if obj == 'Load':
-            self.load()
+        pass
+        
 
     def toggle_panel(self, name):
         """
@@ -182,7 +183,10 @@ class PlayScreen:
             if name == "Hard":
                 self.set_current_mode("Hard")
                 return "Gameplay", (0, 0)
-
+            
+            if name == "Load":
+                x, y = self.load()
+                return x, y
         return None, None
 
     def set_current_mode(self, level):
@@ -207,9 +211,7 @@ class PlayScreen:
         self.screen.blit(self.load_panel, (0, 0))
         self.visualize_savefile_panel()
         pygame.display.update()
-        
-        hovered_card = None
-        
+                
         running = True
         while running:
             events = pygame.event.get()
@@ -217,31 +219,41 @@ class PlayScreen:
             for event in events:
 
                 if event.type == pygame.QUIT:
+                    running = False
                     pygame.quit()
                     
                 mouse_pos = pygame.mouse.get_pos()
                 mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
                 
                 key = None
-                for key, val in cards_click_range.items():
+                for i, val in cards_click_range.items():
                     if mouse_grid_pos in val:
-                        self.chosen_loaded_game = key
+                        key = i
                         break
-                    
-                if key:
+                
+                if key is not None and self.saved_games[key]:
+                    self.screen.blit(self.load_panel, (0, 0))
+                    self.visualize_savefile_panel()
                     self.screen.blit(self.card_hover_frame, cards_top_left[key])
+                    pygame.display.flip()
                 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.screen.blit(self.frame, (0, 0))
                         self.player.update(self.screenCopy)
                         running = False
-                        break
+                        return None, None
                 
                 if event.type == pygame.MOUSEBUTTONUP:
-                    self.chosen_loaded_game = self.saved_games[self.chosen_loaded_game]
-                    running = False
-                    break
+                    if key is not None:
+                        if self.saved_games[key]:
+                            with open("current_profile.json", "w") as fi:
+                                json.dump(self.saved_games[key], fi, indent=4)
+                            running = False
+                            return "Gameplay", (0, 0)
+                    else:
+                        continue
+
 
 
     def visualize_savefile_panel(self):
