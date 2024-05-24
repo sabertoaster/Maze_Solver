@@ -4,6 +4,7 @@ from pygame_textinput import TextInputVisualizer, TextInputManager
 import numpy as np
 import cv2
 import os
+import json
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
@@ -225,6 +226,7 @@ class LeaderboardScreen:
                         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
                         pygame.display.update()
                         continue
+
     def get_data_for_leaderboard(self):
         """
         Get the data for the leaderboard
@@ -242,38 +244,42 @@ class LeaderboardScreen:
             },
         }
         try:
-
             path = "./SaveFile/"
             for file in os.listdir(path):
                 with open(path + file, "r") as fi:
-                    data = json.load(fi)
-                    for profile in data:
-                        if profile["level"] == "Easy":
-                            if len(leaderboard_data["Easy"]) < 5:
-                                if profile["player.name"] not in leaderboard_data["Easy"]:
-                                    leaderboard_data["Easy"][profile["player.name"]] = profile["score"]
-                                else:
-                                    if profile["score"] < leaderboard_data["Easy"][profile["player.name"]]:
-                                        leaderboard_data["Easy"][profile["player.name"]] = profile["score"]
+                    if file.endswith(".json"):
+                        data = json.load(fi)
+                        for profile in data:
+                            if profile["level"] == "Easy":
+                                if len(leaderboard_data["Easy"]) < 5:
+                                    if profile["score"] != 0:
+                                        if profile["player.name"] not in leaderboard_data["Easy"]:
+                                            leaderboard_data["Easy"][profile["player.name"]] = profile["score"]
+                                        else:
+                                            if profile["score"] < leaderboard_data["Easy"][profile["player.name"]]:
+                                                leaderboard_data["Easy"][profile["player.name"]] = profile["score"]
 
-                        if profile["level"] == "Medium":
-                            if len(leaderboard_data["Medium"]) < 5:
-                                if profile["player.name"] not in leaderboard_data["Medium"]:
-                                    leaderboard_data["Medium"][profile["player.name"]] = profile["score"]
-                                else:
-                                    if profile["score"] < leaderboard_data["Medium"][profile["player.name"]]:
-                                        leaderboard_data["Medium"][profile["player.name"]] = profile["score"]
-                        if profile["level"] == "Hard":
-                            if len(leaderboard_data["Hard"]) < 5:
-                                if profile["player.name"] not in leaderboard_data["Hard"]:
-                                    leaderboard_data["Hard"][profile["player.name"]] = profile["score"]
-                                else:
-                                    if profile["score"] < leaderboard_data["Hard"][profile["player.name"]]:
-                                        leaderboard_data["Hard"][profile["player.name"]] = profile["score"]
+                            if profile["level"] == "Medium":
+                                if len(leaderboard_data["Medium"]) < 5:
+                                    if profile["score"] != 0:
+                                        if profile["player.name"] not in leaderboard_data["Medium"]:
+                                            leaderboard_data["Medium"][profile["player.name"]] = profile["score"]
+                                        else:
+                                            if profile["score"] < leaderboard_data["Medium"][profile["player.name"]]:
+                                                leaderboard_data["Medium"][profile["player.name"]] = profile["score"]
 
-            leaderboard_data["Easy"] = dict(sorted(leaderboard_data["Easy"].items(), key=lambda x: x[1], reverse=True))
-            leaderboard_data["Medium"] = dict(sorted(leaderboard_data["Medium"].items(), key=lambda x: x[1], reverse=True))
-            leaderboard_data["Hard"] = dict(sorted(leaderboard_data["Hard"].items(), key=lambda x: x[1], reverse=True))
+                            if profile["level"] == "Hard":
+                                if len(leaderboard_data["Hard"]) < 5:
+                                    if profile["score"] != 0:
+                                        if profile["player.name"] not in leaderboard_data["Hard"]:
+                                            leaderboard_data["Hard"][profile["player.name"]] = profile["score"]
+                                        else:
+                                            if profile["score"] < leaderboard_data["Hard"][profile["player.name"]]:
+                                                leaderboard_data["Hard"][profile["player.name"]] = profile["score"]
+
+            leaderboard_data["Easy"] = dict(sorted(leaderboard_data["Easy"].items(), key=lambda x: x[1]))
+            leaderboard_data["Medium"] = dict(sorted(leaderboard_data["Medium"].items(), key=lambda x: x[1]))
+            leaderboard_data["Hard"] = dict(sorted(leaderboard_data["Hard"].items(), key=lambda x: x[1]))
 
             return leaderboard_data
         except:

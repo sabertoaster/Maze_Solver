@@ -115,7 +115,7 @@ class Gameplay:
                 "player.visual_pos": self.player.visual_pos,
                 "level": self.maze_level,
                 "mode": self.maze_mode,
-                "score": self.maze_score + 100 if is_win else self.maze_score,
+                "score": round(self.maze_time, 2) if (is_win and round(self.maze_time, 2) < self.maze_score) or (self.maze_score == 0 and is_win) else self.maze_score,
                 "time": round(self.maze_time, 2),
                 "step": self.maze_step,
                 "maze_toString": self.maze_toString
@@ -141,7 +141,7 @@ class Gameplay:
                 "player.visual_pos": self.player.visual_pos,
                 "level": self.maze_level,
                 "mode": self.maze_mode,
-                "score": self.maze_score + 100 if is_win else self.maze_score,
+                "score": round(self.maze_time, 2) if (is_win and round(self.maze_time, 2) < self.maze_score) or (self.maze_score == 0 and is_win) else self.maze_score,
                 "time": round(self.maze_time, 2), 
                 "step": self.maze_step,
                 "maze_toString": self.maze_toString
@@ -174,7 +174,7 @@ class Gameplay:
                 "player.visual_pos": self.player.visual_pos,
                 "level": self.maze_level,
                 "mode": self.maze_mode,
-                "score": self.maze_score + 100 if is_win else self.maze_score,
+                "score": round(self.maze_time, 2) if (is_win and round(self.maze_time, 2) < self.maze_score) or (self.maze_score == 0 and is_win) else self.maze_score,
                 "time": round(self.maze_time, 2),
                 "step": self.maze_step,
                 "maze_toString": self.maze_toString
@@ -560,7 +560,13 @@ class Gameplay:
                     # return None, None
 
                 if self.associated_values[3]: #If click menu button
-                    self.player.deactivate(active = True)
+                    self.player.deactivate(active=True)
+
+                    self.transition.transition(
+                        pos=(SCENES["Menu"]["initial_pos"][0] * SCENES["Menu"]["cell"][0],
+                             SCENES["Menu"]["initial_pos"][1] * SCENES["Menu"]["cell"][1]),
+                        transition_type="reversed_hole",
+                        next_scene="Menu")
 
                     return "Menu", SCENES["Menu"]["initial_pos"]
 
