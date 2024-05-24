@@ -174,9 +174,7 @@ class MenuScreen:
         :return:
         """
         if name:
-            
-            self.player.re_init(name=self.player.name, scene=name, dir=self.player.current_direction)
-            
+                        
             if name == "Login":
                 self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                                                 self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
@@ -184,7 +182,7 @@ class MenuScreen:
 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name="Guest", scene=name)
+                self.player.re_init(name="Guest", scene=name, dir='down')
                     
                 return name, self.player.get_GridMapObject_Player("Login")
 

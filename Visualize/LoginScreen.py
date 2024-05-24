@@ -54,8 +54,6 @@ class LoginScreen:
 
         self.sounds_handler = sounds_handler
         
-
-
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
 
     def play(self, player):

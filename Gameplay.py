@@ -24,8 +24,10 @@ from Player import *
 from random import choice
 import time
 
+SCENE_NAME = "GamePlay"
+
 class Gameplay:
-    def __init__(self, screen, start_pos, end_pos, file_name='', maze_size=(20, 20)):
+    def __init__(self, screen, start_pos, end_pos, file_name='', maze_size=(20, 20), sounds_handler=None):
         self.screen = screen
         self.screenCopy = self.screen.copy()
         self.screen.fill((0, 0, 0))  # Black background [PROTOTYPE]
@@ -45,6 +47,8 @@ class Gameplay:
         self.minimap_grid_size = (20, 20)
         SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
 
+        self.sounds_handler = sounds_handler    
+        
     def fill_grid_map(self):
         for i in range(len(self.maze_toString)):
             for j in range(len(self.maze_toString[0])):
@@ -176,6 +180,10 @@ class Gameplay:
 
         # INSTANTIATE BACKGROUND
         self.init_background()
+        
+        #play BGM
+        self.sounds_handler.play_bgm(SCENE_NAME)
+
 
 
         # INSTANTIATE MINIMAP

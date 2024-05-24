@@ -16,6 +16,12 @@ from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FONTS
 
 SCENE_NAME = "Play"
 
+#[PROTOYPE]
+load_panels_pos = {
+    1: [(x,y) for x in range(3,6) for y in range(1,6)],
+    2: [(x,y) for x in range(3,6) for y in range(8,13)],
+    3: [(x,y) for x in range(7,10) for y in range(5,10)],
+}
 
 def drawGrid(screen):
     """
@@ -85,6 +91,8 @@ class PlayScreen:
         self.chosen_obj = None
         self.chosen_door = None
         self.hovered_obj = None
+        
+        self.chosen_load_game = None
 
         running = True
         while running:
@@ -94,9 +102,6 @@ class PlayScreen:
                 mouse_pos = pygame.mouse.get_pos()
 
                 if event.type == pygame.QUIT:
-                    # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                    #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                    #         transition_type='circle_in')
                     return None, None
 
                 if self.chosen_door:
@@ -106,7 +111,7 @@ class PlayScreen:
 
                 if self.chosen_obj:
                     self.handle_object(self.chosen_obj)
-                    self.chosen_obj = None
+                    self.chosen_obj = None  
                     continue
 
                 self.mouse_handler.set_pos(mouse_pos)
@@ -141,7 +146,7 @@ class PlayScreen:
         :param event:
         :return:
         """
-        if  obj == 'Load':
+        if obj == 'Load':
             self.load()
 
     def toggle_panel(self, name):
@@ -203,19 +208,28 @@ class PlayScreen:
             events = pygame.event.get()
             
             for event in events:
+
                 if event.type == pygame.QUIT:
                     pygame.quit()
-
+                    
                 mouse_pos = pygame.mouse.get_pos()
                 mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
-
+                
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.screen.blit(self.frame, (0, 0))
                         self.player.update(self.screenCopy)
+                        self.chosen_obj = None
                         running = False
                         break
-                    
+                
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.chosen_load_game = None
+                    for key, val in load_panels_pos.items():
+                        if mouse_grid_pos in val:
+                            self.chosen_load_game = key
+                            break
+
 
     def visualize_savefile_panel(self):
         """

@@ -189,6 +189,8 @@ SCENES = {
     },
     'Settings': {
         'BG': 'settings_BG.png',
+        'DOORS': {},
+        'DOORS_CLICK_RANGE': {},
         'OBJECTS_POS': {},
         'OBJECTS_INTERACT_RANGE': {},
         'HOVER_FRAME': {},
@@ -197,10 +199,28 @@ SCENES = {
         'BGM': 'town_bgm.mp3',
     },
     "Gameplay": {
-        "initial_pos": (0, 0),
+        'BG': '',
+        'DOORS': {},
+        'DOORS_CLICK_RANGE': {},
+        'OBJECTS_POS': {},
         'OBJECTS_INTERACT_RANGE': {},
-        "cell" : (40, 40),
-    }
+        'HOVER_FRAME': {},
+        "initial_pos": (0, 0),
+        "cell": (40, 40),
+        "BGM": "gameplay_BG.png",
+    },
+    
+    # "full_variables_of_a_scene": {
+    #     'BG': '',
+    #     'DOORS': {},
+    #     'DOORS_CLICK_RANGE': {},
+    #     'OBJECTS_POS': {},
+    #     'OBJECTS_INTERACT_RANGE': {},
+    #     'HOVER_FRAME': {},
+    #     'cell': (),
+    #     'initial_pos': (),
+    #     'BGM': '',
+    # }
 }
 PARAMS = {
     "resources": "Visualize/Resources/",
@@ -307,7 +327,11 @@ SOUNDS = {
         'Credit': {
             'file_name': 'town_bgm.mp3',
             'volume': 0.5
-        }
+        },
+        'GamePlay': {
+            'file_name': 'town_bgm.mp3',
+            'volume': 0.5
+        },
     },
     'SFX': {
         'bump': {
@@ -323,6 +347,26 @@ SOUNDS = {
             'volume': 1.0
         },
         'circle_out': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_lr': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_rl': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_ud': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_du': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'hole': {
             'file_name': 'door_enter.mp3',
             'volume': 1.0
         },

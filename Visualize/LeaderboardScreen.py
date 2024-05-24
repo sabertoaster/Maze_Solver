@@ -1,13 +1,7 @@
-import json
 import pygame
-import pygame.locals as pl
-from pygame_textinput import TextInputVisualizer, TextInputManager
-import numpy as np
-import cv2
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
-from Visualize.TextBox import TextBox, FormManager, Color
 from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
