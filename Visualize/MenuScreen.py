@@ -73,7 +73,7 @@ class MenuScreen:
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
-        
+        self.transition.transition(transition_type='sign_pop', box=self.sign)wwww
         # Play BGM
         self.sounds_handler.play_bgm(SCENE_NAME)
 
@@ -94,9 +94,6 @@ class MenuScreen:
                 mouse_pos = pygame.mouse.get_pos()
                 
                 if event.type == pygame.QUIT:
-                    # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                    #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                    #         transition_type='circle_in')
                     return None, None
                 
                 if self.chosen_door:
@@ -174,9 +171,7 @@ class MenuScreen:
         :return:
         """
         if name:
-            
-            self.player.re_init(name=self.player.name, scene=name, dir=self.player.current_direction)
-            
+                        
             if name == "Login":
                 self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                                                 self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
@@ -184,7 +179,7 @@ class MenuScreen:
 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name="Guest", scene=name)
+                self.player.re_init(name="Guest", scene=name, dir='down')
                     
                 return name, self.player.get_GridMapObject_Player("Login")
 

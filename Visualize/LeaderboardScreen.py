@@ -1,4 +1,3 @@
-import json
 import pygame
 import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
@@ -8,7 +7,6 @@ import os
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
-from Visualize.TextBox import TextBox, FormManager, Color
 from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
@@ -41,7 +39,7 @@ class LeaderboardScreen:
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
 
-    def __init__(self, screen):
+    def __init__(self, screen, sounds_handler):
         """
         :param screen:
         :param res_cel:
@@ -50,9 +48,11 @@ class LeaderboardScreen:
         self.panel_fl = False
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
+        
+        self.sounds_handler = sounds_handler
 
         # Transition effect
-        self.transition = Transition(self.screen, RESOLUTION)
+        self.transition = Transition(self.screen, RESOLUTION, self.sounds_handler)
 
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
 

@@ -43,8 +43,8 @@ class Visualizer:
             "Login": login(self.screen, self.sounds_handler),
             "Register": None,  # Chung với Login
             "Menu": menu(self.screen, self.sounds_handler),
-            "Play": play(self.screen),  # Chọn mode
-            "Leaderboard": leaderboard(self.screen),
+            "Play": play(self.screen, self.sounds_handler),  # Chọn mode
+            "Leaderboard": leaderboard(self.screen, self.sounds_handler),
             "Settings": None,
         }
     def start_visualize(self):
@@ -64,7 +64,7 @@ class Visualizer:
         """
         if scene_name == "Gameplay":
             file_name = ''
-            gameplay_scene = Gameplay(self.screen, (0, 0), (0, 0), file_name)
+            gameplay_scene = Gameplay(self.screen, (0, 0), (0, 0), file_name, sounds_handler=self.sounds_handler)
             next_scene, next_grid_pos = gameplay_scene.play(player=self.player)
             del gameplay_scene
             return next_scene, next_grid_pos

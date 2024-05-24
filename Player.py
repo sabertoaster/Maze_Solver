@@ -129,6 +129,9 @@ class Player:
                 self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
                                           resolution=SCENES[self.current_scene]["cell"])
 
+            if key_pressed == pygame.K_e:
+                self.interact()
+                return "Interact"
 
             pygame.event.clear()
             return response
@@ -194,8 +197,6 @@ class Player:
             self.name_box.draw(True)
             pygame.display.flip()
 
-            # [PROTOTYPE] maze_cell_size is used to detect position to put the namebox on
-            # NEED TO ADD THAT PARAMETER IN CONSTANTS.PY
 
     def draw_on_minimap(self, screen, maze_cell_size, ratio):  # Input the background surface
         if self.active:
@@ -238,14 +239,7 @@ class Player:
             if cmd in MOVEMENT and self.active:
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.FREE
                 self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
-                # self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
-
-            # self.touched_obj = None
-            # for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
-            #     if self.grid_pos in val:
-            #         self.touched_obj = key
-            #         break
             
             return "Move"
         self.sounds_handler.play_sfx("bump")
@@ -289,16 +283,17 @@ class Player:
         """
         self.active = active
 
-    # def interact(self):
-    #     """
-    #     Interact with the environment
-    #     :return:
-    #     """
-    #     self.sounds_handler.play_sfx('interact')
-        
-    #     self.interacted_obj = None
-    #     for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
-    #         if self.grid_pos in val:
-    #             self.interacted_obj = key
-    #             break
-                
+    def interact(self):
+        """
+        Interact with the environment
+        :return:
+        """
+        if self.current_scene != 'GamePlay':
+            self.sounds_handler.play_sfx('interact')
+    
+            self.interacted_obj = None
+            for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
+                if self.grid_pos in val:
+                    self.interacted_obj = key
+                    break
+

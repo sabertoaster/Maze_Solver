@@ -114,23 +114,7 @@ class Credit:
             section = Section(section_name, content, SCREEN_HEIGHT + next_pos)
             self.sections.append(section)
             next_pos = section.get_next_pos() + VERTICAL_SPACING
-            # if i >= 0:
-            #     self.sections.append(Section(section_name, content, space * VERTICAL_SPACING + (lines - 2*box_num)*(CONTENT_FONT_SIZE + CONTENT_FONT_SIZE*1.1) + i*HEADER_FONT_SIZE))
-            # else:
-            #     self.sections.append(Section(section_name, content, space * VERTICAL_SPACING + (lines - 2*box_num)*(CONTENT_FONT_SIZE + CONTENT_FONT_SIZE*1.1)))
-            # print('section space: ', space * VERTICAL_SPACING + (lines - 2*box_num)*(CONTENT_FONT_SIZE + CONTENT_FONT_SIZE*1.1) + i*HEADER_FONT_SIZE)
-            # current_box_num = len(content)
-            # box_num += current_box_num
-            # space += current_box_num*2
-            # space += 1
-            # for key, value in content.items():
-            #     if type(value) == list:
-            #         lines += len(value)
-            #     elif value != "":
-            #         lines += 1
-            #     if key != "": 
-            #         lines += 1
-            # i += 1
+            
             
     def reset(self):
         self.sections = []

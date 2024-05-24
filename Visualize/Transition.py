@@ -187,15 +187,14 @@ class Transition:
 
         pos = (pos[1], pos[0])
 
+        if self.sounds_handler:
+            self.sounds_handler.play_sfx(transition_type)
+        
         if transition_type == 'circle_in':
-            if self.sounds_handler:
-                self.sounds_handler.play_sfx(transition_type)
             self.circle(pos, zoom_in=True)
             self.sounds_handler.stop_sfx(transition_type)
 
         elif transition_type == 'circle_out':
-            if self.sounds_handler:
-                self.sounds_handler.play_sfx(transition_type)
             self.circle(pos, zoom_in=False)
             self.sounds_handler.stop_sfx(transition_type)
 
