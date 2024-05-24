@@ -306,7 +306,7 @@ class PlayScreen:
         :return:
         """
         font = pygame.font.Font(FONTS["default_bold"], 20)
-        text = font.render("Save No." + str(data["id"]), True, (10, 10, 10))
+        text = font.render("Save No." + str(data["id"] + 1), True, (10, 10, 10))
         card.blit(text, (175, 25))
         
         font = pygame.font.Font(FONTS["default_bold"], 25)

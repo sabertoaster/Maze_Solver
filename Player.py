@@ -29,6 +29,7 @@ class Player:
         self.active = True
         self.screen = screen
         self.current_scene = current_scene
+        self.previous_scene = None
 
         self.grid_map = grid_map
 
@@ -147,7 +148,9 @@ class Player:
         self.draw(screenCopy)
 
     def re_init(self, name='Guest', scene='Login', dir='down'):
-
+        if scene != self.current_scene:
+            self.previous_scene = self.current_scene
+        
         self.current_scene = scene
         self.name = name
 

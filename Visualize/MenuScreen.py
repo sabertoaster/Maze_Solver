@@ -73,7 +73,10 @@ class MenuScreen:
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
-        self.transition.transition(transition_type='sign_pop', box=self.sign)
+        print('Previous scene:', self.player.previous_scene)
+        if self.player.previous_scene == "Login":
+            self.transition.transition(transition_type='sign_pop', box=self.sign)
+        
         # Play BGM
         self.sounds_handler.play_bgm(SCENE_NAME)
 

@@ -1,6 +1,5 @@
 import json
 import pygame
-
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element

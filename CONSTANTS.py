@@ -157,6 +157,8 @@ SCENES = {
 
     'Leaderboard': {
         'BG': 'leaderboard_BG.png',
+        
+        'BG_instructions': 'leaderboard_BG_instructions.png',
 
         'DOORS': {
             (14, 2): "Menu",

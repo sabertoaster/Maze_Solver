@@ -1,4 +1,5 @@
 import pygame
+import pygame.locals as pl
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
@@ -44,6 +45,9 @@ class LeaderboardScreen:
         self.screen = screen
         
         self.sounds_handler = sounds_handler
+        
+        self.instructions_frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]['BG_instructions'], RESOLUTION)
+
 
         # Transition effect
         self.transition = Transition(self.screen, RESOLUTION, self.sounds_handler)
@@ -84,8 +88,10 @@ class LeaderboardScreen:
         self.player.re_init(name=self.player.name, scene=SCENE_NAME, dir=self.player.current_direction)
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
+        
+        self.show_instructions = [False]
 
-        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
+        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, self.show_instructions)
 
         self.chosen_door = None
         self.chosen_obj = None
@@ -126,6 +132,23 @@ class LeaderboardScreen:
 
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
+                    
+                    if pressed == pl.K_SPACE:
+                        if not self.show_instructions[0]:
+                            self.screen.blit(self.instructions_frame, (0, 0))
+                            self.screenCopy = self.screen.copy()
+                            self.player.update(self.screen.copy())
+                            pygame.display.flip()
+                            
+                            self.show_instructions[0] = True
+                        else:
+                            self.screen.blit(self.frame, (0, 0))
+                            self.screenCopy = self.screen.copy()
+                            self.player.update(self.screen.copy())
+                            pygame.display.flip()
+                            
+                            self.show_instructions[0] = False
+                    
                     player_response = self.player.handle_event(pressed)
 
                     if player_response == "Move":
