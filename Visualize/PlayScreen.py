@@ -213,44 +213,44 @@ class PlayScreen:
         pygame.display.update()
                 
         hovered = None
-        
+
         running = True
         while running:
             events = pygame.event.get()
-            
+
             for event in events:
 
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
-                    
+
                 mouse_pos = pygame.mouse.get_pos()
                 mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
-                
+
                 key = None
                 for i, val in cards_click_range.items():
                     if mouse_grid_pos in val:
                         key = i
                         break
-                
+
                 if key is not None and self.saved_games[key] and key != hovered:
-                    self.screen.blit(self.load_panel, (0, 0))
+                    # self.screen.blit(self.load_panel, (0, 0))
                     self.visualize_savefile_panel()
                     self.screen.blit(self.card_hover_frame, cards_top_left[key])
                     pygame.display.flip()
                 if key is None and hovered is not None:
-                    self.screen.blit(self.load_panel, (0, 0))
+                    # self.screen.blit(self.load_panel, (0, 0))
                     self.visualize_savefile_panel()
                     pygame.display.flip()
                 hovered = key
-                
+
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.screen.blit(self.frame, (0, 0))
                         self.player.update(self.screenCopy)
                         running = False
                         return None, None
-                
+
                 if event.type == pygame.MOUSEBUTTONUP:
                     if key is not None:
                         if self.saved_games[key]:
@@ -262,13 +262,13 @@ class PlayScreen:
                         continue
 
 
-
     def visualize_savefile_panel(self):
         """
         Visualize the save file panel
         :return:
         """
         for i, card in enumerate(self.load_cards):
+            print(i)
             self.screen.blit(card, cards_top_left[i])
         pygame.display.flip()
 
@@ -281,10 +281,10 @@ class PlayScreen:
             cards = []
             with open("./SaveFile/" + self.player.name + ".json", "r+") as fi:
                 data = json.load(fi)
+                print(data)
                 for i in range(0, min(len(data), len(position_lst))):
                     card = template.copy()
                     cards.append(self.fill_in_data(card, data[i]))
-                    
             return cards
         except:
             return []
@@ -309,14 +309,14 @@ class PlayScreen:
         text = font.render("Save No." + str(data["id"]), True, (10, 10, 10))
         card.blit(text, (175, 25))
         
-        font = pygame.font.Font(FONTS["default_bold"], 30)
+        font = pygame.font.Font(FONTS["default_bold"], 25)
         text = font.render(data["level"], 1, (10, 10, 10))
-        card.blit(text, (50, 50))
+        card.blit(text, (75, 50))
         text = font.render(str(data["step"]), 1, (10, 10, 10))
-        card.blit(text, (115, 100))
+        card.blit(text, (115, 120))
         text = font.render(str(data["time"]), 1, (10, 10, 10))
-        card.blit(text, (115, 150))
+        card.blit(text, (115, 170))
 
-        snapshot = morph_image("./SaveFile/" + self.player.name + data["id"] + ".png", (165, 165))
+        snapshot = morph_image("./SaveFile/" + self.player.name + str(data["id"]) + ".png", (165, 165))
         card.blit(snapshot, (210, 55))
         return card
