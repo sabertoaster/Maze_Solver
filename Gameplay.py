@@ -188,14 +188,13 @@ class Gameplay:
         self.solution_flag = False
 
         self.visualize_maze(self.visual_maze, self.solution_flag)
-        pygame.display.update()
 
         self.screenCopy = self.screen.copy()
 
-        # self.transition = Transition(self.screen, RESOLUTION, player=self.player)
-        # self.transition.transition(transition_type="hole",
-        #                            pos=(400, 400),
-        #                            prev_scene="Play")
+        self.transition = Transition(self.screen, RESOLUTION, player=self.player)
+        self.transition.transition(transition_type="hole",
+                                   pos=(400, 400),
+                                   prev_scene="Play")
 
 
         self.minimap.update(self.minimap.maze_surface)
@@ -311,7 +310,7 @@ class Gameplay:
         maze_surface = pygame.Surface(((self.maze_row) * (self.bg_cell_size), ((self.maze_col) * self.bg_cell_size)),
                                       pygame.SRCALPHA, 32).convert_alpha()
 
-        start = pygame.image.load(RESOURCE_PATH + "start.png").convert_alpha()
+        start = morph_image(RESOURCE_PATH + "start.png", (self.bg_cell_size, self.bg_cell_size))
         end = morph_image(RESOURCE_PATH + "jerry_icon.png", (self.bg_cell_size, self.bg_cell_size))
         walls = [
             "cave_wall_1.png",
@@ -371,7 +370,7 @@ class Gameplay:
 
                     maze_surface.blit(start,
                                       (pos[0] + (self.bg_cell_size - start.get_width()) / 2,
-                                       pos[1] + (self.bg_cell_size - start.get_height()) / 2))
+                                            pos[1] + (self.bg_cell_size - start.get_height()) / 2))
 
                 elif self.maze_toString[i][j] == 'E':
                     maze_surface.blit(end, pos)

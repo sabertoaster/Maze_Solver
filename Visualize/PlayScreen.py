@@ -118,6 +118,9 @@ class PlayScreen:
                         next_scene, next_grid_pos = self.toggle_panel(self.chosen_obj, event)
                         if next_scene:
                             return next_scene, next_grid_pos
+                    next_scene, next_grid_pos = self.toggle_panel(self.chosen_obj, event)
+                    if next_scene:
+                        return next_scene, next_grid_pos
                     pygame.display.update()
                     continue
 
@@ -184,17 +187,14 @@ class PlayScreen:
                     return next_scene, next_grid_pos
 
             if name == "Easy":
-                print("Easy")
                 self.set_current_mode("Easy")
                 return "Gameplay", (0, 0)
 
             if name == "Medium":
-                print("Medium")
                 self.set_current_mode("Medium")
                 return "Gameplay", (0, 0)
 
             if name == "Hard":
-                print("Hard")
                 self.set_current_mode("Hard")
                 return "Gameplay", (0, 0)
 
