@@ -1,32 +1,60 @@
 import pygame
-from CONSTANTS import RESOLUTION, FPS
+from Visualize.ImageProcess import morph_image
+from CONSTANTS import RESOLUTION
+import os
+
+FPS = {
+    'gameplay': 24,
+    'welcome': 8,
+}
+
+FOLDER = "Resources/animation/"
 
 
-IMG_PATH = "Visualize/Resources/animation"
-FRAMES = ["welcome_1.png",
-          "welcome_2.png",
-          "welcome_3.png",
-          "welcome_4.png"]
-
-
-def play_gif(screen):
+def play_gif(screen, original_frame=None, name='welcome'):
     """
     Play gif
     :param screen:
     :return:
     """
+    frames = []
+    background = original_frame
+    for filename in os.listdir(FOLDER + name):
+        if filename.endswith(".png"):
+            if filename == 'background.png':
+                background = morph_image(FOLDER + name + "/" + filename, RESOLUTION)
+                continue
+            frame = morph_image(FOLDER + name + "/" + filename, RESOLUTION)
+            frames.append(frame)
+        else:
+            print(filename)
+            sus = morph_image(FOLDER + name + "/" + filename, RESOLUTION)
+    
+    num_frames = len(frames)
+    
+    if name == 'welcome':
+        screen.blit(background, (0, 0))
+        frames = frames * 4
+        num_frames = num_frames * 4
+        
     clock = pygame.time.Clock()
-    frames = [pygame.image.load(IMG_PATH + "/" + frame) for frame in FRAMES]
+
     frame = 0
-    while True:
-        for event in pygame.event.get():
+    while frame < num_frames:
+        
+        events = pygame.event.get()
+        
+        for event in events:
             if event.type == pygame.QUIT:
-                return
+                pygame.quit()
             if event.type == pygame.KEYDOWN:
-                return
-        screen.fill((255, 255, 255))
+                if event.key == pygame.K_SPACE:
+                    return
+                
         screen.blit(frames[frame], (0, 0))
-        frame += 1
-        frame %= len(frames)
         pygame.display.flip()
-        clock.tick(FPS)
+        screen.blit(background, (0, 0))
+        
+        frame += 1
+        
+        clock.tick(FPS[name])

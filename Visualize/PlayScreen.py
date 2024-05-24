@@ -6,6 +6,7 @@ from Visualize.ImageProcess import add_element
 from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
+from Visualize.Playgif import play_gif
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FONTS
 
@@ -173,14 +174,17 @@ class PlayScreen:
                 return name, (13, self.player.get_grid_pos()[1])
 
             if name == "Easy":
+                play_gif(self.screen, self.frame, "gameplay")
                 self.set_current_mode("Easy")
                 return "Gameplay", (0, 0)
 
             if name == "Medium":
+                play_gif(self.screen, self.frame, "gameplay")
                 self.set_current_mode("Medium")
                 return "Gameplay", (0, 0)
 
             if name == "Hard":
+                play_gif(self.screen, self.frame, "gameplay")
                 self.set_current_mode("Hard")
                 return "Gameplay", (0, 0)
             
