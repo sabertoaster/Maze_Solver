@@ -392,7 +392,7 @@ class Gameplay:
     
     def init_auto_button(self):
         choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
-        options = tp.AlertWithChoices("Auto Mode Algorithms", choices, choice_mode="v")
+        options = tp.AlertWithChoices("Show Hint with Algorithm", choices, choice_mode="v")
         options.set_topleft(RESOLUTION[1] + (RESOLUTION[0] - RESOLUTION[1]) // 2 - 120, RESOLUTION[1] // 2 + 100)
 
         #Use to display background around auto button when clicked
@@ -416,7 +416,7 @@ class Gameplay:
             
             pygame.display.update()
             
-        self.auto_button = tp.Button("Auto Mode")
+        self.auto_button = tp.Button("Show Hint")
         self.auto_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
         self.auto_button.at_unclick = clicked_func
         
