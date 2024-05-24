@@ -31,6 +31,9 @@ class Minimap:
                               int(self.player.visual_pos[1]) - self.cell_size * self.row // 2)
         self.cut_area = (self.cell_size * self.col, self.cell_size * self.row)
 
+        # snapshot
+        self.snapshot = pygame.Surface(self.cut_area)
+
         self.trace_path = None
         self.solution_flag = False
 
@@ -107,6 +110,10 @@ class Minimap:
             self.screen.blit(self.new_background, (0, 0), (self.cut_start_pos, self.cut_area))
 
             pygame.display.update()
+
+    def get_snapshot(self):
+        self.snapshot.blit(self.new_background, (0, 0), (self.cut_start_pos, self.cut_area))
+        return self.snapshot
 
     def draw_without_player(self, screenCopy):
         '''

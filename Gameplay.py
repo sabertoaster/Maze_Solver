@@ -101,6 +101,7 @@ class Gameplay:
                 self.maze_toString = convert_maze(self.maze)
 
     def save_data(self, is_win=False):
+        snapshot = self.minimap.get_snapshot()
         if not self.save_fl:
             data = {
                 "player.name": self.player.name,
@@ -117,17 +118,19 @@ class Gameplay:
                 with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
                     try:
                         file_data = json.load(fi)
-                        data["id"] = len(file_data)
+                        data["id"] = file_data[-1]["id"] + 1
                         file_data.append(data)
                     except json.JSONDecodeError:
                         data["id"] = 0
                         file_data = [data]
                     fi.seek(0)
                     json.dump(file_data, fi, indent=4)
+                    pygame.image.save(snapshot, "SaveFile\\" + self.player.name + str(data["id"]) + ".png")
             except FileNotFoundError:
                with open("SaveFile\\" + self.player.name + ".json", "w+") as fi:
                     data["id"] = 0
                     json.dump([data], fi, indent=4)
+                    pygame.image.save(snapshot, "SaveFile\\" + self.player.name + str(data["id"]) + ".png")
 
         else:
             data = {
@@ -150,6 +153,7 @@ class Gameplay:
                     file_data = [data]
                 fi.seek(0)
                 json.dump(file_data, fi, indent=4)
+                pygame.image.save(snapshot, "SaveFile\\" + self.player.name + str(data["id"]) + ".png")
 
         # json.dump(data, fi, indent=4)
         # except:
