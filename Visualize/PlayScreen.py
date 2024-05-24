@@ -240,6 +240,8 @@ class PlayScreen:
                 
                 if event.type == pygame.MOUSEBUTTONUP:
                     self.chosen_loaded_game = self.saved_games[self.chosen_loaded_game]
+                    with open("current_profile.json", "w") as fi:
+                        json.dump(self.chosen_loaded_game, fi, indent=4)
                     running = False
                     break
 
@@ -297,4 +299,7 @@ class PlayScreen:
         card.blit(text, (115, 100))
         text = font.render(str(data["time"]), 1, (10, 10, 10))
         card.blit(text, (115, 150))
+
+        snapshot = morph_image("./SaveFile/" + self.player.name + data["id"] + ".png", (165, 165))
+        card.blit(snapshot, (210, 55))
         return card
