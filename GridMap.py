@@ -137,12 +137,15 @@ class MapManager:
             :return:
             """
             pass
+        def win():
 
+            pass
         loginScene()
         menuScene()
         playScene()
         leaderBoardScene()
         settingsScene()
+        win()
 
     def get_map(self, name):
         """

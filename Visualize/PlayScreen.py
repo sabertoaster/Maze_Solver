@@ -73,7 +73,6 @@ class PlayScreen:
         self.player.update(self.screenCopy)
         # Add login panel background
 
-
         # Load panel momentos
         load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
         self.load_card = pygame.image.load(RESOURCE_PATH + "load_card.png").convert_alpha()
