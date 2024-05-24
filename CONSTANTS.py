@@ -31,7 +31,7 @@ SCENES = {
         },
         
         'OBJECTS_INTERACT_RANGE': {
-            
+
         },
         
         'HOVER_FRAME': {
@@ -139,7 +139,7 @@ SCENES = {
         },
         
         'OBJECTS_INTERACT_RANGE': {
-            
+
         },
 
         'HOVER_FRAME': {
@@ -175,7 +175,6 @@ SCENES = {
         'OBJECTS_POS': {
             "Trophy": [[x, y] for x in range(5, 7) for y in range(6, 9)],
         },
-        
         'OBJECTS_INTERACT_RANGE': {
             'Trophy': [[x, y] for x in range(4, 8) for y in range(6, 9)]
         },
@@ -351,7 +350,7 @@ class LEVEL(Enum):
 CURRENT_PLAY_MODE = PLAY_MODE.MANUAL
 CURRENT_LEVEL = LEVEL.EASY
 
-#CREDIT
+# CREDIT
 CREDIT = {
     "MEMBERS": {
         "HUY": "(23122008)",
@@ -379,11 +378,13 @@ CREDIT = {
     }
 }
 
-#circular linked list
+
+# circular linked list
 class Node:
     def __init__(self, data):
         self.data = data
         self.next = None
+
 
 class CircularLinkedList():
     def __init__(self, data):
@@ -396,14 +397,14 @@ class CircularLinkedList():
                 self.push(key)
         else:
             self.push(data)
-            
+
     def print_list(self):
         temp = self.head
         while temp.next != self.head:
             print(temp.data, end=" ")
             temp = temp.next
         print(temp.data)
-            
+
     def push(self, data):
         if self.head.data == None:
             self.head.data = data
@@ -415,17 +416,15 @@ class CircularLinkedList():
                 temp = temp.next
             temp.next = new_node
             new_node.next = self.head
-    
+
     def pop(self):
         return_node = self.head
         self.head = self.head.next
         return return_node.data
-    
+
     def back(self):
         temp = self.head
         while temp.next.next != self.head:
             temp = temp.next
         self.head = temp.next
         return temp.data
-    
-                                                                                      

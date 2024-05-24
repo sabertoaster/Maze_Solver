@@ -66,7 +66,6 @@ class Visualizer:
             file_name = ''
             gameplay_scene = Gameplay(self.screen, (0, 0), (0, 0), file_name)
             next_scene, next_grid_pos = gameplay_scene.play(player=self.player)
-            print(next_scene, next_grid_pos)
             del gameplay_scene
             return next_scene, next_grid_pos
 

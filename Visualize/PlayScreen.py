@@ -144,7 +144,7 @@ class PlayScreen:
         if self.chosen_obj == 'Load':
             self.load()
 
-    def toggle_panel(self, name):
+    def toggle_panel(self, name, event):
         """
         :param name: to know whether if the player step into which door
         :return:

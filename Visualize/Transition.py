@@ -171,6 +171,9 @@ class Transition:
             pygame.display.flip()
             pygame.time.delay(10)
 
+        self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1] * 2, RESOLUTION[0], RESOLUTION[1]))
+        pygame.display.flip()
+
     def transition(self, transition_type, pos=(0, 0), box=None, next_scene=None, prev_scene=None):  # pos = (x, y) not (y, x)
         """
         Transition effect:
