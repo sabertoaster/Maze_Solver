@@ -1,13 +1,8 @@
 import json
 import pygame
-import pygame.locals as pl
-from pygame_textinput import TextInputVisualizer, TextInputManager
-import numpy as np
-import cv2
 from Visualize.ImageProcess import blur_screen
 from Visualize.ImageProcess import morph_image
 from Visualize.ImageProcess import add_element
-from Visualize.TextBox import TextBox, FormManager, Color
 from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
@@ -17,11 +12,13 @@ from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FONTS
 SCENE_NAME = "Play"
 
 #[PROTOYPE]
-load_panels_pos = {
-    1: [(x,y) for x in range(3,6) for y in range(1,6)],
-    2: [(x,y) for x in range(3,6) for y in range(8,13)],
-    3: [(x,y) for x in range(7,10) for y in range(5,10)],
+cards_click_range = {
+    0: [(x,y) for x in range(3,6) for y in range(1,6)],
+    1: [(x,y) for x in range(3,6) for y in range(8,13)],
+    2: [(x,y) for x in range(7,10) for y in range(5,10)],
 }
+cards_top_left = [(100, 260), (640, 260), (380, 520)]
+
 
 def drawGrid(screen):
     """
@@ -77,8 +74,16 @@ class PlayScreen:
         # Load panel momentos
         load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
         self.load_card_bg = pygame.image.load(RESOURCE_PATH + "load_card.png").convert_alpha()
-        self.load_card_pos = [(100, 260), (640, 260), (380, 520)]
-        self.load_cards = self.get_data_and_fill_in_load_panel(self.load_card_bg, self.load_card_pos)
+        self.load_cards = self.get_data_and_fill_in_load_panel(self.load_card_bg, cards_top_left)
+        self.card_hover_frame = pygame.image.load(RESOURCE_PATH + "load_card_hover.png").convert_alpha()
+        
+        self.saved_games = {
+            0 : {},
+            1 : {},
+            2 : {},   
+        }
+        self.load__saved_games()
+        
         # Load panel momentos
 
         blur = blur_screen(screen=self.screenCopy)
@@ -92,7 +97,7 @@ class PlayScreen:
         self.chosen_door = None
         self.hovered_obj = None
         
-        self.chosen_load_game = None
+        self.chosen_loaded_game = None
 
         running = True
         while running:
@@ -203,6 +208,8 @@ class PlayScreen:
         self.visualize_savefile_panel()
         pygame.display.update()
         
+        hovered_card = None
+        
         running = True
         while running:
             events = pygame.event.get()
@@ -215,20 +222,26 @@ class PlayScreen:
                 mouse_pos = pygame.mouse.get_pos()
                 mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
                 
+                key = None
+                for key, val in cards_click_range.items():
+                    if mouse_grid_pos in val:
+                        self.chosen_loaded_game = key
+                        break
+                    
+                if key:
+                    self.screen.blit(self.card_hover_frame, cards_top_left[key])
+                
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.screen.blit(self.frame, (0, 0))
                         self.player.update(self.screenCopy)
-                        self.chosen_obj = None
                         running = False
                         break
                 
                 if event.type == pygame.MOUSEBUTTONUP:
-                    self.chosen_load_game = None
-                    for key, val in load_panels_pos.items():
-                        if mouse_grid_pos in val:
-                            self.chosen_load_game = key
-                            break
+                    self.chosen_loaded_game = key
+                    running = False
+                    break
 
 
     def visualize_savefile_panel(self):
@@ -237,7 +250,7 @@ class PlayScreen:
         :return:
         """
         for i, card in enumerate(self.load_cards):
-            self.screen.blit(card, self.load_card_pos[i])
+            self.screen.blit(card, cards_top_left[i])
         pygame.display.flip()
 
     def get_data_and_fill_in_load_panel(self, template, position_lst):
@@ -252,9 +265,19 @@ class PlayScreen:
                 for i in range(0, min(len(data), len(position_lst))):
                     card = template.copy()
                     cards.append(self.fill_in_data(card, data[i]))
+                    
             return cards
         except:
             return []
+        
+    def load__saved_games(self):
+        try:
+            with open("./SaveFile/" + self.player.name + ".json", "r+") as fi:
+                data = json.load(fi)
+                for i in range(0, min(len(data), len(cards_top_left))):
+                    self.saved_games[i] = data[i]
+        except:
+            pass
 
     def fill_in_data(self, card, data):
         """

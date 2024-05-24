@@ -94,9 +94,6 @@ class MenuScreen:
                 mouse_pos = pygame.mouse.get_pos()
                 
                 if event.type == pygame.QUIT:
-                    # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                    #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                    #         transition_type='circle_in')
                     return None, None
                 
                 if self.chosen_door:
