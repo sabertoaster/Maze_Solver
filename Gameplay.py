@@ -260,6 +260,11 @@ class Gameplay:
                 if event.type == pygame.QUIT:
                     return None, None
                 if event.type == pygame.KEYDOWN:
+                    
+                    if event.key == pygame.K_m:
+                        self.sounds_handler.switch()
+                        continue
+                    
                     if event.key == pygame.K_ESCAPE:
                         # Disable spamming button
                         pygame.key.set_repeat()

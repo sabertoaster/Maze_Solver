@@ -162,7 +162,13 @@ class LoginScreen:
                     continue
 
                 if event.type == pygame.KEYDOWN:
+
                     pressed = event.key
+
+                    if pressed == pygame.K_m:
+                        self.sounds_handler.switch()
+                        continue
+
                     player_response = self.player.handle_event(pressed)
 
                     if player_response == "Move":

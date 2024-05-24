@@ -119,7 +119,12 @@ class MenuScreen:
                     continue
                 
                 if event.type == pygame.KEYDOWN:
+                
                     pressed = event.key
+                    
+                    if pressed == pygame.K_m:
+                        self.sounds_handler.switch()
+                        continue
                     
                     if pressed == pl.K_SPACE:
                         if not self.show_instructions[0]:
@@ -129,6 +134,8 @@ class MenuScreen:
                             pygame.display.flip()
                             
                             self.show_instructions[0] = True
+                            
+                            continue
                         else:
                             self.screen.blit(self.frame, (0, 0))
                             self.screenCopy = self.screen.copy()
@@ -136,6 +143,8 @@ class MenuScreen:
                             pygame.display.flip()
                             
                             self.show_instructions[0] = False
+                            
+                            continue
                     
                     player_response = self.player.handle_event(pressed)
                     if player_response == "Move":
