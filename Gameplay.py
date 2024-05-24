@@ -22,6 +22,7 @@ from Minimap import Minimap
 from Save import *
 from Player import *
 from random import choice
+from pynput.keyboard import Key, Controller
 
 
 class Gameplay:
@@ -118,16 +119,43 @@ class Gameplay:
         self.visualize_maze(self.visual_maze, self.solution_flag)
         self.fill_grid_map()
         
-        self.auto_choice = "BFS"
-        self.init_auto_button()
+        # INSTANTIATE CHOOSE MODE BUTTON
+        self.auto_choice = "BFS" # Flag cho việc chọn thuật toán nào để giải
+        self.init_choose_mode() # Init buttons
+        
+        # WORKFLOW:
+        # Tạo launcher để từng cái nút "choose_mode", "show_hint" (Khi chọn manual), "auto mode" (Khi chọn auto) chạy 
+        #                   (Vì cái hàm update của thorpy chỉ hoạt động trong vòng while)
+        # Tạo flag để xác định cái launcher nào đang chạy
+        
+        # Người chơi vô game -> Cái choose_mode_launcher chạy để hiện cái nút choose mode
+        #       Nếu chọn manual thì chạy manual_launcher và hiện nút show hint
+        #           Trong show hint có 2 nút on, off
+        #       Nếu chọn auto thì chạy auto_launcher và hiện nút auto mode
+        #           Trong auto mode có hiện mấy cái thuật toán, cái hàm xử lí thuật toán nào đang chạy ở line 474
+        
+        self.choose_mode_flag = True
+        choose_mode_launcher = self.choose_mode.get_updater()
 
-        auto_button_launcher = self.auto_button.get_updater()
+        self.manual_flag = False
+        manual_launcher = self.hint_button.get_updater()
+        self.hint_flag = False
+        
+        self.auto_flag = False
+        auto_launcher = self.auto_button.get_updater()
+        
+        self.keyboard_simulator = Controller()
         
         while True:
             events = pygame.event.get()
             mouse_rel = pygame.mouse.get_rel()
             
-            auto_button_launcher.update(events = events, mouse_rel = mouse_rel)
+            if self.choose_mode_flag:
+                choose_mode_launcher.update(events = events, mouse_rel = mouse_rel)
+            elif self.manual_flag:
+                manual_launcher.update(events = events, mouse_rel = mouse_rel)
+            elif self.auto_flag:
+                auto_launcher.update(events = events, mouse_rel = mouse_rel)
             
             for event in events:
                 if event.type == pygame.QUIT:
@@ -296,10 +324,11 @@ class Gameplay:
         self.escape_buttons = [tp.Button("Resume"), 
                                tp.Button("Restart"), 
                                tp.Button("Save"), 
+                               tp.Button("Auto"),
                                tp.Button("Menu"), 
                                tp.Button("Quit")]
         # [MASK], Use to recognize whether the escape buttons is pressed
-        self.associated_values = np.full((5,), 0).tolist()
+        self.associated_values = np.full((6,), 0).tolist()
         
         self.escape_box = tp.TitleBox("Settings", self.escape_buttons)
         self.escape_box.center_on(self.screen)
@@ -310,16 +339,19 @@ class Gameplay:
             self.associated_values[1] = 1
         def click_save():
             self.associated_values[2] = 1
-        def click_menu():
+        def click_auto():
             self.associated_values[3] = 1
-        def click_quit():
+        def click_menu():
             self.associated_values[4] = 1
+        def click_quit():
+            self.associated_values[5] = 1
             
         self.escape_buttons[0].at_unclick = click_resume
         self.escape_buttons[1].at_unclick = click_restart
         self.escape_buttons[2].at_unclick = click_save
-        self.escape_buttons[3].at_unclick = click_menu
-        self.escape_buttons[4].at_unclick = click_quit
+        self.escape_buttons[3].at_unclick = click_auto
+        self.escape_buttons[4].at_unclick = click_menu
+        self.escape_buttons[5].at_unclick = click_quit
 
         def before_gui():  # add here the things to do each frame before blitting gui elements
             self.screen.fill((250,) * 3)
@@ -374,41 +406,64 @@ class Gameplay:
 
                     return None, None
                 
-                if self.associated_values[1]: #If click restart button
+                if self.associated_values[1]: # If click restart button
                     pass
-                if self.associated_values[2]: #If click save button
+                if self.associated_values[2]: # If click save button
                     pass
-                
-                if self.associated_values[3]: #If click menu button
+                if self.associated_values[3]: # If click auto button
+                    self.associated_values[3] = 0
+                    
+                    self.auto_flag = not self.auto_flag
+                    
+                if self.associated_values[4]: # If click menu button
                     self.player.deactivate(active = True)
 
                     return "Menu", SCENES["Menu"]["initial_pos"]
-                
-                if self.associated_values[4]: #If click quit button
+                if self.associated_values[5]: # If click quit button
                     sys.exit(0)
                     pygame.quit()
         
         return None, None
     
-    def init_auto_button(self):
-        choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
-        options = tp.AlertWithChoices("Show Hint with Algorithm", choices, choice_mode="v")
-        options.set_topleft(RESOLUTION[1] + (RESOLUTION[0] - RESOLUTION[1]) // 2 - 120, RESOLUTION[1] // 2 + 100)
-
-        #Use to display background around auto button when clicked
-        copy_screen = self.screen.copy()
-        copy_screen.blit(self.minimap.new_background, self.minimap.display_pos, (self.minimap.cut_start_pos, self.minimap.cut_area))
-        copy_screen.blit(self.visual_maze, self.visual_maze_display_pos)
+    def init_choose_mode(self):
+        choose_mode_choices = ("Manual", "Auto Mode")
+        choose_mode = tp.AlertWithChoices("Choose Mode", choose_mode_choices, choice_mode="v")
+        choose_mode.set_topleft(890, 500)
         
-        def auto_background():
-            blur = blur_screen(screen = copy_screen)
-        def clicked_func():
-            options.launch_alone(auto_background) #see _example_launch for more options
+        manual_choices = ("On", "Off") 
+        manual_mode = tp.AlertWithChoices("", manual_choices, choice_mode="v")
+        manual_mode.set_topleft(957, 485)
+        
+        auto_choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
+        auto_options = tp.AlertWithChoices("Auto Mode Algorithm", auto_choices, choice_mode="v")
+        auto_options.set_topleft(880, 500)
+        
+        def create_background(): # Ham fix cai background, khong co gi trong day
+            pass
+        def click_choose_mode():
+            choose_mode.launch_alone(create_background)
             
-            self.auto_choice = options.choice
+            if choose_mode.choice == "Manual":
+                self.choose_mode_flag = False
+                
+                self.manual_flag = True
+            elif choose_mode.choice == "Auto Mode":
+                self.choose_mode_flag = False
+                
+                self.auto_flag = True
             
-            if not self.auto_choice:
-                self.auto_choice = 'BFS'
+            self.screen.fill((0,0,0))
+            # self.auto_button.update(events)
+            self.update_screen()
+            
+            pygame.display.update()
+        def click_hint():
+            manual_mode.launch_alone(create_background)
+            
+            if manual_mode.choice == "On":
+                self.hint_flag = True
+            elif manual_mode.choice == "Off":
+                self.hint_flag = False
             
             self.screen.fill((0,0,0))
             # self.auto_button.update(events)
@@ -416,30 +471,41 @@ class Gameplay:
             
             pygame.display.update()
             
-        self.auto_button = tp.Button("Show Hint")
-        self.auto_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
-        self.auto_button.at_unclick = clicked_func
-        
-        # self.auto_button_feat = tp.DropDownListButton(("BFS", "DFS", "A*", "Greedy", "Dijkstra"),
-        #                         title=None, #by default, will take the first value
-        #                         choice_mode="v", #'v' for vertical or 'h' for horizontal
-        #                         align="center", #how to align choices in the list
-        #                         launch_nonblocking=True, #launch mode
-        #                         size_limit=("auto","auto"), #limit size of the list of options
-        #                         all_same_width=True, #all choices same width
-        #                         generate_shadow=(True, "auto"))#[0] : does generate shadow ? [1] : fast method or accurate method ? you can set [1] = "auto"
-        
-        # self.auto_button_title = tp.Labelled("Auto Mode", self.auto_button_feat)
-        
-        # self.auto_button = tp.Box([self.auto_button_title])
-        # def clicked_func():
-        #     self.screen.fill((0,0,0))
-        #     self.update_screen()
-        # #     self.auto_button.launch_nonblocking() #see _example_launch for more options
+        # Run when click auto
+        def click_auto():
+            auto_options.launch_alone(create_background) #see _example_launch for more options
             
-        # self.auto_button.set_topleft(RESOLUTION[1] + (RESOLUTION[0] - RESOLUTION[1]) // 2 - 90, RESOLUTION[1] // 2 + 50)
-        # self.auto_button.at_unclick = clicked_func
-
+            # [PROTOTYPE] Dùng để chọn thuật toán để giải, m muốn thì sửa hết đống if else dưới
+            
+            # if not auto_options.choice or auto_options.choice == 'BFS':
+            #     self.auto_choice = 'BFS'
+            # elif auto_options.choice == 'DFS':
+            #     self.auto_choice = 'DFS'
+            # elif auto_options.choice == 'A*':
+            #     self.auto_choice = 'A*'
+            # elif auto_options.choice == 'Greedy':
+            #     self.auto_choice = 'Greedy'
+            # elif auto_options.choice == 'Dijkstra':
+            #     self.auto_choice = 'Dijkstra'
+            
+            self.screen.fill((0,0,0))
+            # self.auto_button.update(events)
+            self.update_screen()
+            
+            pygame.display.update()
+            
+        self.choose_mode = tp.Button("Mode")
+        self.choose_mode.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
+        self.choose_mode.at_unclick = click_choose_mode
+        
+        self.hint_button = tp.Button("Show Hint")
+        self.hint_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
+        self.hint_button.at_unclick = click_hint
+        
+        self.auto_button = tp.Button("Auto Mode")
+        self.auto_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
+        self.auto_button.at_unclick = click_auto
+    
     def show_solution(self, screen):
         copy_screen = screen.copy()
 
