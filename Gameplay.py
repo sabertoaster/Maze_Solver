@@ -296,7 +296,7 @@ class Gameplay:
                         if self.player.get_grid_pos()[::-1] == self.end_pos:
 
                             self.save_data(is_win=True)
-                            # return "Win", SCENES["Win"]["initial_pos"]
+                            return "Win", SCENES["Win"]["initial_pos"]
                         pygame.event.clear()
                     # if self.solution_flag:
                     #     ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]

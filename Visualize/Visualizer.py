@@ -6,6 +6,7 @@ from Visualize.LoginScreen import LoginScreen as login
 from Visualize.MenuScreen import MenuScreen as menu
 from Visualize.PlayScreen import PlayScreen as play
 from Visualize.LeaderboardScreen import LeaderboardScreen as leaderboard
+from Visualize.WinScreen import WinScreen as win
 from Gameplay import Gameplay
 from Sounds import SoundsHandler
 from CONSTANTS import RESOLUTION, RESOURCE_PATH, CURRENT_PLAY_MODE
@@ -46,6 +47,7 @@ class Visualizer:
             "Play": play(self.screen, self.sounds_handler),  # Chọn mode
             "Leaderboard": leaderboard(self.screen, self.sounds_handler),
             "Settings": None,
+            "Win": win(self.screen, self.sounds_handler),
         }
     def start_visualize(self):
         """
