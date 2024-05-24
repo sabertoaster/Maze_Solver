@@ -65,7 +65,7 @@ class GameController:
         # [MAIN GAME LOOP]
         pygame.init()
 
-        # play_gif(self.screen) # [PROTOTYPE]
+        play_gif(self.screen, name='welcome') # [PROTOTYPE]
 
         running = True
         while running:
