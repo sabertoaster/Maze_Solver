@@ -64,7 +64,7 @@ class Minimap:
         
         # self.screen.blit(screenCopy.copy(), (0,0))
         self.draw(screenCopy)
-    
+
 
     def draw(self, screenCopy):
         '''
@@ -135,8 +135,6 @@ class Minimap:
                 direction = get_directions(self.trace_path[i], self.trace_path[i + 1])
                 screen.blit(footprints[direction], ((self.col // 2 + self.trace_path[i][1]) * self.cell_size, (self.row // 2 + self.trace_path[i][0]) * self.cell_size + 20))
             screen.blit(footprints[get_directions(self.trace_path[-1], self.player.grid_pos)], ((self.col // 2 + self.trace_path[-1][1]) * self.cell_size, (self.row // 2 + self.trace_path[-1][0]) * self.cell_size + 20))
-
-            
 
     def cut_maze(self, screen, ratio = 1):
         copy_screen = screen.copy()
