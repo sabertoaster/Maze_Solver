@@ -1,7 +1,7 @@
 import pygame
 from Visualize.ImageProcess import morph_image
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH
-
+RESOURCE_PATH += 'img/'
 
 class MouseEvents:
     def __init__(self, screen, player, original_frame, show_instructions=[False]):

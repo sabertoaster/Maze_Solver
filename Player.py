@@ -9,6 +9,8 @@ from pygame_textinput import TextInputManager, TextInputVisualizer
 
 from CONSTANTS import AVATAR
 from CONSTANTS import SCENES, RESOLUTION, RESOURCE_PATH, AVATAR, MOVEMENT
+RESOURCE_PATH += 'img/'
+
 
 
 class Player:

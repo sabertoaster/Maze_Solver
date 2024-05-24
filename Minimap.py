@@ -2,6 +2,8 @@ import pygame
 import numpy as np
 from Visualize.ImageProcess import morph_image
 from CONSTANTS import RESOLUTION, RESOURCE_PATH
+RESOURCE_PATH += 'img/'
+
 
 
 class Minimap:

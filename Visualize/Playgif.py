@@ -1,14 +1,13 @@
 import pygame
 from Visualize.ImageProcess import morph_image
-from CONSTANTS import RESOLUTION
+from CONSTANTS import RESOLUTION, RESOURCE_PATH
+RESOURCE_PATH += 'animation/'
 import os
 
 FPS = {
     'gameplay': 24,
     'welcome': 8,
 }
-
-FOLDER = "Resources/animation/"
 
 
 def play_gif(screen, original_frame=None, name='welcome'):
@@ -19,12 +18,12 @@ def play_gif(screen, original_frame=None, name='welcome'):
     """
     frames = []
     background = original_frame
-    for filename in os.listdir(FOLDER + name):
+    for filename in os.listdir(RESOURCE_PATH + name):
         if filename.endswith(".png"):
             if filename == 'background.png':
-                background = morph_image(FOLDER + name + "/" + filename, RESOLUTION)
+                background = morph_image(RESOURCE_PATH + name + "/" + filename, RESOLUTION)
                 continue
-            frame = morph_image(FOLDER + name + "/" + filename, RESOLUTION)
+            frame = morph_image(RESOURCE_PATH + name + "/" + filename, RESOLUTION)
             frames.append(frame)
     
     num_frames = len(frames)

@@ -1,9 +1,10 @@
 import pygame
-from CONSTANTS import RESOURCE_PATH, SOUNDS
+from CONSTANTS import RESOURCE_PATH, SOUNDS\
+RESOURCE_PATH += 'sounds/'
 
 class Sounds:
     def __init__(self, file_name, active=True):
-        self.player = pygame.mixer.Sound(RESOURCE_PATH + 'sounds/' + file_name)
+        self.player = pygame.mixer.Sound(RESOURCE_PATH + file_name)
         self.active = active
     
     def turn_on(self):

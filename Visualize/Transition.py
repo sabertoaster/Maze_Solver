@@ -3,6 +3,7 @@ from itertools import cycle
 import numpy as np
 import pygame
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, AVATAR
+RESOURCE_PATH += 'img/'
 from Visualize.ImageProcess import morph_image
 
 import random

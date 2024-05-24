@@ -12,6 +12,7 @@ from Visualize.HangingSign import HangingSign
 from Visualize.Credit import Credit
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS
+RESOURCE_PATH += 'img/'
 
 SCENE_NAME = "Win"
 

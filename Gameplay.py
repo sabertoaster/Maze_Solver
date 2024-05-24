@@ -4,6 +4,7 @@ from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_ene
 from GridMapObject import GridMapObject
 from GridMap import GridMap
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FPS
+RESOURCE_PATH += 'img/'
 # from CURR_PLAYER_PARAMS import CURRENT_LEVEL, CURRENT_PLAY_MODE
 # Pre-defined imports
 import sys
@@ -363,7 +364,7 @@ class Gameplay:
         screen_size = ((self.maze_row + self.minimap_grid_size[0] + 1) * self.bg_cell_size,
                        (self.maze_col + self.minimap_grid_size[1] + 1) * self.bg_cell_size)
 
-        self.bg_surface = morph_image("Resources/nigga.png", screen_size)
+        self.bg_surface = morph_image(RESOURCE_PATH + "nigga.png", screen_size)
 
         maze_surface = pygame.Surface(((self.maze_row) * (self.bg_cell_size), ((self.maze_col) * self.bg_cell_size)),
                                       pygame.SRCALPHA, 32).convert_alpha()

@@ -10,6 +10,8 @@ from Visualize.WinScreen import WinScreen as win
 from Gameplay import Gameplay
 from Sounds import SoundsHandler
 from CONSTANTS import RESOLUTION, RESOURCE_PATH, CURRENT_PLAY_MODE
+RESOURCE_PATH += 'img/'
+
 from Save import *
 
 class Visualizer:

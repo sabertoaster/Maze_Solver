@@ -9,6 +9,7 @@ from Visualize.HangingSign import HangingSign
 from Visualize.Playgif import play_gif
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FONTS
+RESOURCE_PATH += 'img/'
 
 SCENE_NAME = "Play"
 

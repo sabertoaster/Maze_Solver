@@ -13,6 +13,8 @@ from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
 
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, CircularLinkedList, FONTS
+RESOURCE_PATH += 'img/'
+
 
 SCENE_NAME = "Leaderboard"
 
