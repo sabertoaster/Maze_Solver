@@ -33,7 +33,7 @@ class LeaderboardScreen:
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
 
-    def __init__(self, screen):
+    def __init__(self, screen, sounds_handler):
         """
         :param screen:
         :param res_cel:
@@ -42,9 +42,11 @@ class LeaderboardScreen:
         self.panel_fl = False
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
+        
+        self.sounds_handler = sounds_handler
 
         # Transition effect
-        self.transition = Transition(self.screen, RESOLUTION)
+        self.transition = Transition(self.screen, RESOLUTION, self.sounds_handler)
 
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
         
