@@ -212,6 +212,8 @@ class PlayScreen:
         self.visualize_savefile_panel()
         pygame.display.update()
                 
+        hovered = None
+        
         running = True
         while running:
             events = pygame.event.get()
@@ -231,11 +233,16 @@ class PlayScreen:
                         key = i
                         break
                 
-                if key is not None and self.saved_games[key]:
+                if key is not None and self.saved_games[key] and key != hovered:
                     self.screen.blit(self.load_panel, (0, 0))
                     self.visualize_savefile_panel()
                     self.screen.blit(self.card_hover_frame, cards_top_left[key])
                     pygame.display.flip()
+                if key is None and hovered is not None:
+                    self.screen.blit(self.load_panel, (0, 0))
+                    self.visualize_savefile_panel()
+                    pygame.display.flip()
+                hovered = key
                 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
