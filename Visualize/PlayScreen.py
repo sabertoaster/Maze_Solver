@@ -150,6 +150,15 @@ class PlayScreen:
 
                     self.player.update(self.screenCopy)
 
+    def handle_object(self, event):
+        """
+        Handle the object
+        :param event:
+        :return:
+        """
+        if self.chosen_obj == 'Load':
+            self.load()
+
     def toggle_panel(self, name, event):
         """
         :param name: to know whether if the player step into which door

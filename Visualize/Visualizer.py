@@ -53,7 +53,7 @@ class Visualizer:
         :return:
         """
         pygame.display.set_icon(self.logo)
-        pygame.display.set_caption("MINHBEO'S MAZE GAME")
+        pygame.display.set_caption("Tâm và Gia Huy")
 
     def draw_scene(self, scene_name: str):
         """

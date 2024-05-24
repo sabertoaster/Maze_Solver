@@ -30,6 +30,10 @@ SCENES = {
             "Exit": [[4, 13]]
         },
 
+        'OBJECTS_INTERACT_RANGE': {
+
+        },
+
         'HOVER_FRAME': {
             "Login": "miniTown_BG_login_hover.png",
             "Register": "miniTown_BG_register_hover.png",
@@ -79,7 +83,7 @@ SCENES = {
             "Skin": [[x, 9] for x in range(0, 3)],
         },
 
-        'OBJECTS_TOUCH_RANGE': {
+        'OBJECTS_INTERACT_RANGE': {
             'Credit': [(6, 3), (7, 3), (8, 3), (5, 4), (9, 4)],
             'Music_box': [[x, y] for x in range(4, 6) for y in range(6, 9)],
             'Skin': [[x, 9] for x in range(0, 3)],
@@ -131,6 +135,10 @@ SCENES = {
             'Load': [[x, y] for x in range(3) for y in range(4, 6)],
         },
 
+        'OBJECTS_INTERACT_RANGE': {
+
+        },
+
         'HOVER_FRAME': {
             'Easy': 'kitchen_BG_easy_hover.png',
             'Medium': 'kitchen_BG_medium_hover.png',
@@ -165,6 +173,10 @@ SCENES = {
             "Trophy": [[x, y] for x in range(5, 7) for y in range(6, 9)],
         },
 
+        'OBJECTS_INTERACT_RANGE': {
+            'Trophy': [[x, y] for x in range(4, 8) for y in range(6, 9)]
+        },
+
         'HOVER_FRAME': {
             "Trophy": 'leaderboard_BG_trophy_hover.png',
         },
@@ -176,6 +188,7 @@ SCENES = {
     'Settings': {
         'BG': 'settings_BG.png',
         'OBJECTS_POS': {},
+        'OBJECTS_INTERACT_RANGE': {},
         'HOVER_FRAME': {},
         'cell': (80, 80),
         'initial_pos': (0, 0),
@@ -183,7 +196,7 @@ SCENES = {
     },
     "Gameplay": {
         "initial_pos": (0, 0),
-        "cell" : (40, 40)
+        "cell": (40, 40)
     }
 }
 PARAMS = {
@@ -223,8 +236,9 @@ MOVEMENT = {
 }
 
 # Grid Map Object
-CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80), "Gameplay": (1,1)}
-MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"]
+CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80),
+              "Gameplay": (1, 1)}
+MAPS_LIST = [key for key in SCENES.keys() if key != "Settings"]
 
 
 # MISCs
@@ -334,7 +348,7 @@ class LEVEL(Enum):
 CURRENT_PLAY_MODE = PLAY_MODE.MANUAL
 CURRENT_LEVEL = LEVEL.EASY
 
-#CREDIT
+# CREDIT
 CREDIT = {
     "MEMBERS": {
         "HUY": "(23122008)",
@@ -361,3 +375,54 @@ CREDIT = {
 
     }
 }
+
+
+# circular linked list
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+class CircularLinkedList():
+    def __init__(self, data):
+        self.head = Node(None)
+        if type(data) == list:
+            for i in range(len(data)):
+                self.push(data[i])
+        elif type(data) == dict:
+            for key in data.keys():
+                self.push(key)
+        else:
+            self.push(data)
+
+    def print_list(self):
+        temp = self.head
+        while temp.next != self.head:
+            print(temp.data, end=" ")
+            temp = temp.next
+        print(temp.data)
+
+    def push(self, data):
+        if self.head.data == None:
+            self.head.data = data
+            self.head.next = self.head
+        else:
+            new_node = Node(data)
+            temp = self.head
+            while temp.next != self.head:
+                temp = temp.next
+            temp.next = new_node
+            new_node.next = self.head
+
+    def pop(self):
+        return_node = self.head
+        self.head = self.head.next
+        return return_node.data
+
+    def back(self):
+        temp = self.head
+        while temp.next.next != self.head:
+            temp = temp.next
+        self.head = temp.next
+        return temp.data

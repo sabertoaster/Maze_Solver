@@ -4,24 +4,26 @@ from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH
 
 
 class MouseEvents:
-    def __init__(self, screen, player, original_frame):
+    def __init__(self, screen, player, original_frame, show_instructions=[False]):
         self.screen = screen
         self.player = player
         self.current_scene = self.player.current_scene
         self.original_frame = original_frame
         self.pos = [-1, -1]
         self.idling = True
+        
+        self.show_instructions = show_instructions
 
     def set_pos(self, pos):
         x, y = (pos[1] // SCENES[self.current_scene]['cell'][0]), (pos[0] // SCENES[self.current_scene]['cell'][1])
         if [x, y] == self.pos:
             self.idling = True
             return
+        self.show_instructions[0] = False
         self.idling = False
         self.pos = [x, y]
 
     def click(self):
-        print(self.current_scene)
         
         for key, value in SCENES[self.current_scene]['DOORS_CLICK_RANGE'].items():
             for item in value:

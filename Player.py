@@ -204,7 +204,6 @@ class Player:
             if self.visualize_direction[0] != self.visualize_direction[1]:
                 self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / ratio,
                                    self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / ratio)
-                print(self.grid_step)
 
                 screen.blit(self.avatar, self.visual_pos)
                 self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + maze_cell_size // 2,
@@ -244,6 +243,11 @@ class Player:
                 # self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
 
+            # self.touched_obj = None
+            # for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
+            #     if self.grid_pos in val:
+            #         self.touched_obj = key
+            #         break
             return "Move"
         self.sounds_handler.play_sfx("bump")
 
@@ -298,4 +302,4 @@ class Player:
     #         if self.grid_pos in val:
     #             self.interacted_obj = key
     #             break
-                
+
