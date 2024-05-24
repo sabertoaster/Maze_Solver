@@ -26,16 +26,11 @@ def play_gif(screen, original_frame=None, name='welcome'):
                 continue
             frame = morph_image(FOLDER + name + "/" + filename, RESOLUTION)
             frames.append(frame)
-        else:
-            print(filename)
-            sus = morph_image(FOLDER + name + "/" + filename, RESOLUTION)
     
     num_frames = len(frames)
     
     if name == 'welcome':
         screen.blit(background, (0, 0))
-        frames = frames * 4
-        num_frames = num_frames * 4
         
     clock = pygame.time.Clock()
 
@@ -48,8 +43,7 @@ def play_gif(screen, original_frame=None, name='welcome'):
             if event.type == pygame.QUIT:
                 pygame.quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    return
+                return
                 
         screen.blit(frames[frame], (0, 0))
         pygame.display.flip()
@@ -57,4 +51,8 @@ def play_gif(screen, original_frame=None, name='welcome'):
         
         frame += 1
         
+        if name == 'welcome':
+            if frame == num_frames:
+                frame = 0
+                
         clock.tick(FPS[name])
