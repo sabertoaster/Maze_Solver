@@ -239,7 +239,7 @@ class PlayScreen:
                         break
                 
                 if event.type == pygame.MOUSEBUTTONUP:
-                    self.chosen_loaded_game = key
+                    self.chosen_loaded_game = self.saved_games[self.chosen_loaded_game]
                     running = False
                     break
 
