@@ -266,6 +266,7 @@ class Gameplay:
 
         # INSTANTIATE ALGORITHMS
         self.algorithms = TotalAlgorithms(self.maze_toString)
+        self.finding_path_surface = self.visual_maze.copy()
 
         # INSTANTIATE BACKGROUND
         self.init_background()
@@ -280,7 +281,7 @@ class Gameplay:
         self.minimap.init_at_start(self.minimap.maze_surface)
 
         self.solution_flag = False
-
+        self.finish_finding_path = False
 
         self.visualize_maze(self.visual_maze, self.solution_flag)
 
@@ -308,7 +309,6 @@ class Gameplay:
 
         self.manual_flag = False
         manual_launcher = self.hint_button.get_updater()
-        self.hint_flag = False
         
         self.auto_flag = False
         auto_launcher = self.auto_button.get_updater()
@@ -331,8 +331,6 @@ class Gameplay:
             elif self.auto_flag:
                 if self.auto_on:
                     self.auto_move()
-                
-                pygame.time.delay(100)
                 
                 # Block player keyboard input
                 
@@ -375,6 +373,8 @@ class Gameplay:
                         
                     player_response = self.player.handle_event(event.key)
                     
+                    self.update_screen()
+                    
                     if player_response == "Move" or event.type == pygame.USEREVENT:
                         self.maze_step += 1
                         if self.player.get_grid_pos()[::-1] == self.end_pos:
@@ -387,8 +387,6 @@ class Gameplay:
                     # if self.solution_flag:
                     #     ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
                     #     pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
-                    
-                    self.update_screen()
                     
                 pygame.display.update()
 
@@ -548,9 +546,29 @@ class Gameplay:
         self.screen.blit(copy_screen, (RESOLUTION[0] - copy_screen.get_width(), 0))
 
     def update_screen(self):
+        if self.solution_flag and self.auto_flag:
+            if self.auto_algorithm == "BFS":
+                self.minimap.trace_path, self.minimap.visited = self.algorithms.bfs(self.player.grid_pos[::-1], self.end_pos)
+            elif self.auto_algorithm == "DFS":
+                self.minimap.trace_path, self.minimap.visited = self.algorithms.dfs(self.player.grid_pos[::-1], self.end_pos)
+            elif self.auto_algorithm == "A*":
+                self.minimap.trace_path, self.minimap.visited = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+            elif self.auto_algorithm == "Greedy":
+                self.minimap.trace_path, self.minimap.visited = self.algorithms.greedy(self.player.grid_pos[::-1], self.end_pos)
+            elif self.auto_algorithm == "Dijkstra":
+                self.minimap.trace_path, self.minimap.visited = self.algorithms.dijkstra(self.player.grid_pos[::-1], self.end_pos)
+                
         self.minimap.update(self.minimap.maze_surface)
-        self.visualize_maze(self.visual_maze, self.solution_flag)
-    
+        
+        if self.solution_flag and self.auto_flag and not self.finish_finding_path:
+            while self.minimap.visited_index < len(self.minimap.visited):
+                self.visualize_solution(self.finding_path_surface)
+            
+            self.finish_finding_path = True
+            self.minimap.update(self.minimap.maze_surface)
+                
+        self.visualize_maze(self.visual_maze, self.solution_flag)   
+            
     def auto_move(self):
         # Get the direction of the next move
         def get_direction(pos1, pos2):
@@ -732,6 +750,7 @@ class Gameplay:
                 
                 self.solution_flag = True
                 self.minimap.solution_flag = True
+                self.minimap.hint_flag = False
                 
                 self.player.deactivate(active=True)
                 
@@ -745,11 +764,16 @@ class Gameplay:
             if manual_mode.choice == "On":
                 self.solution_flag = True
                 self.minimap.solution_flag = True
+                self.minimap.hint_flag = True
                 self.update_screen()
                 pygame.display.update()
             elif manual_mode.choice == "Off":
                 self.solution_flag = False
                 self.minimap.solution_flag = False
+                self.minimap.hint_flag = False
+                
+                self.minimap.visited_index = 0
+                self.finding_path_surface = self.visual_maze.copy()
             
             self.screen.fill((0,0,0))
             self.update_screen()
@@ -765,6 +789,11 @@ class Gameplay:
                 self.auto_algorithm = "A*"
             else:
                 self.auto_algorithm = auto_options.choice
+                
+            # Reset finding path
+            self.minimap.visited_index = 0
+            self.finding_path_surface = self.visual_maze.copy()
+            self.finish_finding_path = False
             
             self.screen.fill((0,0,0))
             self.update_screen()
@@ -802,7 +831,8 @@ class Gameplay:
     def show_solution(self, screen):
         copy_screen = screen.copy()
 
-        self.minimap.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+        self.minimap.trace_path, self.minimap.visited = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+        
         if self.minimap.trace_path:
             self.minimap.trace_path.append(self.end_pos)
 
@@ -817,6 +847,24 @@ class Gameplay:
             pygame.draw.rect(copy_screen, color, ceil_rect)
             
         return copy_screen
+
+    #Draw each cell of the finding path process of the algorithm
+    def visualize_solution(self, screen): #Screen: The finding path surface
+        pos = self.minimap.visited[self.minimap.visited_index]
+        
+        if pos != self.player.grid_pos[::-1]:
+            ceil_rect = pygame.Rect(pos[1] * self.cell_size, pos[0] * self.cell_size, self.cell_size, self.cell_size)
+            pygame.draw.rect(screen, (0, 255, 0), ceil_rect)
+        else:
+            screen.blit(pygame.transform.scale_by(self.player.avatar, self.cell_size / self.minimap.cell_size),
+                         (self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size))
+            
+        self.minimap.visited_index += 1
+        
+        self.screen.blit(screen, (RESOLUTION[0] - screen.get_width(), 0))
+        
+        pygame.display.update()
+        pygame.time.delay(10)
 
     def draw_player(self, screen):
         copy_screen = screen.copy()

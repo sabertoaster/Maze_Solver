@@ -37,6 +37,8 @@ class Minimap:
         self.snapshot = pygame.Surface(self.cut_area)
 
         self.trace_path = None
+        self.visited = None
+        self.visited_index = 0
         self.solution_flag = False
 
         # self.miniscreen = pygame.Surface((self.col * self.cell_size, resolution[1]))
@@ -46,6 +48,8 @@ class Minimap:
         self.width = self.row * self.cell_size
         self.length = self.col * self.cell_size
 
+        self.hint_flag = False # Phan biet auto flag va show hint flag -> draw solution?
+        
     # Attach Player to minimap
     def attach_player(self):
         self.player.grid_step = 1
@@ -185,7 +189,10 @@ class Minimap:
         copy_screen = screen.copy()
 
         if self.solution_flag:
-            self.draw_solution(copy_screen)
+            if self.hint_flag:
+                self.draw_solution(copy_screen)
+            elif not self.visited or self.visited_index >= len(self.visited):
+                self.draw_solution(copy_screen)
 
         self.player.draw_on_minimap(copy_screen, self.cell_size, ratio)
         # Convert surface to numpy array
