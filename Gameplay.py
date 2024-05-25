@@ -328,9 +328,9 @@ class Gameplay:
             mouse_rel = pygame.mouse.get_rel()
             
             if self.choose_mode_flag:
-                choose_mode_launcher.update(events = events, mouse_rel = mouse_rel)
+                choose_mode_launcher.update(events=events, mouse_rel=mouse_rel)
             elif self.manual_flag:
-                manual_launcher.update(events = events, mouse_rel = mouse_rel)
+                manual_launcher.update(events=events, mouse_rel=mouse_rel)
             elif self.auto_flag:
                 self.auto_move()
                 
@@ -338,12 +338,12 @@ class Gameplay:
                 
                 # Block player keyboard input
                 
-                auto_launcher.update(events = events, mouse_rel = mouse_rel)
+                auto_launcher.update(events=events, mouse_rel=mouse_rel)
             
             for event in events:
                 if event.type == pygame.QUIT:
                     return None, None
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN or event.type == pygame.USEREVENT:
                     
                     if event.key == pygame.K_m:
                         self.sounds_handler.switch()
@@ -377,11 +377,11 @@ class Gameplay:
                         
                     player_response = self.player.handle_event(event.key)
                     
-                    if player_response == "Move" and event.type != pygame.USEREVENT:
+                    if player_response == "Move" or event.type == pygame.USEREVENT:
                         self.maze_step += 1
                         if self.player.get_grid_pos()[::-1] == self.end_pos:
-
-                            self.save_data(is_win=True)
+                            if self.auto_flag != True:
+                                self.save_data(is_win=True)
                             return "Win", SCENES["Win"]["initial_pos"]
                         pygame.event.clear()
                         
