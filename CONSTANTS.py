@@ -29,11 +29,11 @@ SCENES = {
             "Register": [[x, y] for x in range(6, 11) for y in range(18, 27)],
             "Exit": [[4, 13]]
         },
-        
+
         'OBJECTS_INTERACT_RANGE': {
 
         },
-        
+
         'HOVER_FRAME': {
             "Login": "miniTown_BG_login_hover.png",
             "Register": "miniTown_BG_register_hover.png",
@@ -138,7 +138,7 @@ SCENES = {
             'Hard': [[9, y] for y in range(8, 10)],
             'Load': [[x, y] for x in range(3) for y in range(4, 6)],
         },
-        
+
         'OBJECTS_INTERACT_RANGE': {
             'Load': [(4, 3), (5, 3)]
         },
@@ -157,7 +157,7 @@ SCENES = {
 
     'Leaderboard': {
         'BG': 'leaderboard_BG.png',
-        
+
         'BG_instructions': 'leaderboard_BG_instructions.png',
 
         'DOORS': {
@@ -240,10 +240,12 @@ SCENES = {
 PARAMS = {
     "resources": "Visualize/Resources/",
     "resolution": (1200, 800),  # ratio 3:2
-    "cell": {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80), "Win": (80, 80)},
+    "cell": {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80),
+             "Win": (80, 80)},
     # 12 cells column, 8 cells row
     "scenes": ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay", "Win"],
-    "initial_pos": {"Login": (12, 12), "Menu": (11, 2), "Play": (0, 0), "Leaderboard": (0, 0), "Settings": (0, 0),"Gameplay": (0, 0), "Win" : (0, 0),}  # need adjusting
+    "initial_pos": {"Login": (12, 12), "Menu": (11, 2), "Play": (0, 0), "Leaderboard": (0, 0), "Settings": (0, 0),
+                    "Gameplay": (0, 0), "Win": (0, 0), }  # need adjusting
 }
 
 # Skins
@@ -273,7 +275,8 @@ MOVEMENT = {
 }
 
 # Grid Map Object
-CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80), "Gameplay": (1,1), "Win": (1,1)}
+CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80),
+              "Gameplay": (1, 1), "Win": (1, 1)}
 MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay", "Win"]
 
 
@@ -410,27 +413,39 @@ CURRENT_LEVEL = LEVEL.EASY
 
 # CREDIT
 CREDIT = {
-    "MEMBERS": {
-        "HUY": "(23122008)",
-        "LOZ AN": "(23122020)",
-        "HUY MINI": "(23122033)",
-        "KHOA NGUYEN": "(23122036)",
-        "KIET": "(23122039)",
+    "ABOUT US": {
+        "": ['GROUP OF 5', 'FRESHMEN', 'HCMUS', 'K23'],
+        "MEMBERS": ["Mai Duc Minh Huy (23122008)",
+                    "Nguyen Thien An (23122020)",
+                    "Le Hoang Minh Huy (23122033)",
+                    "Nguyen Ngoc Khoa (23122036)",
+                    "Huynh Trung Kiet (23122039)"],
     },
     "ROLES": {
-        "VISUALIZE": ["KHOA NGUYEN", "LOZ AN", "HUY"],
-        "ALGORITHMS": ["KIET", "HUY MINI"]
+        "Project Manager": "Mai Duc Minh Huy",
+        "Lead Game Designer": "Nguyen Thien An",
+        "Programmer": ["Le Hoang Minh Huy", "Nguyen Ngoc Khoa"],
+        "Algorithm Specialist": "Huynh Trung Kiet",
+
+        "Audio Specialist": "Nguyen Ngoc Khoa",
+        "Art and Animation Specialist": "Nguyen Thien An",
     },
-    "TEACHERS": {
-        "BEO": "MINHBEO",
-        "CUU EM THAY OI": "TUNGLE"
+    "TOOLS USED": {
+        "": ['PyCharm', 'Visual Studio Code', 'Git', 'GitHub', 'GIMP']
     },
-    "ABOUT US": {
-        "": ['GROUP OF 5', 'FRESHMEN', 'HCMUS', 'K23']
+    "ACKNOWLEDGEMENTS": {
+        # "We would like to express our gratitude to our instructor, Nguyen Tran Duy Minh, for his guidance and support throughout the project.": "",
+        "": ["All the assets used in the game are for educational purposes only.",
+             "We do not own any of the assets used in the game."],
     },
-    "MINH BEO THE GOAT": {
-        "": ['MINH BEO IS THE BEST TEACHER', 'HE IS THE BEST', 'HE IS THE BEOEST', 'HE IS THE GOAT']
+
+    "SPECIAL THANKS TO": {
+        "Nguyen Tran Duy Minh and Le Thanh Tung": "For guidance and support throughout the project.",
+        "Chan Nguyen": "For the inspiration and motivation to complete the project.",
+        "HCMUS": "For providing the opportunity to learn and grow.",
+        "You": "For playing our game.",
     },
+
     "THANKS FOR PLAYING": {
 
     }
