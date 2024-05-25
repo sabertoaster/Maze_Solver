@@ -61,9 +61,7 @@ class PlayScreen:
         # Add login panel background
 
         # Load panel momentos
-        escape_button = pygame.image.load(RESOURCE_PATH + "ESCAPE_BUTTON.png").convert_alpha()
         load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
-        load_panel = add_element(load_panel, escape_button, (0, 0))
         self.load_card = pygame.image.load(RESOURCE_PATH + "load_card.png").convert_alpha()
         self.load_cards = self.get_data_and_fill_in_load_panel(self.load_card, cards_top_left)
         self.card_hover_frame = pygame.image.load(RESOURCE_PATH + "load_card_hover.png").convert_alpha()
@@ -229,9 +227,11 @@ class PlayScreen:
             json.dump(current_profile, fi, indent=4)
 
     def load(self):
-        
+        escape_button_zone = [(x,y) for x in range(1,3) for y in range(1,3)]
+        escape_button = morph_image(RESOURCE_PATH + "escape_button.png", (SCENES[SCENE_NAME]['cell'][0] * 2, SCENES[SCENE_NAME]['cell'][1] * 2))
         self.screen.blit(self.load_panel, (0, 0))
         self.visualize_savefile_panel()
+        self.screen.blit(escape_button, (SCENES[SCENE_NAME]['cell'][0], SCENES[SCENE_NAME]['cell'][1]))
         pygame.display.update()
                 
         hovered = None
@@ -274,6 +274,11 @@ class PlayScreen:
                         return None, None
 
                 if event.type == pygame.MOUSEBUTTONUP:
+                    if mouse_grid_pos in escape_button_zone:
+                        self.screen.blit(self.frame, (0, 0))
+                        self.player.update(self.screenCopy)
+                        running = False
+                        return None, None
                     if key is not None:
                         if self.saved_games[key]:
                             with open("current_profile.json", "w") as fi:
