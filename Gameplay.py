@@ -680,17 +680,6 @@ class Gameplay:
                     self.associated_values[2] = 0
                     self.save_data()
                     self.save_fl = True  # Set save flag to True
-                    # if self.associated_values[3]: #If click auto button
-                    # choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
-                    # introduction_text = "Choose the algorithm to solve the maze"
-                    # options = tp.AlertWithChoices("Auto Mode Algorithms", choices, introduction_text, choice_mode="v")
-                    # def clicked():
-                    #     options.launch_alone() #see _example_launch for more options
-                    #     print("User has chosen:", options.choice)
-                    # self.escape_buttons[3].center_on(self.screen)
-                    # self.escape_buttons[3].at_unclick = clicked
-                    # self.escape_buttons[3].get_updater(fps = FPS, esc_quit = True)
-                    # return None, None
 
                 if self.associated_values[3]: #If click menu button
                     self.player.deactivate(active=True)
@@ -720,17 +709,15 @@ class Gameplay:
         
         auto_choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
         auto_options = tp.AlertWithChoices("Auto Mode Algorithm", auto_choices, choice_mode="v")
-        auto_options.set_topleft(850, 500)
+        auto_options.set_topleft(890, 500)
         running_choices = ("On", "Off")
         running_options = tp.AlertWithChoices("", running_choices, choice_mode="v")
-        running_options.set_topleft(1020, 500)
+        running_options.set_topleft(1045, 500)
         
         def create_background(): # Ham fix cai background, khong co gi trong day
             pass
-            # self.screen.fill((0,0,0))
-            # self.update_screen()
-        def choose_mode_background():
-            self.screen.blit(self.minimap.new_background, self.minimap.display_pos, (self.minimap.cut_start_pos, self.minimap.cut_area))
+        # def choose_mode_background():
+        #     self.screen.blit(self.minimap.new_background, self.minimap.display_pos, (self.minimap.cut_start_pos, self.minimap.cut_area))
         def click_choose_mode():
             choose_mode.launch_alone(create_background)
             
@@ -805,11 +792,11 @@ class Gameplay:
         self.hint_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
         self.hint_button.at_unclick = click_hint
         
-        self.auto_button = tp.Button("Auto Mode")
-        self.auto_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 100, RESOLUTION[1] // 2 + 50)
+        self.auto_button = tp.Button("Algorithm")
+        self.auto_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
         self.auto_button.at_unclick = click_auto
         self.running_button = tp.Button("Running")
-        self.running_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 + 20, RESOLUTION[1] // 2 + 50)
+        self.running_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 + 50, RESOLUTION[1] // 2 + 50)
         self.running_button.at_unclick = click_running
     
     def show_solution(self, screen):
