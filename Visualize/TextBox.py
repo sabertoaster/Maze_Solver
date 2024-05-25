@@ -17,7 +17,7 @@ class Color(Enum):
 
 
 class TextBox:
-    def __init__(self, screen, position, font_color, manager, text='', focusable=True):
+    def __init__(self, screen, position, font_color, manager, text='', focusable=True, background=None):
         (x, y, width, height) = position
         self.screen = screen
         self.height = height
@@ -26,7 +26,7 @@ class TextBox:
 
         self.width = width
         self.height = height
-        self.bg_color = (255, 255, 255)  # Background color here
+        self.bg_color = background  # Background color here
         # self.rect = pygame.Rect(x, y, width, height)
         self.active = False
         self.focusable = focusable
@@ -168,5 +168,8 @@ class FormManager:
         Get all text from text input
         """
         return {key: value["box"].get_current_text() for key, value in self.text_boxes.items()}
+
+    def get_textbox(self, key):
+        return self.text_boxes[key]["box"]
     
 

@@ -12,8 +12,6 @@ from Sounds import SoundsHandler
 from CONSTANTS import RESOLUTION, RESOURCE_PATH, CURRENT_PLAY_MODE
 RESOURCE_PATH += 'img/'
 
-from Save import *
-
 class Visualizer:
     def __init__(self, screen, player, sounds_handler):
         """

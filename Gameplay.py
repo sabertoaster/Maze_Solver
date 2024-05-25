@@ -21,7 +21,6 @@ from Visualize.MouseEvents import MouseEvents
 from Visualize.Transition import Transition
 from Visualize.HangingSign import HangingSign
 from Minimap import Minimap
-from Save import *
 from Player import *
 from random import shuffle
 import time
@@ -39,7 +38,7 @@ class Gameplay:
 
         # INSTANTIATE PANELS
         self.init_panel()
-        self.start_time = time.time()
+        self.start_time = 0
         self.maze_time = 0
         self.maze_score = 0
         self.maze_step = 0
@@ -251,7 +250,7 @@ class Gameplay:
         self.maze_time += float(current_time - self.start_time)
         self.start_time = current_time
         self.visualize_time_and_step()
-        
+
     def play(self, player):
         self.player = player
         self.get_data()
@@ -260,9 +259,9 @@ class Gameplay:
 
         # VISUALIZE TIME AND STEPS
         self.text_box = FormManager(self.screen, {
-            "time": {"position": (0, 0, 568, 30), "color": Color.RED.value, "maximum_length": 16,
+            "time": {"position": (900, 600, 568, 30), "color": Color.RED.value, "maximum_length": 16,
                          "focusable": False, "init_text": ""},  # (x, y, width, height)
-            "step": {"position": (0, 100, 568, 30), "color": Color.RED.value, "maximum_length": 16,
+            "step": {"position": (900, 700, 568, 30), "color": Color.RED.value, "maximum_length": 16,
                          "focusable": False, "init_text": ""}})  # (x, y, width, height)
 
         self.init_maze()
@@ -331,24 +330,24 @@ class Gameplay:
         self.player.deactivate(active=False)
         
         while True:
-            self.update_time()
             # self.visualize_time_and_step()
             events = pygame.event.get()
             mouse_rel = pygame.mouse.get_rel()
-            
+
             if self.choose_mode_flag:
                 choose_mode_launcher.update(events=events, mouse_rel=mouse_rel)
             elif self.manual_flag:
                 manual_launcher.update(events=events, mouse_rel=mouse_rel)
             elif self.auto_flag:
                 self.auto_move()
-                
+
                 pygame.time.delay(100)
-                
+
                 # Block player keyboard input
-                
+
                 auto_launcher.update(events=events, mouse_rel=mouse_rel)
-            
+
+            self.update_time() if self.manual_flag else None
             for event in events:
                 if event.type == pygame.QUIT:
                     return None, None
@@ -359,16 +358,14 @@ class Gameplay:
                         continue
                     
                     if event.key == pygame.K_ESCAPE:
-                        # Disable spamming button
+                        if self.manual_flag:
+                            start_pause_time = time.time()
+                            end_pause_time = time.time()
+                            pause_time = float(end_pause_time - start_pause_time)
+                            self.maze_time -= pause_time
+                            pygame.key.set_repeat(200, 125)
                         pygame.key.set_repeat()
-                        start_pause_time = time.time()
                         next_scene, next_pos = self.toggle_panel()
-                        # Enable spamming button again
-                        end_pause_time = time.time()
-                        pause_time = float(end_pause_time - start_pause_time)
-                        self.maze_time -= pause_time
-                        pygame.key.set_repeat(200, 125)
-
                         if next_scene:
                             return next_scene, next_pos
 
@@ -743,6 +740,7 @@ class Gameplay:
             choose_mode.launch_alone(choose_mode_background)
             
             if choose_mode.choice == "Manual":
+                self.start_time = time.time()
                 self.choose_mode_flag = False
                 self.manual_flag = True
                 
@@ -848,7 +846,9 @@ class Gameplay:
     def visualize_time_and_step(self):
         self.text_box.set_text("time", str(round(self.maze_time, 2)))
         self.text_box.set_text("step", str(self.maze_step))
-        self.text_box.draw()
+
+        self.text_box.get_textbox("time").draw(background=True)
+        self.text_box.get_textbox("step").draw(background=True)
         pygame.display.flip()
 # screen = pygame.display.set_mode((1300, 900))
 # test = Gameplay(screen, (0,0), (9, 9))
