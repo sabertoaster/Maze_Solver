@@ -186,17 +186,17 @@ class PlayScreen:
                 return name, (13, self.player.get_grid_pos()[1])
 
             if name == "Easy":
-                play_gif(self.screen, self.frame, "gameplay")
+                play_gif(self.screen, self.frame, "gameplay", self.sounds_handler)
                 self.set_current_mode("Easy")
                 return "Gameplay", (0, 0)
 
             if name == "Medium":
-                play_gif(self.screen, self.frame, "gameplay")
+                play_gif(self.screen, self.frame, "gameplay", self.sounds_handler)
                 self.set_current_mode("Medium")
                 return "Gameplay", (0, 0)
 
             if name == "Hard":
-                play_gif(self.screen, self.frame, "gameplay")
+                play_gif(self.screen, self.frame, "gameplay", self.sounds_handler)
                 self.set_current_mode("Hard")
                 return "Gameplay", (0, 0)
             
@@ -204,7 +204,7 @@ class PlayScreen:
                 scene_name, pos = self.load()
                 if scene_name:
                     self.screen.blit(self.frame, (0, 0))
-                    play_gif(self.screen, self.frame, "gameplay")
+                    play_gif(self.screen, self.frame, "gameplay", self.sounds_handler)
                     return scene_name, pos
                        
         return None, None

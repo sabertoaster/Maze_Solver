@@ -10,7 +10,7 @@ FPS = {
 }
 
 
-def play_gif(screen, original_frame=None, name='welcome'):
+def play_gif(screen, original_frame=None, name='welcome', sounds_handler=None):
     """
     Play gif
     :param screen:
@@ -33,9 +33,16 @@ def play_gif(screen, original_frame=None, name='welcome'):
         
     clock = pygame.time.Clock()
 
+    if sounds_handler:
+        if name == 'welcome':
+            sounds_handler.play_bgm('Menu')
+        elif name == 'gameplay':
+            sounds_handler.play_bgm('Chasing')
+    
     frame = 0
     pygame.key.set_repeat()
     pygame.event.clear()
+    
     while frame < num_frames:
 
         events = pygame.event.get()

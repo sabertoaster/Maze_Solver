@@ -212,7 +212,7 @@ SCENES = {
         'HOVER_FRAME': {},
         "initial_pos": (0, 0),
         "cell": (40, 40),
-        "BGM": "gameplay_BG.png",
+        "BGM": "gameplay.png",
     },
     "Win": {
         'BG': '',
@@ -230,7 +230,7 @@ SCENES = {
         },
         "initial_pos": (0, 0),
         "cell": (40, 40),
-        "BGM": "gameplay_BG.png",
+        "BGM": "win.mp3",
     }
     # "full_variables_of_a_scene": {
     #     'BG': '',
@@ -351,11 +351,19 @@ SOUNDS = {
             'volume': 0.5
         },
         'Credit': {
-            'file_name': 'town_bgm.mp3',
+            'file_name': 'credit.mp3',
             'volume': 0.5
         },
         'Gameplay': {
-            'file_name': 'town_bgm.mp3',
+            'file_name': 'gameplay.mp3',
+            'volume': 0.5
+        },
+        'Win': {
+            'file_name': 'win.mp3',
+            'volume': 0.5
+        },
+        'Chasing': {
+            'file_name': 'chasing.mp3',
             'volume': 0.5
         },
     },
@@ -369,11 +377,11 @@ SOUNDS = {
             'volume': 1.0
         },
         'circle_in': {
-            'file_name': 'door_enter.mp3',
+            'file_name': 'circle.mp3',
             'volume': 1.0
         },
         'circle_out': {
-            'file_name': 'door_enter.mp3',
+            'file_name': 'circle.mp3',
             'volume': 1.0
         },
         'zelda_lr': {
@@ -392,8 +400,12 @@ SOUNDS = {
             'file_name': 'door_enter.mp3',
             'volume': 1.0
         },
-        'hole': {
-            'file_name': 'door_enter.mp3',
+        'falling': {
+            'file_name': 'falling_down.mp3',
+            'volume': 1.0
+        },
+        'landing': {
+            'file_name': 'landing.mp3',
             'volume': 1.0
         },
     }

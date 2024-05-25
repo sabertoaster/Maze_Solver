@@ -34,6 +34,8 @@ class WinScreen:
         pygame.event.clear()
         pygame.key.set_repeat()
         
+        self.sounds_handler.play_bgm(SCENE_NAME)
+        
         run = success
         first = True
         while run:

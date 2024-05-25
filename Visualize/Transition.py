@@ -146,6 +146,7 @@ class Transition:
             player_sprite = morph_image(RESOURCE_PATH + AVATAR[self.player.skin]["down"],
                                         SCENES[self.player.current_scene]["cell"])
 
+        self.sounds_handler.play_sfx('falling')
         for _ in range(rate):
             self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1], RESOLUTION[0], RESOLUTION[1]))
             self.screen.blit(pygame.transform.rotate(player_sprite, (_ + 1) * 360 / rate),
@@ -164,6 +165,7 @@ class Transition:
 
         tmp_screen.blit(player_sprite, (pos[0], pos[1] + RESOLUTION[1] * 2))
 
+        self.sounds_handler.play_sfx('landing')
         for _ in range(rate):
             self.screen.blit(tmp_screen,
                              (0 + random.randint(-3, 3), 0 + random.randint(-3, 3)),
@@ -185,6 +187,8 @@ class Transition:
         tmp_screen.blit(next_scene_screen, (0, 0))
         player_sprite = morph_image(RESOURCE_PATH + AVATAR[self.player.skin]["down"],
                                     SCENES[next_scene]["cell"])
+        
+        self.sounds_handler.play_sfx('falling')
         for _ in range(rate):
             self.screen.blit(tmp_screen, (0, 0),
                              (0, RESOLUTION[1] * 2 - (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0],RESOLUTION[1]))
@@ -197,6 +201,7 @@ class Transition:
             pygame.display.flip()
             pygame.time.delay(10)
 
+        self.sounds_handler.play_sfx('landing')
         for _ in range(rate):
             self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1] - (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0], RESOLUTION[1]))
             self.screen.blit(pygame.transform.rotate(player_sprite, (_ + 1) * 360 / rate), pos)
