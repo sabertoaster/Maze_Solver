@@ -151,7 +151,47 @@ class TotalAlgorithms:
                     priority.put((distance[next_neighbor], next_neighbor))
         
         return get_solution(trace, start, end), visited
+    
+    def path_energy(self, cur_energy, start: tuple[int], end: tuple[int]) -> tuple[list[tuple], list[tuple]]:
+        if start == end:
+            return None, None
+        
+        priority = PriorityQueue()
+        priority.put((0, start, cur_energy))
+        distance = {(start, cur_energy) : 0}
 
+        visited = []
+        trace = dict()
+        
+        while not priority.empty():
+            current_cost, current_cell, current_energy = priority.get()
+
+            visited.append(current_cell)
+            
+            if current_cost != distance[(current_cell, current_energy)]:
+                continue
+            
+            if current_energy == 0:
+                continue
+            if current_cell == end:
+                break
+            
+            next_move = check_valid_move(self.maze, current_cell, visited)
+
+            for next_neighbor in next_move:
+                if self.maze[next_neighbor[0]][next_neighbor[1]] in ['1', '2', '3', '4', '5']:
+                    tmp_energy = current_energy - 1 + int(self.maze[next_neighbor[0]][next_neighbor[1]])
+                else:
+                    tmp_energy = current_energy - 1
+                if ((next_neighbor, tmp_energy) not in distance or distance[(next_neighbor, tmp_energy)] > distance[(current_cell, current_energy)] + 1):
+                    distance[(next_neighbor, tmp_energy)] = distance[(current_cell, current_energy)] + 1
+                    trace[next_neighbor] = current_cell
+                    priority.put((distance[(next_neighbor, tmp_energy)], next_neighbor, tmp_energy ))
+        
+        if end not in visited:
+            return None, None 
+        return get_solution(trace, start, end), visited
+    
 def check_valid_move(maze: list[list[str]], cur_pos: tuple[int], visited: list[tuple[int]]):
     '''
     - Input:

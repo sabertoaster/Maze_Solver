@@ -347,15 +347,16 @@ def convert_energy(maze: list[list[str]]) ->list[list[str]]:
                 if maze[i][j] == 'S':
                     start_pos = i, j
         A = TotalAlgorithms(maze)
-        print(start_pos, end_pos)
+        #print(start_pos, end_pos)
         path, visited = A.dijkstra(end_pos, start_pos)
-        print(path)
+        #print(path)
         
         cur_pos = 0
         energy_pos = 5
         while(cur_pos < len(path)):
             x, y = path[cur_pos]
             maze[x][y] = str(energy_pos)
+            print(type(maze[x][y]))
             tmp = np.random.randint(3, 6)
             cur_pos += tmp
             energy_pos = tmp
@@ -377,6 +378,6 @@ def convert_energy(maze: list[list[str]]) ->list[list[str]]:
                                  if x + dx >= 0 and x + dx < len(maze) and y + dy >= 0 
                                  and y + dy < len(maze[0]) and maze[x + dx][y + dy] in ['1', '2', '3', '4', '5']]
                     if len(check) == 0:
-                        maze[(cur_x)][(cur_y)] = tmp
+                        maze[(cur_x)][(cur_y)] = str(tmp)
         return maze        
     
