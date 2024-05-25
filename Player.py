@@ -220,11 +220,11 @@ class Player:
                 return
 
             
-            screen.blit(self.avatar, self.visual_pos)
-            self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + maze_cell_size // 2,
-                                        self.visual_pos[1] - 1.5 * maze_cell_size))
-            self.name_box.draw_on_minimap(screen, background=True)
-            pygame.display.flip()
+        screen.blit(self.avatar, self.visual_pos)
+        self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + maze_cell_size // 2,
+                                    self.visual_pos[1] - 1.5 * maze_cell_size))
+        self.name_box.draw_on_minimap(screen, background=True)
+        pygame.display.flip()
 
     def move(self, cmd):
         """
