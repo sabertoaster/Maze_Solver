@@ -103,6 +103,8 @@ SCENES = {
 
     'Play': {
         'BG': 'kitchen_BG.png',
+        
+        'BG_instructions': 'kitchen_BG_instructions.png',
 
         'DOORS': {
             (0, 2): "Menu",
@@ -140,7 +142,7 @@ SCENES = {
         },
         
         'OBJECTS_INTERACT_RANGE': {
-            'Load': [(4, 3), (5, 3)]
+            'Load': [(3, 2), (4, 3), (5, 3)]
         },
 
         'HOVER_FRAME': {
