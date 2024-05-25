@@ -341,7 +341,7 @@ class LeaderboardScreen:
             score = score_font.render(str(value), True, COLORS.BLACK.value)
 
             leaderboard_panel_medium.blit(name, (240, 280 + pos * 60 - 10))
-            leaderboard_panel_medium.blit(score, (460, 280 + pos * 60 - 20))
+            leaderboard_panel_medium.blit(score, (440, 280 + pos * 60 - 20))
             pos += 1
 
         pos = 0
@@ -350,7 +350,7 @@ class LeaderboardScreen:
             score = score_font.render(str(value), True, COLORS.BLACK.value)
 
             leaderboard_panel_hard.blit(name, (240, 280 + pos * 60 - 10))
-            leaderboard_panel_hard.blit(score, (460, 280 + pos * 60 - 20))
+            leaderboard_panel_hard.blit(score, (440, 280 + pos * 60 - 20))
             pos += 1
 
         return leaderboard_panel_easy, leaderboard_panel_medium, leaderboard_panel_hard

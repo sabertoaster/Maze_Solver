@@ -3,7 +3,6 @@ from Player import Player
 from Visualize.Visualizer import Visualizer  # [PROTOTYPE]
 from GridMap import MapManager
 from Sounds import SoundsHandler
-from Save import *
 from Visualize.Playgif import play_gif
 
 # Pre-defined imports

@@ -39,7 +39,8 @@ class WinScreen:
 
         window = pygame.display.set_mode(RESOLUTION)
         clock = pygame.time.Clock()
-
+        pygame.event.clear()
+        pygame.key.set_repeat()
         run = success
         while run:
             clock.tick(fps)
@@ -65,5 +66,6 @@ class WinScreen:
                 run = False
             window.blit(video_surf, ((RESOLUTION[0] - video_surf.get_width()) / 2, (RESOLUTION[1] - video_surf.get_height()) / 2))
             pygame.display.flip()
-
-        return "Menu"
+            
+        pygame.key.set_repeat(200, 125)
+        return "Menu", SCENES["Menu"]["initial_pos"]

@@ -108,10 +108,11 @@ class Minimap:
 
                     pygame.display.flip()
                 self.player.visualize_direction = (self.player.visualize_direction[1], self.player.visualize_direction[1])
-            self.new_background = self.cut_maze(screenCopy)
-            self.screen.blit(self.new_background, (0, 0), (self.cut_start_pos, self.cut_area))
+                
+        self.new_background = self.cut_maze(screenCopy)
+        self.screen.blit(self.new_background, (0, 0), (self.cut_start_pos, self.cut_area))
 
-            pygame.display.update()
+        pygame.display.update()
 
     def get_snapshot(self):
         self.snapshot.blit(self.new_background, (0, 0), (self.cut_start_pos, self.cut_area))
