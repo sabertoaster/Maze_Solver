@@ -67,7 +67,7 @@ class MenuScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        # drawGrid(self.screen)
+        drawGrid(self.screen)
 
         self.player = player
         self.player.re_init(name=self.player.name, scene=SCENE_NAME)
@@ -75,7 +75,6 @@ class MenuScreen:
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
-        print('Previous scene:', self.player.previous_scene)
         if self.player.previous_scene == "Login":
             self.transition.transition(transition_type='sign_pop', box=self.sign)
         
@@ -113,7 +112,7 @@ class MenuScreen:
                                     
                 self.mouse_handler.set_pos(mouse_pos)
 
-                self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_obj)
+                self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy, self.hovered_obj, self.player.touched_obj)
                 
                 if event.type == pygame.MOUSEBUTTONUP:
                     self.chosen_door, self.chosen_obj = self.mouse_handler.click()

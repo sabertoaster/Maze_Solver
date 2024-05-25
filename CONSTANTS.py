@@ -85,8 +85,8 @@ SCENES = {
 
         'OBJECTS_INTERACT_RANGE': {
             'Credit': [(6, 3), (7, 3), (8, 3), (5, 4), (9, 4)],
-            'Music_box': [[x, y] for x in range(4, 6) for y in range(6, 9)],
-            'Skin': [[x, 9] for x in range(0, 3)],
+            'Music_box': [(2,3), (3,3)],
+            'Skin': [(10, 2), (8, 2), (9, 3)],
         },
 
         'HOVER_FRAME': {
@@ -129,7 +129,7 @@ SCENES = {
             'Easy': [[5, y] for y in range(9, 11)],
             'Medium': [[7, y] for y in range(11, 13)],
             'Hard': [[9, y] for y in range(8, 10)],
-            'Load': [[x, y] for x in range(3) for y in range(4, 6)],
+            # 'Load': [[x, y] for x in range(3) for y in range(4, 6)],
         },
 
         'OBJECTS_POS': {
@@ -140,7 +140,7 @@ SCENES = {
         },
         
         'OBJECTS_INTERACT_RANGE': {
-
+            'Load': [(4, 3), (5, 3)]
         },
 
         'HOVER_FRAME': {
@@ -179,7 +179,7 @@ SCENES = {
             "Trophy": [[x, y] for x in range(5, 7) for y in range(6, 9)],
         },
         'OBJECTS_INTERACT_RANGE': {
-            'Trophy': [[x, y] for x in range(4, 8) for y in range(6, 9)]
+            'Trophy': [(y, x) for x in range(4, 8) for y in range(5, 10)]
         },
 
         'HOVER_FRAME': {
@@ -225,6 +225,7 @@ SCENES = {
     }
     # "full_variables_of_a_scene": {
     #     'BG': '',
+    #     'BG_instructions': '',
     #     'DOORS': {},
     #     'DOORS_CLICK_RANGE': {},
     #     'OBJECTS_POS': {},
@@ -235,6 +236,7 @@ SCENES = {
     #     'BGM': '',
     # }
 }
+
 PARAMS = {
     "resources": "Visualize/Resources/",
     "resolution": (1200, 800),  # ratio 3:2
@@ -453,13 +455,6 @@ class CircularLinkedList():
                 self.push(key)
         else:
             self.push(data)
-
-    def print_list(self):
-        temp = self.head
-        while temp.next != self.head:
-            print(temp.data, end=" ")
-            temp = temp.next
-        print(temp.data)
 
     def push(self, data):
         if self.head.data == None:

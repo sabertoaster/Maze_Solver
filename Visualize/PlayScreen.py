@@ -67,6 +67,7 @@ class PlayScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
+        drawGrid(self.screen)
 
         self.player = player
         self.player.re_init(name=self.player.name, scene=SCENE_NAME, dir=self.player.current_direction)
@@ -79,7 +80,7 @@ class PlayScreen:
         self.load_card = pygame.image.load(RESOURCE_PATH + "load_card.png").convert_alpha()
         self.load_cards = self.get_data_and_fill_in_load_panel(self.load_card, cards_top_left)
         self.card_hover_frame = pygame.image.load(RESOURCE_PATH + "load_card_hover.png").convert_alpha()
-        
+        # Load saved games
         self.saved_games = {
             0 : {},
             1 : {},
@@ -87,8 +88,6 @@ class PlayScreen:
         }
         self.load__saved_games()
         
-        # Load panel momentos
-
         blur = blur_screen(screen=self.screenCopy)
         self.load_panel = add_element(blur, load_panel,
                                       ((RESOLUTION[0] - load_panel.get_width()) / 2,
@@ -124,7 +123,7 @@ class PlayScreen:
                 self.mouse_handler.set_pos(mouse_pos)
 
                 self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy,
-                                                                                       self.hovered_obj)
+                                                                                       self.hovered_obj, self.player.touched_obj)
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     self.chosen_door, self.chosen_obj = self.mouse_handler.click()
@@ -158,7 +157,8 @@ class PlayScreen:
         :param event:
         :return:
         """
-        pass
+        if obj == 'Load':
+            self.chosen_door = obj
         
 
     def toggle_panel(self, name):
@@ -194,8 +194,12 @@ class PlayScreen:
                 return "Gameplay", (0, 0)
             
             if name == "Load":
-                x, y = self.load()
-                return x, y
+                scene_name, pos = self.load()
+                if scene_name:
+                    self.screen.blit(self.frame, (0, 0))
+                    play_gif(self.screen, self.frame, "gameplay")
+                    return scene_name, pos
+                       
         return None, None
 
     def set_current_mode(self, level):
@@ -277,7 +281,6 @@ class PlayScreen:
         :return:
         """
         for i, card in enumerate(self.load_cards):
-            print(i)
             self.screen.blit(card, cards_top_left[i])
         pygame.display.flip()
 
@@ -290,7 +293,6 @@ class PlayScreen:
             cards = []
             with open("./SaveFile/" + self.player.name + ".json", "r+") as fi:
                 data = json.load(fi)
-                print(data)
                 for i in range(0, min(len(data), len(position_lst))):
                     card = template.copy()
                     cards.append(self.fill_in_data(card, data[i]))

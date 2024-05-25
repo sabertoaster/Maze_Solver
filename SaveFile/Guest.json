@@ -6,14 +6,14 @@
             18
         ],
         "player.visual_pos": [
-            539.9999999999959,
-            1140.0000000000027
+            540.0000000000002,
+            1140.0
         ],
         "level": "Easy",
         "mode": "Manual",
-        "score": 100,
-        "time": 32.13,
-        "step": 68,
+        "score": 38.13,
+        "time": 47.19,
+        "step": 84,
         "maze_toString": [
             [
                 " ",

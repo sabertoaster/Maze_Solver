@@ -1,5 +1,6 @@
 import pygame
 from CONSTANTS import RESOURCE_PATH, SOUNDS\
+
 RESOURCE_PATH += 'sounds/'
 
 class Sounds:

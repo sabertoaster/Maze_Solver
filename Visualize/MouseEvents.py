@@ -11,6 +11,8 @@ class MouseEvents:
         self.original_frame = original_frame
         self.pos = [-1, -1]
         self.idling = True
+        self.player_touch = None
+        self.player_idling = True
         
         self.show_instructions = show_instructions
 
@@ -35,10 +37,31 @@ class MouseEvents:
                 if item == self.pos:
                     return None, key
                     
-                
         return None, None
 
     def get_hover_frame(self, prev_frame, prev_door=None, player_touch=None):
+        if player_touch:
+            
+            if player_touch == self.player_touch:
+                return prev_frame, prev_door
+            
+            frame = morph_image(RESOURCE_PATH + SCENES[self.current_scene]['HOVER_FRAME'][player_touch], RESOLUTION)
+            self.screen = frame.convert()
+            screenCopy = self.screen.copy()
+            self.player.update(screenCopy)
+            
+            self.player_touch = player_touch
+            
+            return screenCopy, player_touch
+        elif self.player_touch:
+            self.player_touch = None
+            frame = self.original_frame
+            self.screen = frame.convert()
+            screenCopy = self.screen.copy()
+            self.player.update(screenCopy)
+            
+            return screenCopy, None
+        
         if self.idling:
             return prev_frame, prev_door
         door = None

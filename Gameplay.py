@@ -209,7 +209,6 @@ class Gameplay:
         # INSTANTIATE MAZE
 
         self.init_maze()
-        print(self.visual_maze.get_size())
 
         # INSTANTIATE PLAYER
         self.set_start_pos()
@@ -459,7 +458,6 @@ class Gameplay:
             copy_screen = self.show_solution(copy_screen)
 
         copy_screen = self.draw_player(copy_screen)
-        print(copy_screen.get_width(), copy_screen.get_height())
         self.screen.blit(copy_screen, (RESOLUTION[0] - copy_screen.get_width(), 0))
 
 

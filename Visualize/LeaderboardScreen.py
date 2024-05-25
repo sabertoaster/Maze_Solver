@@ -91,9 +91,9 @@ class LeaderboardScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
+        drawGrid(self.screen)
 
         # Draw Player
-        # print(self.get_data_for_leaderboard())
         self.player = player
         self.player.re_init(name=self.player.name, scene=SCENE_NAME, dir=self.player.current_direction)
         self.screenCopy = self.screen.copy()
@@ -133,7 +133,8 @@ class LeaderboardScreen:
                 self.mouse_handler.set_pos(mouse_pos)
 
                 self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy,
-                                                                                       self.hovered_obj)
+                                                                                       self.hovered_obj,
+                                                                                       self.player.touched_obj)
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     self.chosen_door, self.chosen_obj = self.mouse_handler.click()

@@ -191,7 +191,6 @@ class Transition:
             pygame.display.flip()
             pygame.time.delay(10)
 
-        print(pos)
         for _ in range(rate):
             self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1], RESOLUTION[0], RESOLUTION[1]))
             self.screen.blit(pygame.transform.rotate(player_sprite, (_ + 1) * 360 / rate), (pos[0], RESOLUTION[1] - (RESOLUTION[1] - pos[1]) * (_ + 1) / rate))

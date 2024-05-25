@@ -66,6 +66,7 @@ class Player:
         self.sounds_handler = sounds_handler
 
         self.interacted_obj = None
+        self.touched_obj = None
 
     def switch_skin(self, skin):
         lst = list(AVATAR.keys())
@@ -245,6 +246,13 @@ class Player:
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.FREE
                 self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
+            
+            # [PROTOTYPE]
+            self.touched_obj = None
+            for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
+                if self.grid_pos in val:
+                    self.touched_obj = key
+                    break
             
             return "Move"
         self.sounds_handler.play_sfx("bump")
