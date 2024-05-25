@@ -16,6 +16,7 @@ class SaveFile:
             "level": "Easy",
             "mode": "Manual",
             "score": player.score,
+            "time": player.maze_time,
             'maze_toString': maze_toString,
         }
 
@@ -35,7 +36,6 @@ def read_file(file_name: str):
     """
     with open('SaveFile/' + file_name + '.json', "r") as file:
         data = json.load(file)
-        # print(data)
         return data
 
 
@@ -84,7 +84,6 @@ def check_file(file_name):
     file_list = os.listdir('SaveFile/')
     for i in range(len(file_list)):
         file_list[i] = file_list[i][:-5]
-    # print(file_list)
     return file_name in file_list
 
 
@@ -100,9 +99,5 @@ def repath_file_win():
         if data['score'] != 0:
             os.rename("SaveFile/" + file_list[i][:-5] + ".json", "SaveFile/" + file_list[i][:-5] + "_win    .json")
 
-
-# print(check_file('test1'))
-# print(leader_board())
-# repath_file_win()
 
 print(get_leader_board())

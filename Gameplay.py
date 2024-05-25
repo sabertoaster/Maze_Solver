@@ -24,9 +24,10 @@ from Player import *
 from random import choice
 import time
 
+SCENE_NAME = "GamePlay"
 
 class Gameplay:
-    def __init__(self, screen, start_pos, end_pos, file_name='', maze_size=(20, 20)):
+    def __init__(self, screen, start_pos, end_pos, file_name='', maze_size=(20, 20), sounds_handler=None):
         self.screen = screen
         self.screenCopy = self.screen.copy()
         self.screen.fill((0, 0, 0))  # Black background [PROTOTYPE]
@@ -36,12 +37,20 @@ class Gameplay:
 
         # INSTANTIATE PANELS
         self.init_panel()
-
-        # INSTANTIATE PLAYER
+        self.start_time = time.time()
+        self.maze_time = 0
+        self.maze_score = 0
+        self.maze_step = 0
+        self.maze_id = -1
+        # INSTANTIATE SAVE FLAGS
+        self.save_fl = False
+        self.old_save = False
 
         self.minimap_grid_size = (20, 20)
         SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
 
+        self.sounds_handler = sounds_handler    
+        
     def fill_grid_map(self):
         for i in range(len(self.maze_toString)):
             for j in range(len(self.maze_toString[0])):
@@ -64,32 +73,141 @@ class Gameplay:
         with open("current_profile.json") as fi:
             data = json.load(fi)
             self.player.name = data['player.name']
-            self.player.re_init(self.player.name, "Gameplay")
             self.player.grid_pos = data['player.grid_pos']
             self.player.visual_pos = data['player.visual_pos']
+            self.maze_level = data['level']
+            self.maze_mode = data['mode']
+            self.maze_score = data["score"]
+            self.maze_time = data["time"]
+
             if (data["level"] == "Easy"):
                 self.maze_size = (10, 10)
                 self.minimap_grid_size = (20, 20)
+
             elif (data["level"] == "Medium"):
                 self.maze_size = (20, 20)
                 self.minimap_grid_size = (20, 20)
+
             elif (data["level"] == "Hard"):
                 self.maze_size = (50, 50)
-                self.minimap_grid_size = (20, 20)
-            SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
-            if data["maze_toString"]:
-                self.maze_toString = data["maze_toString"]
+                self.minimap_grid_size = (40, 40)
 
+            SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
+
+            self.player.re_init(self.player.name, "Gameplay")
+            if data["maze_toString"]:
+                self.old_save = True
+                self.maze_toString = data["maze_toString"]
+                self.old_save = True
+                self.maze_step = data["step"]
+                self.maze_time = data["time"]
+                self.maze_id = data["id"]
             else:
                 self.maze = Maze("Wilson", self.maze_size)
                 self.maze_toString = convert_maze(self.maze)
 
+    def save_data(self, is_win=False):
+        snapshot = self.minimap.get_snapshot()
+        if self.old_save:
+            data = {
+                "player.name": self.player.name,
+                "player.grid_pos": self.player.grid_pos,
+                "player.visual_pos": self.player.visual_pos,
+                "level": self.maze_level,
+                "mode": self.maze_mode,
+                "score": self.maze_score + 100 if is_win else self.maze_score,
+                "time": round(self.maze_time, 2),
+                "step": self.maze_step,
+                "maze_toString": self.maze_toString
+            }
+            with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
+                try:
+                    file_data = json.load(fi)
+                    data["id"] = self.maze_id
+                    file_data[self.maze_id] = data
+                except json.JSONDecodeError:
+                    file_data = [data]
+                fi.seek(0)
+                open("SaveFile\\" + self.player.name + ".json", 'w').close()
+                json.dump(file_data, fi, indent=4)
+                pygame.image.save(snapshot, "SaveFile\\" + self.player.name + str(data["id"]) + ".png")
+            return
+
+
+        if not self.save_fl:
+            data = {
+                "player.name": self.player.name,
+                "player.grid_pos": self.player.grid_pos,
+                "player.visual_pos": self.player.visual_pos,
+                "level": self.maze_level,
+                "mode": self.maze_mode,
+                "score": self.maze_score + 100 if is_win else self.maze_score,
+                "time": round(self.maze_time, 2), 
+                "step": self.maze_step,
+                "maze_toString": self.maze_toString
+            }
+
+            try:
+                with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
+                    try:
+                        file_data = json.load(fi)
+                        self.maze_id = file_data[-1]["id"] + 1
+                        data["id"] = self.maze_id
+                        file_data.append(data)
+                    except json.JSONDecodeError:
+                        data["id"] = 0
+                        file_data = [data]
+                    fi.seek(0)
+                    open("SaveFile\\" + self.player.name + ".json", 'w').close()
+                    json.dump(file_data, fi, indent=4)
+                    pygame.image.save(snapshot, "SaveFile\\" + self.player.name + str(data["id"]) + ".png")
+            except FileNotFoundError:
+               with open("SaveFile\\" + self.player.name + ".json", "w+") as fi:
+                    data["id"] = 0
+                    json.dump([data], fi, indent=4)
+                    pygame.image.save(snapshot, "SaveFile\\" + self.player.name + str(data["id"]) + ".png")
+
+        else:
+            data = {
+                "player.name": self.player.name,
+                "player.grid_pos": self.player.grid_pos,
+                "player.visual_pos": self.player.visual_pos,
+                "level": self.maze_level,
+                "mode": self.maze_mode,
+                "score": self.maze_score + 100 if is_win else self.maze_score,
+                "time": round(self.maze_time, 2),
+                "step": self.maze_step,
+                "maze_toString": self.maze_toString
+            }
+            with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
+                try:
+                    file_data = json.load(fi)
+                    data["id"] = self.maze_id
+                    file_data[-1] = (data)
+                except json.JSONDecodeError:
+                    file_data = [data]
+                fi.seek(0)
+                open("SaveFile\\" + self.player.name + ".json", 'w').close()
+                json.dump(file_data, fi, indent=4)
+                pygame.image.save(snapshot, "SaveFile\\" + self.player.name + str(data["id"]) + ".png")
+
+        # json.dump(data, fi, indent=4)
+        # except:
+        #     with open(self.player.name + ".json", "w+") as fi:
+
+    def update_time(self):
+        current_time = time.time()
+        self.maze_time += float(current_time - self.start_time)
+        self.start_time = current_time
+        
     def play(self, player):
         self.player = player
         self.get_data()
 
         # INSTANTIATE MAZE
+
         self.init_maze()
+        print(self.visual_maze.get_size())
 
         # INSTANTIATE PLAYER
         self.set_start_pos()
@@ -101,20 +219,37 @@ class Gameplay:
 
         # INSTANTIATE BACKGROUND
         self.init_background()
+        
+        #play BGM
+        self.sounds_handler.play_bgm(SCENE_NAME)
+
+
 
         # INSTANTIATE MINIMAP
         minimap_display_pos = (0, 0)
         self.minimap = Minimap(self.screen, self.maze_toString, self.minimap_grid_size, self.bg_surface.copy(),
                                self.bg_cell_size, minimap_display_pos, self.player)
-        self.minimap.update(self.minimap.maze_surface)
+        self.minimap.init_at_start(self.minimap.maze_surface)
+
+        self.solution_flag = False
+
+
+        self.visualize_maze(self.visual_maze, self.solution_flag)
 
         self.screenCopy = self.screen.copy()
 
+        self.transition = Transition(self.screen, RESOLUTION, player=self.player, sounds_handler=self.sounds_handler)
+        self.transition.transition(transition_type="hole",
+                                   pos=(400, 400),
+                                   prev_scene="Play")
+
+
+        self.minimap.update(self.minimap.maze_surface)
+
+        pygame.display.update()
         # self.minimap.update(self.screenCopy)
         # self.player.update(self.screenCopy)
-        self.solution_flag = False
 
-        self.visualize_maze(self.visual_maze, self.solution_flag)
         self.fill_grid_map()
         
         # INSTANTIATE CHOOSE MODE BUTTON
@@ -138,6 +273,7 @@ class Gameplay:
         self.player.deactivate(active=False)
         
         while True:
+            self.update_time()
             events = pygame.event.get()
             mouse_rel = pygame.mouse.get_rel()
             
@@ -156,35 +292,47 @@ class Gameplay:
             
             for event in events:
                 if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
+                    return None, None
                 if event.type == pygame.KEYDOWN or event.type == pygame.USEREVENT:
                     if event.key == pygame.K_ESCAPE:
                         # Disable spamming button
                         pygame.key.set_repeat()
+                        start_pause_time = time.time()
                         next_scene, next_pos = self.toggle_panel()
                         # Enable spamming button again
+                        end_pause_time = time.time()
+                        pause_time = float(end_pause_time - start_pause_time)
+                        self.maze_time -= pause_time
                         pygame.key.set_repeat(200, 125)
-                        
+
                         if next_scene:
                             return next_scene, next_pos
-                        
+
                         break
                     if event.key == pygame.K_m:
                         pass
                         # Handle minimap here
                         
                     if event.key == pygame.K_g:
-                        save = SaveFile(self.maze_toString, self.player)
-                        save.run_save('test1')
+                        pass
+                        # save = SaveFile(self.maze_toString, self.player)
+                        # save.run_save('test1')
+                        
+                        # Handle minimap here
                         
                     player_response = self.player.handle_event(event.key)
                     
                     if player_response == "Move" and event.type != pygame.USEREVENT:
+                        self.maze_step += 1
+                        if self.player.get_grid_pos()[::-1] == self.end_pos:
+
+                            self.save_data(is_win=True)
+                            # return "Win", SCENES["Win"]["initial_pos"]
                         pygame.event.clear()
-                    if self.solution_flag:
-                        ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
-                        pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
+                        
+                    # if self.solution_flag:
+                    #     ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
+                    #     pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
                     
                     self.update_screen()
                     
@@ -203,31 +351,31 @@ class Gameplay:
         # self.update_maze()
 
         self.grid_map = GridMap("Maze", self.maze_size, (1, 1))
-        
+
         self.maze_row, self.maze_col = len(self.maze_toString), len(self.maze_toString[0])
         self.cell_size = (RESOLUTION[0] - RESOLUTION[1]) // min(self.maze_row, self.maze_col)
-        
+
         self.visual_maze_resolution = (self.maze_row * self.cell_size, self.maze_col * self.cell_size)
         self.visual_maze = pygame.Surface(self.visual_maze_resolution)
         self.visual_maze.fill((0, 0, 0))
 
         for i in range(self.maze_row):
             for j in range(self.maze_col):
-                ceil_rect = pygame.Rect(j * self.cell_size, i * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
+                ceil_rect = pygame.Rect(j * self.cell_size, i * self.cell_size, self.cell_size,
+                                        self.cell_size)  # [PROTOTYPE]
 
                 if self.maze_toString[i][j] == ' ':
-                    pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
+                    pygame.draw.rect(self.visual_maze, (255, 255, 255), ceil_rect)
                 elif self.maze_toString[i][j] == '#':
-                    pygame.draw.rect(self.visual_maze, (0,0,0), ceil_rect)
+                    pygame.draw.rect(self.visual_maze, (0, 0, 0), ceil_rect)
                 elif self.maze_toString[i][j] == 'S':
-                    self.start_pos = (i,j)
-                    pygame.draw.rect(self.visual_maze, (170,170,0), ceil_rect)
+                    # self.start_pos = (i, j)
+                    pygame.draw.rect(self.visual_maze, (170, 170, 0), ceil_rect)
                 elif self.maze_toString[i][j] == 'E':
-                    self.end_pos = (i,j)
-                    pygame.draw.rect(self.visual_maze, (255,0,0), ceil_rect)
+                    # self.end_pos = (i, j)
+                    pygame.draw.rect(self.visual_maze, (255, 0, 0), ceil_rect)
 
-        self.visual_maze_display_pos = (0, RESOLUTION[0] - (RESOLUTION[0] - RESOLUTION[1]) // 2)
-        self.screen.blit(self.visual_maze, (RESOLUTION[0] - self.visual_maze_resolution[0], 0))
+        self.visual_maze_display_pos = (0, RESOLUTION[0] - (RESOLUTION[0] - RESOLUTION[1]) / 2)
 
         # test = convert_energy(self.maze_toString)
         # for i in range(len(test)):
@@ -241,16 +389,14 @@ class Gameplay:
         screen_size = ((self.maze_row + self.minimap_grid_size[0] + 1) * self.bg_cell_size,
                        (self.maze_col + self.minimap_grid_size[1] + 1) * self.bg_cell_size)
 
+        self.bg_surface = morph_image("Resources/nigga.png", screen_size)
 
-        self.bg_surface = morph_image("Resources/cave_BG.png", screen_size)
-
-        maze_surface = pygame.Surface((self.maze_row * self.bg_cell_size, self.maze_col * self.bg_cell_size),
+        maze_surface = pygame.Surface(((self.maze_row) * (self.bg_cell_size), ((self.maze_col) * self.bg_cell_size)),
                                       pygame.SRCALPHA, 32).convert_alpha()
 
-        start = morph_image("Resources/login_box.png", (self.bg_cell_size, self.bg_cell_size))
-        end = morph_image("Resources/kitchen_BG.png", (self.bg_cell_size, self.bg_cell_size))
-        print(self.bg_cell_size)
-        tuan = [
+        start = morph_image(RESOURCE_PATH + "start.png", (self.bg_cell_size, self.bg_cell_size))
+        end = morph_image(RESOURCE_PATH + "jerry_icon.png", (self.bg_cell_size, self.bg_cell_size))
+        walls = [
             "cave_wall_1.png",
             "cave_wall_2.png",
             "cave_wall_3.png",
@@ -260,26 +406,70 @@ class Gameplay:
             "cave_wall_7.png",
             "cave_wall_8.png",
         ]
-        wall = morph_image(RESOURCE_PATH + "cave_wall.png", (self.bg_cell_size, self.bg_cell_size))
         for i in range(self.maze_row):
             for j in range(self.maze_col):
-
                 pos = (j * self.bg_cell_size, i * self.bg_cell_size)
+                if i == 0:
+                    if j == 0:
+                        floor = morph_image(RESOURCE_PATH + "floor_ul.png", (self.bg_cell_size, self.bg_cell_size))
+                        maze_surface.blit(floor, pos)
+                    elif j == self.maze_row - 1:
+                        floor = morph_image(RESOURCE_PATH + "floor_ur.png", (self.bg_cell_size, self.bg_cell_size))
+                        maze_surface.blit(floor, pos)
+                    else:
+                        floor = morph_image(RESOURCE_PATH + "floor_u.png", (self.bg_cell_size, self.bg_cell_size))
+                        maze_surface.blit(floor, pos)
+                elif i == self.maze_col - 1:
+                    if j == 0:
+                        floor = morph_image(RESOURCE_PATH + "floor_dl.png", (self.bg_cell_size, self.bg_cell_size))
+                        maze_surface.blit(floor, pos)
+                    elif j == self.maze_row - 1:
+                        floor = morph_image(RESOURCE_PATH + "floor_dr.png", (self.bg_cell_size, self.bg_cell_size))
+                        maze_surface.blit(floor, pos)
+                    else:
+                        floor = morph_image(RESOURCE_PATH + "floor_d.png", (self.bg_cell_size, self.bg_cell_size))
+                        maze_surface.blit(floor, pos)
+                else:
+                    if j == 0:
+                        floor = morph_image(RESOURCE_PATH + "floor_l.png", (self.bg_cell_size, self.bg_cell_size))
+                        maze_surface.blit(floor, pos)
+                    elif j == self.maze_row - 1:
+                        floor = morph_image(RESOURCE_PATH + "floor_r.png", (self.bg_cell_size, self.bg_cell_size))
+                        maze_surface.blit(floor, pos)
+                    else:
+                        floor = morph_image(RESOURCE_PATH + "floor.png", (self.bg_cell_size, self.bg_cell_size))
+                        maze_surface.blit(floor, pos)
+
+        for i in range(self.maze_row):
+            for j in range(self.maze_col):
+                pos = (j * self.bg_cell_size, i * self.bg_cell_size)
+
                 if self.maze_toString[i][j] == '#':
-                    img = pygame.image.load(RESOURCE_PATH + tuan[np.random.randint(0, len(tuan))]).convert_alpha()
+                    # img = pygame.image.load(RESOURCE_PATH + walls[np.random.randint(0, len(walls))]).convert_alpha()
+                    img = morph_image(RESOURCE_PATH + walls[np.random.randint(0, len(walls))],
+                                      (self.bg_cell_size, self.bg_cell_size * 2))
                     maze_surface.blit(img, pos)
-                    # pygame.draw.rect(maze_surface, (0,0,0), ceil_rect)
+
                 elif self.maze_toString[i][j] == 'S':
-                    maze_surface.blit(start, pos)
-                    # pygame.draw.rect(maze_surface, (255,255,0), ceil_rect)
+
+                    maze_surface.blit(start,
+                                      (pos[0] + (self.bg_cell_size - start.get_width()) / 2,
+                                            pos[1] + (self.bg_cell_size - start.get_height()) / 2))
+
                 elif self.maze_toString[i][j] == 'E':
                     maze_surface.blit(end, pos)
-                    # pygame.draw.rect(maze_surface, (255,0,0), ceil_rect)
 
-        self.bg_surface.blit(maze_surface, (
-            self.minimap_grid_size[0] // 2 * self.bg_cell_size, self.minimap_grid_size[1] // 2 * self.bg_cell_size))
+        self.bg_surface.blit(maze_surface,((screen_size[0] - maze_surface.get_width()) // 2, (screen_size[1] - maze_surface.get_height()) // 2))
 
     def set_start_pos(self):
+        if self.old_save == True:
+            self.start_pos = self.player.grid_pos[::-1]
+            for i in range(self.maze_row):
+                for j in range(self.maze_col):
+                    if self.maze_toString[i][j] == 'E':
+                        self.end_pos = (i, j)
+                        break
+            return
         for i in range(self.maze_row):
             for j in range(self.maze_col):
                 if self.maze_toString[i][j] == 'S':
@@ -294,16 +484,9 @@ class Gameplay:
             copy_screen = self.show_solution(copy_screen)
 
         copy_screen = self.draw_player(copy_screen)
+        print(copy_screen.get_width(), copy_screen.get_height())
+        self.screen.blit(copy_screen, (RESOLUTION[0] - copy_screen.get_width(), 0))
 
-        self.screen.blit(copy_screen, (RESOLUTION[0] - self.visual_maze_resolution[0], 0))
-
-    def draw_player(self, screen):
-        copy_visual_maze = self.visual_maze.copy()
-
-        copy_visual_maze.blit(pygame.transform.scale_by(self.player.avatar, self.cell_size / self.minimap.cell_size),
-                             (self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size))
-
-        return copy_visual_maze
 
     def update_screen(self):
         self.minimap.update(self.minimap.maze_surface)
@@ -350,14 +533,14 @@ class Gameplay:
     def init_panel(self):
         # INSTANTIATE PANELS
         tp.init(self.screen, tp.theme_game1)
-        self.escape_buttons = [tp.Button("Resume"), 
-                               tp.Button("Restart"), 
+        self.escape_buttons = [tp.Button("Resume"),
+                               tp.Button("Restart"),
                                tp.Button("Save"),
-                               tp.Button("Menu"), 
+                               tp.Button("Menu"),
                                tp.Button("Quit")]
         # [MASK], Use to recognize whether the escape buttons is pressed
         self.associated_values = np.full((5,), 0).tolist()
-        
+
         self.escape_box = tp.TitleBox("Settings", self.escape_buttons)
         self.escape_box.center_on(self.screen)
 
@@ -371,7 +554,7 @@ class Gameplay:
             self.associated_values[3] = 1
         def click_quit():
             self.associated_values[4] = 1
-            
+
         self.escape_buttons[0].at_unclick = click_resume
         self.escape_buttons[1].at_unclick = click_restart
         self.escape_buttons[2].at_unclick = click_save
@@ -390,60 +573,77 @@ class Gameplay:
             copy_screen = self.screen.copy()
             copy_screen.blit(self.minimap.new_background, self.minimap.display_pos, (self.minimap.cut_start_pos, self.minimap.cut_area))
             copy_screen.blit(self.visual_maze, self.visual_maze_display_pos)
-            self.blur = blur_screen(screen = copy_screen)
-            
-            self.screen.blit(self.blur, (0,0))
+            self.blur = blur_screen(screen=copy_screen)
+
+            self.screen.blit(self.blur, (0, 0))
 
         self.player.deactivate(active=False)
-        m = self.escape_box.get_updater(fps = FPS, esc_quit = True)
+        m = self.escape_box.get_updater(fps=FPS, esc_quit=True)
         at_refresh()
         # Stop spamming button 
         while m.playing:
             m.clock.tick(FPS)
-            
+
             events = pygame.event.get()
             mouse_rel = pygame.mouse.get_rel()
 
-            m.update(events = events, mouse_rel = mouse_rel)
+            m.update(events=events, mouse_rel = mouse_rel)
             pygame.display.flip()
-            
+
             for event in events:
                 if event.type == pygame.QUIT:
                     m.playing = False
                 if event.type == pygame.KEYDOWN:
                     key_pressed = event.key
                     if key_pressed == pygame.K_ESCAPE:
-                        self.player.deactivate(active = True)
+                        if not self.choose_mode_flag:
+                            self.player.deactivate(active=True)
 
                         self.screen.fill((0,0,0))
                         self.update_screen()
                         pygame.display.update()
                         
                         return None, None
-                
+
                 if self.associated_values[0]: #If click resume button
                     pygame.event.clear()
 
-                    self.associated_values[0] = 0                    
-                    self.player.deactivate(active = True)
+                    self.associated_values[0] = 0
+                    
+                    if not self.choose_mode_flag:
+                        self.player.deactivate(active = True)
 
                     self.update_screen()
                     pygame.display.update()
 
                     return None, None
-                
-                if self.associated_values[1]: # If click restart button
+                if self.associated_values[1]: #If click restart button
                     pass
-                if self.associated_values[2]: # If click save button
-                    pass  
-                if self.associated_values[3]: # If click menu button
+                if self.associated_values[2]: #If click save button
+                    self.associated_values[2] = 0
+                    self.save_data()
+                    self.save_fl = True  # Set save flag to True
+                    # if self.associated_values[3]: #If click auto button
+                    # choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
+                    # introduction_text = "Choose the algorithm to solve the maze"
+                    # options = tp.AlertWithChoices("Auto Mode Algorithms", choices, introduction_text, choice_mode="v")
+                    # def clicked():
+                    #     options.launch_alone() #see _example_launch for more options
+                    #     print("User has chosen:", options.choice)
+                    # self.escape_buttons[3].center_on(self.screen)
+                    # self.escape_buttons[3].at_unclick = clicked
+                    # self.escape_buttons[3].get_updater(fps = FPS, esc_quit = True)
+                    # return None, None
+
+                if self.associated_values[3]: #If click menu button
                     self.player.deactivate(active = True)
 
                     return "Menu", SCENES["Menu"]["initial_pos"]
-                if self.associated_values[4]: # If click quit button
+
+                if self.associated_values[4]: #If click quit button
                     sys.exit(0)
                     pygame.quit()
-        
+
         return None, None
     
     def init_choose_mode(self):
@@ -479,7 +679,7 @@ class Gameplay:
                 self.minimap.solution_flag = True
                 
                 self.player.deactivate(active=True)
-            
+                
             self.screen.fill((0,0,0))
             # self.auto_button.update(events)
             self.update_screen()
@@ -546,11 +746,11 @@ class Gameplay:
         copy_screen = screen.copy()
 
         self.minimap.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
-        
+        if self.minimap.trace_path:
+            self.minimap.trace_path.append(self.end_pos)
+
         if not self.minimap.trace_path:
             return screen
-        
-        self.minimap.trace_path.append(self.end_pos)
         
         color = (127,0,255)
             
@@ -560,15 +760,14 @@ class Gameplay:
             pygame.draw.rect(copy_screen, color, ceil_rect)
             
         return copy_screen
-    
+
     def draw_player(self, screen):
         copy_screen = screen.copy()
 
-        copy_screen.blit(pygame.transform.scale_by(self.player.avatar, self.cell_size / self.minimap.cell_size), 
+        copy_screen.blit(pygame.transform.scale_by(self.player.avatar, self.cell_size / self.minimap.cell_size),
                          (self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size))
 
         return copy_screen
-             
 # screen = pygame.display.set_mode((1300, 900))
 # test = Gameplay(screen, (0,0), (9, 9))
 # test.play()

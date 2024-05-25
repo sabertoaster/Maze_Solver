@@ -29,7 +29,11 @@ SCENES = {
             "Register": [[x, y] for x in range(6, 11) for y in range(18, 27)],
             "Exit": [[4, 13]]
         },
+        
+        'OBJECTS_INTERACT_RANGE': {
 
+        },
+        
         'HOVER_FRAME': {
             "Login": "miniTown_BG_login_hover.png",
             "Register": "miniTown_BG_register_hover.png",
@@ -79,7 +83,7 @@ SCENES = {
             "Skin": [[x, 9] for x in range(0, 3)],
         },
 
-        'OBJECTS_TOUCH_RANGE': {
+        'OBJECTS_INTERACT_RANGE': {
             'Credit': [(6, 3), (7, 3), (8, 3), (5, 4), (9, 4)],
             'Music_box': [[x, y] for x in range(4, 6) for y in range(6, 9)],
             'Skin': [[x, 9] for x in range(0, 3)],
@@ -121,7 +125,11 @@ SCENES = {
         },
 
         'DOORS_CLICK_RANGE': {
-            'Menu': [[x, 0] for x in range(2, 10)]
+            'Menu': [[x, 0] for x in range(2, 10)],
+            'Easy': [[5, y] for y in range(9, 11)],
+            'Medium': [[7, y] for y in range(11, 13)],
+            'Hard': [[9, y] for y in range(8, 10)],
+            'Load': [[x, y] for x in range(3) for y in range(4, 6)],
         },
 
         'OBJECTS_POS': {
@@ -129,6 +137,10 @@ SCENES = {
             'Medium': [[7, y] for y in range(11, 13)],
             'Hard': [[9, y] for y in range(8, 10)],
             'Load': [[x, y] for x in range(3) for y in range(4, 6)],
+        },
+        
+        'OBJECTS_INTERACT_RANGE': {
+
         },
 
         'HOVER_FRAME': {
@@ -164,6 +176,9 @@ SCENES = {
         'OBJECTS_POS': {
             "Trophy": [[x, y] for x in range(5, 7) for y in range(6, 9)],
         },
+        'OBJECTS_INTERACT_RANGE': {
+            'Trophy': [[x, y] for x in range(4, 8) for y in range(6, 9)]
+        },
 
         'HOVER_FRAME': {
             "Trophy": 'leaderboard_BG_trophy_hover.png',
@@ -175,16 +190,38 @@ SCENES = {
     },
     'Settings': {
         'BG': 'settings_BG.png',
+        'DOORS': {},
+        'DOORS_CLICK_RANGE': {},
         'OBJECTS_POS': {},
+        'OBJECTS_INTERACT_RANGE': {},
         'HOVER_FRAME': {},
         'cell': (80, 80),
         'initial_pos': (0, 0),
         'BGM': 'town_bgm.mp3',
     },
     "Gameplay": {
+        'BG': '',
+        'DOORS': {},
+        'DOORS_CLICK_RANGE': {},
+        'OBJECTS_POS': {},
+        'OBJECTS_INTERACT_RANGE': {},
+        'HOVER_FRAME': {},
         "initial_pos": (0, 0),
-        "cell" : (40, 40)
-    }
+        "cell": (40, 40),
+        "BGM": "gameplay_BG.png",
+    },
+    
+    # "full_variables_of_a_scene": {
+    #     'BG': '',
+    #     'DOORS': {},
+    #     'DOORS_CLICK_RANGE': {},
+    #     'OBJECTS_POS': {},
+    #     'OBJECTS_INTERACT_RANGE': {},
+    #     'HOVER_FRAME': {},
+    #     'cell': (),
+    #     'initial_pos': (),
+    #     'BGM': '',
+    # }
 }
 PARAMS = {
     "resources": "Visualize/Resources/",
@@ -291,7 +328,11 @@ SOUNDS = {
         'Credit': {
             'file_name': 'town_bgm.mp3',
             'volume': 0.5
-        }
+        },
+        'GamePlay': {
+            'file_name': 'town_bgm.mp3',
+            'volume': 0.5
+        },
     },
     'SFX': {
         'bump': {
@@ -307,6 +348,26 @@ SOUNDS = {
             'volume': 1.0
         },
         'circle_out': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_lr': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_rl': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_ud': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_du': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'hole': {
             'file_name': 'door_enter.mp3',
             'volume': 1.0
         },
@@ -334,7 +395,7 @@ class LEVEL(Enum):
 CURRENT_PLAY_MODE = PLAY_MODE.MANUAL
 CURRENT_LEVEL = LEVEL.EASY
 
-#CREDIT
+# CREDIT
 CREDIT = {
     "MEMBERS": {
         "HUY": "(23122008)",
@@ -361,3 +422,54 @@ CREDIT = {
 
     }
 }
+
+
+# circular linked list
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+class CircularLinkedList():
+    def __init__(self, data):
+        self.head = Node(None)
+        if type(data) == list:
+            for i in range(len(data)):
+                self.push(data[i])
+        elif type(data) == dict:
+            for key in data.keys():
+                self.push(key)
+        else:
+            self.push(data)
+
+    def print_list(self):
+        temp = self.head
+        while temp.next != self.head:
+            print(temp.data, end=" ")
+            temp = temp.next
+        print(temp.data)
+
+    def push(self, data):
+        if self.head.data == None:
+            self.head.data = data
+            self.head.next = self.head
+        else:
+            new_node = Node(data)
+            temp = self.head
+            while temp.next != self.head:
+                temp = temp.next
+            temp.next = new_node
+            new_node.next = self.head
+
+    def pop(self):
+        return_node = self.head
+        self.head = self.head.next
+        return return_node.data
+
+    def back(self):
+        temp = self.head
+        while temp.next.next != self.head:
+            temp = temp.next
+        self.head = temp.next
+        return temp.data

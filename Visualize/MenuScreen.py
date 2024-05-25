@@ -68,43 +68,43 @@ class MenuScreen:
         # drawGrid(self.screen)
 
         self.player = player
+        self.player.re_init(name=self.player.name, scene=SCENE_NAME, dir=self.player.current_direction)
         self.screenCopy = self.screen.copy()
         self.player.update(self.screenCopy)
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
-        
+        self.transition.transition(transition_type='sign_pop', box=self.sign)wwww
         # Play BGM
         self.sounds_handler.play_bgm(SCENE_NAME)
 
+        self.show_instructions = [False]
 
-        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
+        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, self.show_instructions)
         
         self.chosen_obj = None
         self.chosen_door = None
         self.hovered_obj = None
-        print(self.player.visual_pos)
+
+
         running = True
         while running:
             events = pygame.event.get()
             for event in events:
-                
+                                
                 mouse_pos = pygame.mouse.get_pos()
                 
                 if event.type == pygame.QUIT:
-                    # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                    #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                    #         transition_type='circle_in')
                     return None, None
                 
                 if self.chosen_door:
                     next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
-
                     if next_scene:
                         return next_scene, next_grid_pos
                 
                 if self.chosen_obj:
-                    self.object_handler(self.chosen_obj)
+                    self.handle_object(self.chosen_obj)
                     self.chosen_obj = None
+                    continue
                                     
                 self.mouse_handler.set_pos(mouse_pos)
 
@@ -119,10 +119,20 @@ class MenuScreen:
                     pressed = event.key
                     
                     if pressed == pl.K_SPACE:
-                        self.screen.blit(self.instructions_frame, (0, 0))
-                        self.player.update(self.screen.copy())
-                        pygame.display.flip()
-                        continue
+                        if not self.show_instructions[0]:
+                            self.screen.blit(self.instructions_frame, (0, 0))
+                            self.screenCopy = self.screen.copy()
+                            self.player.update(self.screen.copy())
+                            pygame.display.flip()
+                            
+                            self.show_instructions[0] = True
+                        else:
+                            self.screen.blit(self.frame, (0, 0))
+                            self.screenCopy = self.screen.copy()
+                            self.player.update(self.screen.copy())
+                            pygame.display.flip()
+                            
+                            self.show_instructions[0] = False
                     
                     player_response = self.player.handle_event(pressed)
                     if player_response == "Move":
@@ -137,7 +147,7 @@ class MenuScreen:
 
                     self.player.update(self.screenCopy)
 
-    def object_handler(self, object):
+    def handle_object(self, object):
         """
         Handle object
         :param object:
@@ -161,9 +171,7 @@ class MenuScreen:
         :return:
         """
         if name:
-            
-            self.player.re_init(name=self.player.name, scene=name)
-            
+                        
             if name == "Login":
                 self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                                                 self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
@@ -171,7 +179,7 @@ class MenuScreen:
 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name=self.player.name, scene=name)
+                self.player.re_init(name="Guest", scene=name, dir='down')
                     
                 return name, self.player.get_GridMapObject_Player("Login")
 
@@ -184,7 +192,7 @@ class MenuScreen:
                 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name=self.player.name, scene=name)
+                self.player.re_init(name=self.player.name, scene=name, dir='left')
                     
                 return name, (13, self.player.get_grid_pos()[1])
 
@@ -195,7 +203,7 @@ class MenuScreen:
 
                 # Player re-init
                 self.player.deactivate(active=True)
-                self.player.re_init(name=self.player.name, scene=name)
+                self.player.re_init(name=self.player.name, scene=name, dir='right')
 
                 return name, (1, self.player.get_grid_pos()[1])
             
