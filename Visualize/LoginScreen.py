@@ -76,20 +76,20 @@ class LoginScreen:
 
         self.panel_fl = False  # CÁI NI Bị DOWN
         # panel_shape = (RESOLUTION[0], RESOLUTION[1])
-        escape_button = pygame.image.load(RESOURCE_PATH + "ESCAPE_BUTTON.png").convert_alpha()
+        self.escape_button = pygame.image.load(RESOURCE_PATH + "ESCAPE_BUTTON.png").convert_alpha()
 
         login_panel = pygame.image.load(RESOURCE_PATH + "login_box.png").convert_alpha()
-        login_panel = add_element(login_panel, escape_button, (0, 0))
         register_panel = pygame.image.load(RESOURCE_PATH + "register_box.png").convert_alpha()
-        register_panel = add_element(register_panel, escape_button, (0, 0))
 
         self.blur = blur_screen(screen=self.screen)
         self.login_panel = add_element(self.blur, login_panel,
                                        ((RESOLUTION[0] - login_panel.get_width()) / 2,
                                         (RESOLUTION[1] - login_panel.get_height()) / 2))
+        self.login_panel = add_element(self.login_panel, self.escape_button,(0, 0))
         self.register_panel = add_element(self.blur, register_panel,
                                        ((RESOLUTION[0] - register_panel.get_width()) / 2,
                                         (RESOLUTION[1] - register_panel.get_height()) / 2))
+        self.register_panel = add_element(self.register_panel, self.escape_button, (0, 0))
 
         self.notify_text_box = FormManager(self.screen, {
             "notification": {"position": ((RESOLUTION[0] - login_panel.get_width()) // 2 + 85, 550, 568, 40), "color": Color.BLACK.value, "maximum_length": 50,
@@ -119,7 +119,7 @@ class LoginScreen:
         self.hovered_obj = None
 
         self.notify_text_box.set_text("notification", "The username has been registered, please register another username")
-
+        self.HowToPlay()
         running = True
         while running:
             events = pygame.event.get()
@@ -372,3 +372,16 @@ class LoginScreen:
         pygame.display.update()
 
         return None, None
+
+    def HowToPlay(self):
+        screen = pygame.image.load(RESOURCE_PATH + "how_to_play.png")
+        screen = add_element(self.blur, screen, ((RESOLUTION[0] - screen.get_width()) // 2, (RESOLUTION[1] - screen.get_height()) // 2))
+        self.screen.blit(screen, (RESOLUTION[0] // 2 - screen.get_width() // 2, RESOLUTION[1] // 2 - screen.get_height() // 2))
+        pygame.display.flip()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    return
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()

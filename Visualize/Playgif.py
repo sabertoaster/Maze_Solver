@@ -44,6 +44,7 @@ def play_gif(screen, original_frame=None, name='welcome'):
             
             if event.type == pygame.QUIT:
                 pygame.quit()
+                exit()
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
                 pygame.key.set_repeat(200, 125)
                 return

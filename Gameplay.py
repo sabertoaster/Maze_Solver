@@ -339,8 +339,6 @@ class Gameplay:
             elif self.auto_flag:
                 self.auto_move()
 
-                pygame.time.delay(100)
-
                 # Block player keyboard input
 
                 auto_launcher.update(events=events, mouse_rel=mouse_rel)
@@ -738,8 +736,8 @@ class Gameplay:
                     return "Menu", SCENES["Menu"]["initial_pos"]
 
                 if self.associated_values[4]: #If click quit button
-                    sys.exit(0)
                     pygame.quit()
+                    exit()
 
         return None, None
     
