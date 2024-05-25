@@ -3,6 +3,7 @@ from itertools import cycle
 import numpy as np
 import pygame
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, AVATAR
+RESOURCE_PATH += 'img/'
 from Visualize.ImageProcess import morph_image
 
 import random
@@ -125,17 +126,17 @@ class Transition:
             pygame.display.flip()
             pygame.time.delay(10)
 
-    def hole(self, pos, next_scene):
+    def hole(self, pos, prev_scene):
         rate = 96
         # tmp_screen for handling the transition
         tmp_screen = pygame.Surface((RESOLUTION[0], RESOLUTION[1] * 3), pygame.SRCALPHA)
 
         tmp_screen.fill((0, 0, 0))
 
-        tmp_screen.blit(self.screen, (0, 0))
+        tmp_screen.blit(self.screen, (0, RESOLUTION[1] * 2))
 
-        next_scene_screen = pygame.image.load(RESOURCE_PATH + SCENES[next_scene]["BG"]).convert_alpha()
-        tmp_screen.blit(next_scene_screen, (0, RESOLUTION[1] * 2))
+        next_scene_screen = pygame.image.load(RESOURCE_PATH + SCENES[prev_scene]["BG"]).convert_alpha()
+        tmp_screen.blit(next_scene_screen, (0, 0))
 
         for _ in range(rate):
             self.screen.blit(tmp_screen, (0, 0), (0, (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0], RESOLUTION[1]))
@@ -171,7 +172,40 @@ class Transition:
             pygame.display.flip()
             pygame.time.delay(10)
 
-    def transition(self, transition_type, pos=(0, 0), box=None, next_scene=None):  # pos = (x, y) not (y, x)
+        self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1] * 2, RESOLUTION[0], RESOLUTION[1]))
+        pygame.display.flip()
+
+    def reversed_hole(self, pos, next_scene):
+        rate = 96
+        # tmp_screen for handling the transition
+        tmp_screen = pygame.Surface((RESOLUTION[0], RESOLUTION[1] * 3), pygame.SRCALPHA)
+        tmp_screen.fill((0, 0, 0))
+        tmp_screen.blit(self.screen, (0, RESOLUTION[1] * 2))
+        next_scene_screen = pygame.image.load(RESOURCE_PATH + SCENES[next_scene]["BG"]).convert_alpha()
+        tmp_screen.blit(next_scene_screen, (0, 0))
+        player_sprite = morph_image(RESOURCE_PATH + AVATAR[self.player.skin]["down"],
+                                    SCENES[next_scene]["cell"])
+        for _ in range(rate):
+            self.screen.blit(tmp_screen, (0, 0),
+                             (0, RESOLUTION[1] * 2 - (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0],RESOLUTION[1]))
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+        for _ in range(rate):
+            self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1], RESOLUTION[0], RESOLUTION[1]))
+            self.screen.blit(pygame.transform.rotate(player_sprite, (_ + 1) * 360 / rate), (pos[0], RESOLUTION[1] - (RESOLUTION[1] - pos[1]) * (_ + 1) / rate))
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+        for _ in range(rate):
+            self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1] - (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0], RESOLUTION[1]))
+            self.screen.blit(pygame.transform.rotate(player_sprite, (_ + 1) * 360 / rate), pos)
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+
+
+    def transition(self, transition_type, pos=(0, 0), box=None, next_scene=None, prev_scene=None):  # pos = (x, y) not (y, x)
         """
         Transition effect:
             - circle_in: Zooming in effect
@@ -184,15 +218,14 @@ class Transition:
 
         pos = (pos[1], pos[0])
 
+        if self.sounds_handler:
+            self.sounds_handler.play_sfx(transition_type)
+        
         if transition_type == 'circle_in':
-            if self.sounds_handler:
-                self.sounds_handler.play_sfx(transition_type)
             self.circle(pos, zoom_in=True)
             self.sounds_handler.stop_sfx(transition_type)
 
         elif transition_type == 'circle_out':
-            if self.sounds_handler:
-                self.sounds_handler.play_sfx(transition_type)
             self.circle(pos, zoom_in=False)
             self.sounds_handler.stop_sfx(transition_type)
 
@@ -214,6 +247,10 @@ class Transition:
 
         elif transition_type == 'hole':
             pos = (pos[1], pos[0])
-            self.hole(pos, next_scene)
+            self.hole(pos, prev_scene)
+
+        elif transition_type == 'reversed_hole':
+            pos = (pos[1], pos[0])
+            self.reversed_hole(pos, next_scene)
 
         pygame.event.clear()

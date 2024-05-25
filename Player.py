@@ -9,6 +9,8 @@ from pygame_textinput import TextInputManager, TextInputVisualizer
 
 from CONSTANTS import AVATAR
 from CONSTANTS import SCENES, RESOLUTION, RESOURCE_PATH, AVATAR, MOVEMENT
+RESOURCE_PATH += 'img/'
+
 
 
 class Player:
@@ -29,6 +31,7 @@ class Player:
         self.active = True
         self.screen = screen
         self.current_scene = current_scene
+        self.previous_scene = None
 
         self.grid_map = grid_map
 
@@ -80,7 +83,6 @@ class Player:
 
         self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["down"],
                                   SCENES[target_scene]["cell"])  # [PROTOTYPE]
-        # print(self.grid_map.get_map(self.current_scene).get_grid())
         self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["down"],
                                   SCENES[target_scene]["cell"])  # [PROTOTYPE]
         self.ratio = (
@@ -131,12 +133,11 @@ class Player:
                 self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
                                           resolution=SCENES[self.current_scene]["cell"])
 
-            elif key_pressed == pygame.K_e:
+            if key_pressed == pygame.K_e:
                 self.interact()
                 return "Interact"
 
             pygame.event.clear()
-            # print("Response: ", response)
             return response
         return None
 
@@ -149,16 +150,20 @@ class Player:
         self.screen.blit(screenCopy.copy(), (0, 0))
         self.draw(screenCopy)
 
-    def re_init(self, name='Guest', scene='Login'):
-
+    def re_init(self, name='Guest', scene='Login', dir='down'):
+        if scene != self.current_scene:
+            self.previous_scene = self.current_scene
+        
         self.current_scene = scene
         self.name = name
 
-        self.current_direction = 'down'
+        self.current_direction = dir
+        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
+                                  SCENES[self.current_scene]["cell"])  # [PROTOTYPE]
+
 
         self.name_box = TextBox(screen=self.screen,
-                                position=(
-                                0, 0, SCENES[self.current_scene]["cell"][0] * 2, SCENES[self.current_scene]["cell"][1]),
+                                position=(0, 0, SCENES[self.current_scene]["cell"][0] * 2, SCENES[self.current_scene]["cell"][1]),
                                 font_color=(0, 0, 0),
                                 manager=TextInputManager(),
                                 text=self.name)
@@ -174,14 +179,10 @@ class Player:
         copy_scr = screenCopy.copy()
         if self.active:
             if self.visualize_direction[0] != self.visualize_direction[1]:
-                rate = 100
+                rate = 90
                 for i in range(0, rate):
-                    self.visual_pos = (self.visual_pos[0] + (
-                                self.visualize_direction[1][0] - self.visualize_direction[0][
-                            0]) * self.grid_step * 1 / rate,
-                                       self.visual_pos[1] + (
-                                                   self.visualize_direction[1][1] - self.visualize_direction[0][
-                                               1]) * self.grid_step * 1 / rate)
+                    self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / rate,
+                                       self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / rate)
 
                     if i % 4 == 0:
                         self.screen.blit(self.avatar, self.visual_pos)
@@ -202,16 +203,12 @@ class Player:
             self.name_box.draw(True)
             pygame.display.flip()
 
-            # [PROTOTYPE] maze_cell_size is used to detect position to put the namebox on
-            # NEED TO ADD THAT PARAMETER IN CONSTANTS.PY
 
     def draw_on_minimap(self, screen, maze_cell_size, ratio):  # Input the background surface
         if self.active:
             if self.visualize_direction[0] != self.visualize_direction[1]:
-                self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][
-                    0]) * self.grid_step * 1 / ratio,
-                                   self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][
-                                       1]) * self.grid_step * 1 / ratio)
+                self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / ratio,
+                                   self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / ratio)
 
                 screen.blit(self.avatar, self.visual_pos)
                 self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + maze_cell_size // 2,
@@ -222,6 +219,7 @@ class Player:
 
                 return
 
+            
             screen.blit(self.avatar, self.visual_pos)
             self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + maze_cell_size // 2,
                                         self.visual_pos[1] - 1.5 * maze_cell_size))
@@ -247,11 +245,11 @@ class Player:
             if cmd in MOVEMENT and self.active:
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.FREE
                 self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
-                # self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
                 self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
-
+            
+            # [PROTOTYPE]
             self.touched_obj = None
-            for key, val in SCENES[self.current_scene]["OBJECTS_INTERACTIVE_RANGE"].items():
+            for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
                 if self.grid_pos in val:
                     self.touched_obj = key
                     break
@@ -303,11 +301,12 @@ class Player:
         Interact with the environment
         :return:
         """
-        self.sounds_handler.play_sfx('interact')
-        
-        self.interacted_obj = None
-        for key, val in SCENES[self.current_scene]["OBJECTS_INTERACTIVE_RANGE"].items():
-            if self.grid_pos in val:
-                self.interacted_obj = key
-                break
-                
+        if self.current_scene != 'GamePlay':
+            self.sounds_handler.play_sfx('interact')
+    
+            self.interacted_obj = None
+            for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
+                if self.grid_pos in val:
+                    self.interacted_obj = key
+                    break
+

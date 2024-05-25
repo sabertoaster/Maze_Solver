@@ -30,8 +30,8 @@ SCENES = {
             "Exit": [[4, 13]]
         },
         
-        'OBJECTS_INTERACTIVE_RANGE': {
-            
+        'OBJECTS_INTERACT_RANGE': {
+
         },
         
         'HOVER_FRAME': {
@@ -83,10 +83,10 @@ SCENES = {
             "Skin": [[x, 9] for x in range(0, 3)],
         },
 
-        'OBJECTS_INTERACTIVE_RANGE': {
+        'OBJECTS_INTERACT_RANGE': {
             'Credit': [(6, 3), (7, 3), (8, 3), (5, 4), (9, 4)],
-            'Music_box': [[x, y] for x in range(4, 6) for y in range(6, 9)],
-            'Skin': [[x, 9] for x in range(0, 3)],
+            'Music_box': [(2,3), (3,3)],
+            'Skin': [(10, 2), (8, 2), (9, 3)],
         },
 
         'HOVER_FRAME': {
@@ -125,7 +125,11 @@ SCENES = {
         },
 
         'DOORS_CLICK_RANGE': {
-            'Menu': [[x, 0] for x in range(2, 10)]
+            'Menu': [[x, 0] for x in range(2, 10)],
+            'Easy': [[5, y] for y in range(9, 11)],
+            'Medium': [[7, y] for y in range(11, 13)],
+            'Hard': [[9, y] for y in range(8, 10)],
+            # 'Load': [[x, y] for x in range(3) for y in range(4, 6)],
         },
 
         'OBJECTS_POS': {
@@ -135,8 +139,8 @@ SCENES = {
             'Load': [[x, y] for x in range(3) for y in range(4, 6)],
         },
         
-        'OBJECTS_INTERACTIVE_RANGE': {
-            
+        'OBJECTS_INTERACT_RANGE': {
+            'Load': [(4, 3), (5, 3)]
         },
 
         'HOVER_FRAME': {
@@ -153,6 +157,8 @@ SCENES = {
 
     'Leaderboard': {
         'BG': 'leaderboard_BG.png',
+        
+        'BG_instructions': 'leaderboard_BG_instructions.png',
 
         'DOORS': {
             (14, 2): "Menu",
@@ -172,9 +178,8 @@ SCENES = {
         'OBJECTS_POS': {
             "Trophy": [[x, y] for x in range(5, 7) for y in range(6, 9)],
         },
-        
-        'OBJECTS_INTERACTIVE_RANGE': {
-            
+        'OBJECTS_INTERACT_RANGE': {
+            'Trophy': [(y, x) for x in range(4, 8) for y in range(5, 10)]
         },
 
         'HOVER_FRAME': {
@@ -190,25 +195,55 @@ SCENES = {
         'DOORS': {},
         'DOORS_CLICK_RANGE': {},
         'OBJECTS_POS': {},
-        'OBJECTS_INTERACTIVE_RANGE': {},
+        'OBJECTS_INTERACT_RANGE': {},
         'HOVER_FRAME': {},
         'cell': (80, 80),
         'initial_pos': (0, 0),
         'BGM': 'town_bgm.mp3',
     },
     "Gameplay": {
+        'BG': '',
+        'DOORS': {},
+        'DOORS_CLICK_RANGE': {},
+        'OBJECTS_POS': {},
+        'OBJECTS_INTERACT_RANGE': {},
+        'HOVER_FRAME': {},
         "initial_pos": (0, 0),
-        "cell" : (40,40)
+        "cell": (40, 40),
+        "BGM": "gameplay_BG.png",
+    },
+    "Win": {
+        'BG': '',
+        'DOORS': {},
+        'DOORS_CLICK_RANGE': {},
+        'OBJECTS_POS': {},
+        'OBJECTS_INTERACT_RANGE': {},
+        'HOVER_FRAME': {},
+        "initial_pos": (0, 0),
+        "cell": (40, 40),
+        "BGM": "gameplay_BG.png",
     }
+    # "full_variables_of_a_scene": {
+    #     'BG': '',
+    #     'BG_instructions': '',
+    #     'DOORS': {},
+    #     'DOORS_CLICK_RANGE': {},
+    #     'OBJECTS_POS': {},
+    #     'OBJECTS_INTERACT_RANGE': {},
+    #     'HOVER_FRAME': {},
+    #     'cell': (),
+    #     'initial_pos': (),
+    #     'BGM': '',
+    # }
 }
+
 PARAMS = {
     "resources": "Visualize/Resources/",
     "resolution": (1200, 800),  # ratio 3:2
-    "cell": {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80)},
+    "cell": {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80), "Win": (80, 80)},
     # 12 cells column, 8 cells row
-    "scenes": ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"],
-    "initial_pos": {"Login": (12, 12), "Menu": (11, 2), "Play": (0, 0), "Leaderboard": (0, 0), "Settings": (0, 0),
-                    "Gameplay": (0, 0)}  # need adjusting
+    "scenes": ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay", "Win"],
+    "initial_pos": {"Login": (12, 12), "Menu": (11, 2), "Play": (0, 0), "Leaderboard": (0, 0), "Settings": (0, 0),"Gameplay": (0, 0), "Win" : (0, 0),}  # need adjusting
 }
 
 # Skins
@@ -238,9 +273,8 @@ MOVEMENT = {
 }
 
 # Grid Map Object
-CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80),
-              "Gameplay": (20, 20)}
-MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay"]
+CELLS_LIST = {"Login": (40, 40), "Menu": (80, 80), "Play": (80, 80), "Leaderboard": (80, 80), "Settings": (80, 80), "Gameplay": (1,1), "Win": (1,1)}
+MAPS_LIST = ["Login", "Menu", "Play", "Leaderboard", "Settings", "Gameplay", "Win"]
 
 
 # MISCs
@@ -307,7 +341,11 @@ SOUNDS = {
         'Credit': {
             'file_name': 'town_bgm.mp3',
             'volume': 0.5
-        }
+        },
+        'GamePlay': {
+            'file_name': 'town_bgm.mp3',
+            'volume': 0.5
+        },
     },
     'SFX': {
         'bump': {
@@ -323,6 +361,26 @@ SOUNDS = {
             'volume': 1.0
         },
         'circle_out': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_lr': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_rl': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_ud': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'zelda_du': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'hole': {
             'file_name': 'door_enter.mp3',
             'volume': 1.0
         },
@@ -350,7 +408,7 @@ class LEVEL(Enum):
 CURRENT_PLAY_MODE = PLAY_MODE.MANUAL
 CURRENT_LEVEL = LEVEL.EASY
 
-#CREDIT
+# CREDIT
 CREDIT = {
     "MEMBERS": {
         "HUY": "(23122008)",
@@ -377,3 +435,47 @@ CREDIT = {
 
     }
 }
+
+
+# circular linked list
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+class CircularLinkedList():
+    def __init__(self, data):
+        self.head = Node(None)
+        if type(data) == list:
+            for i in range(len(data)):
+                self.push(data[i])
+        elif type(data) == dict:
+            for key in data.keys():
+                self.push(key)
+        else:
+            self.push(data)
+
+    def push(self, data):
+        if self.head.data == None:
+            self.head.data = data
+            self.head.next = self.head
+        else:
+            new_node = Node(data)
+            temp = self.head
+            while temp.next != self.head:
+                temp = temp.next
+            temp.next = new_node
+            new_node.next = self.head
+
+    def pop(self):
+        return_node = self.head
+        self.head = self.head.next
+        return return_node.data
+
+    def back(self):
+        temp = self.head
+        while temp.next.next != self.head:
+            temp = temp.next
+        self.head = temp.next
+        return temp.data

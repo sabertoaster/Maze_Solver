@@ -2,6 +2,8 @@ import pygame
 
 from CONSTANTS import RESOURCE_PATH, FONTS
 
+RESOURCE_PATH += 'img/'
+
 class HangingSign:
     def __init__(self, text, font_size):
         

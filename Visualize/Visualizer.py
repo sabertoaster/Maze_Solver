@@ -6,9 +6,12 @@ from Visualize.LoginScreen import LoginScreen as login
 from Visualize.MenuScreen import MenuScreen as menu
 from Visualize.PlayScreen import PlayScreen as play
 from Visualize.LeaderboardScreen import LeaderboardScreen as leaderboard
+from Visualize.WinScreen import WinScreen as win
 from Gameplay import Gameplay
 from Sounds import SoundsHandler
 from CONSTANTS import RESOLUTION, RESOURCE_PATH, CURRENT_PLAY_MODE
+RESOURCE_PATH += 'img/'
+
 from Save import *
 
 class Visualizer:
@@ -43,9 +46,10 @@ class Visualizer:
             "Login": login(self.screen, self.sounds_handler),
             "Register": None,  # Chung với Login
             "Menu": menu(self.screen, self.sounds_handler),
-            "Play": play(self.screen),  # Chọn mode
-            "Leaderboard": leaderboard(self.screen),
+            "Play": play(self.screen, self.sounds_handler),  # Chọn mode
+            "Leaderboard": leaderboard(self.screen, self.sounds_handler),
             "Settings": None,
+            "Win": win(self.screen, self.sounds_handler),
         }
     def start_visualize(self):
         """
@@ -53,7 +57,7 @@ class Visualizer:
         :return:
         """
         pygame.display.set_icon(self.logo)
-        pygame.display.set_caption("MINHBEO'S MAZE GAME")
+        pygame.display.set_caption("Tâm và Gia Huy")
 
     def draw_scene(self, scene_name: str):
         """
@@ -64,9 +68,8 @@ class Visualizer:
         """
         if scene_name == "Gameplay":
             file_name = ''
-            gameplay_scene = Gameplay(self.screen, (0, 0), (0, 0), file_name)
+            gameplay_scene = Gameplay(self.screen, (0, 0), (0, 0), file_name, sounds_handler=self.sounds_handler)
             next_scene, next_grid_pos = gameplay_scene.play(player=self.player)
-            print(next_scene, next_grid_pos)
             del gameplay_scene
             return next_scene, next_grid_pos
 
