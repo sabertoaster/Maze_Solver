@@ -59,3 +59,4 @@ def play_gif(screen, original_frame=None, name='welcome'):
                 frame = 0
                 
         clock.tick(FPS[name])
+    pygame.key.set_repeat(200, 125)
