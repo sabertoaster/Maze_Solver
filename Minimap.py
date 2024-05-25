@@ -49,6 +49,7 @@ class Minimap:
         self.length = self.col * self.cell_size
 
         self.hint_flag = False # Phan biet auto flag va show hint flag -> draw solution?
+        self.finish_finding_path = False
         
     # Attach Player to minimap
     def attach_player(self):
@@ -191,7 +192,7 @@ class Minimap:
         if self.solution_flag:
             if self.hint_flag:
                 self.draw_solution(copy_screen)
-            elif not self.visited or self.visited_index >= len(self.visited):
+            elif not self.visited or self.finish_finding_path:
                 self.draw_solution(copy_screen)
 
         self.player.draw_on_minimap(copy_screen, self.cell_size, ratio)

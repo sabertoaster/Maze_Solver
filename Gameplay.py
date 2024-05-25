@@ -281,7 +281,7 @@ class Gameplay:
         self.minimap.init_at_start(self.minimap.maze_surface)
 
         self.solution_flag = False
-        self.finish_finding_path = False
+        self.minimap.finish_finding_path = False
 
         self.visualize_maze(self.visual_maze, self.solution_flag)
 
@@ -560,11 +560,11 @@ class Gameplay:
                 
         self.minimap.update(self.minimap.maze_surface)
         
-        if self.solution_flag and self.auto_flag and not self.finish_finding_path:
+        if self.solution_flag and self.auto_flag and not self.minimap.finish_finding_path:
             while self.minimap.visited_index < len(self.minimap.visited):
                 self.visualize_solution(self.finding_path_surface)
             
-            self.finish_finding_path = True
+            self.minimap.finish_finding_path = True
             self.minimap.update(self.minimap.maze_surface)
                 
         self.visualize_maze(self.visual_maze, self.solution_flag)   
@@ -794,7 +794,7 @@ class Gameplay:
             # Reset finding path
             self.minimap.visited_index = 0
             self.finding_path_surface = self.visual_maze.copy()
-            self.finish_finding_path = False
+            self.minimap.finish_finding_path = False
             
             self.screen.fill((0,0,0))
             self.update_screen()
