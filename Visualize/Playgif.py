@@ -39,9 +39,16 @@ def play_gif(screen, original_frame=None, name='welcome'):
         events = pygame.event.get()
         
         for event in events:
+            
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
+                
+            if event.type == pygame.KEYDOWN:
+                if name == 'welcome':
+                    return
+                elif event.key == pygame.K_ESCAPE:
+                    return
+            elif event.type == pygame.MOUSEBUTTONUP:
                 return
                 
         screen.blit(frames[frame], (0, 0))

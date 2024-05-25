@@ -47,12 +47,18 @@ class WinScreen:
                 if event.type == pygame.QUIT:
                     run = False
                     pygame.quit()
-                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
+                    break
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pl.K_ESCAPE:
+                        run = False
+                        break
+                elif event.type == pygame.MOUSEBUTTONUP:
                     run = False
                     break
-                    
+
             success, video_image = video.read()
             if success:
+                video_image = cv2.resize(video_image, (RESOLUTION[0], RESOLUTION[1]))
                 video_surf = pygame.image.frombuffer(
                     video_image.tobytes(), video_image.shape[1::-1], "BGR")
             else:
@@ -60,4 +66,4 @@ class WinScreen:
             window.blit(video_surf, ((RESOLUTION[0] - video_surf.get_width()) / 2, (RESOLUTION[1] - video_surf.get_height()) / 2))
             pygame.display.flip()
 
-        return "Menu", SCENES["Menu"]["initial_pos"]
+        return "Menu"
