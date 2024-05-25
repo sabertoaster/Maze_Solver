@@ -11,7 +11,7 @@ class QLearning:
         self.epsilon = 0.1 # exploration rate
         self.alpha = 0.5 # learning rate
         self.gamma = 0.9 # discount factor
-        self.QTable = np.zeros((len(self.maze) * 2, len(self.maze[0]) * 2, len(self.actions)))
+        self.QTable = np.zeros((len(self.maze) , len(self.maze[0]) , len(self.actions)))
     def select_action(self, state):
         if np.random.rand() < self.epsilon:
             return np.random.choice(len(self.actions))
@@ -35,8 +35,8 @@ class QLearning:
             next_state = (state[0] + self.actions[action][0], state[1] + self.actions[action][1])
             reward = -1
             cnt += 1
-            if next_state[0] >= 0 and next_state[0] < len(self.maze) and next_state[1] >= 0 and next_state[1] < len(self.maze) and self.maze[next_state[0]][next_state[1]] == ' ':
-                reward = -5
+            if next_state[0] < 0 or next_state[0] >= len(self.maze) or next_state[1] < 0 or next_state[1] >= len(self.maze) or self.maze[next_state[0]][next_state[1]] == '#':
+                reward = -10
                 next_state = state
             elif next_state == self.end:
                 reward = 100
@@ -50,18 +50,28 @@ class QLearning:
     def train(self, num_train, start: tuple, end: tuple):
         for episode in range(num_train):
             total_reward = self.run_episode(start, end)
-            if (episode + 1) % 100 == 0:
-                print("Episode:" , episode + 1, "Total_reward:", total_reward)
+        
+        self.policy = np.argmax(self.QTable, axis=2)
+            # if (episode + 1) % 100 == 0:
+            #     print("Episode:" , episode + 1, "Total_reward:", total_reward)
                 
-    def find_path(self):
+    def find_path(self, start, end):
         path = []
-        policy = np.argmax(self.QTable, axis=2)
-        state = self.start
-        while state != self.end:
-            action = policy[state[0]][state[1]]
+        #policy = np.argmax(self.QTable, axis=2)
+        state = start
+        cnt = 0
+        while state != end:
+            cnt += 1
+            if cnt >= 100000:
+                break
+            action = self.policy[state[0]][state[1]]
             path.append(state)
             state = state[0] + self.actions[action][0], state[1] + self.actions[action][1]
         path.append(state)
+        
+        if cnt >= 100000:
+            self.train(200, start, end)
+            return self.find_path(start, end)
         return path
     
 # print(len(path))

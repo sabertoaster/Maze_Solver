@@ -171,7 +171,7 @@ class TotalAlgorithms:
             if current_cost != distance[(current_cell, current_energy)]:
                 continue
             
-            if current_energy == 0:
+            if current_energy <= 0:
                 continue
             if current_cell == end:
                 break
