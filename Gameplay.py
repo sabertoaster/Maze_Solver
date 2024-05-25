@@ -75,12 +75,25 @@ class Gameplay:
         with open("current_profile.json") as fi:
             data = json.load(fi)
             self.player.name = data['player.name']
+            self.player.re_init(self.player.name, "Gameplay")
             self.player.grid_pos = data['player.grid_pos']
             self.player.visual_pos = data['player.visual_pos']
-            self.maze_level = data['level']
-            self.maze_mode = data['mode']
-            self.maze_score = data["score"]
-            self.maze_time = data["time"]
+            if (data["level"] == "Easy"):
+                self.maze_size = (10, 10)
+                self.minimap_grid_size = (20, 20)
+            elif (data["level"] == "Medium"):
+                self.maze_size = (20, 20)
+                self.minimap_grid_size = (20, 20)
+            elif (data["level"] == "Hard"):
+                self.maze_size = (50, 50)
+                self.minimap_grid_size = (20, 20)
+            SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
+            if data["maze_toString"]:
+                self.maze_toString = data["maze_toString"]
+
+            else:
+                self.maze = Maze("Wilson", self.maze_size)
+                self.maze_toString = convert_maze(self.maze)
 
             if (data["level"] == "Easy"):
                 self.maze_size = (10, 10)
@@ -257,7 +270,6 @@ class Gameplay:
         self.get_data()
 
         # INSTANTIATE MAZE
-
         self.init_maze()
 
         # INSTANTIATE PLAYER
@@ -277,7 +289,6 @@ class Gameplay:
 
 
         # INSTANTIATE MINIMAP
-        # minimap_display_pos = (0, (RESOLUTION[0] - RESOLUTION[1]) // 2)
         minimap_display_pos = (0, 0)
         self.minimap = Minimap(self.screen, self.maze_toString, self.minimap_grid_size, self.bg_surface.copy(),
                                self.bg_cell_size, minimap_display_pos, self.player)
@@ -302,43 +313,81 @@ class Gameplay:
         # self.minimap.update(self.screenCopy)
         # self.player.update(self.screenCopy)
 
-        self.fill_grid_map()
 
+        # BOTH CHANGES NGU
+        # self.minimap.update(self.minimap.maze_surface)
+
+        # self.screenCopy = self.screen.copy()
+
+        # # self.minimap.update(self.screenCopy)
+        # # self.player.update(self.screenCopy)
+        # self.solution_flag = False
+
+        # self.visualize_maze(self.visual_maze, self.solution_flag)
+        self.fill_grid_map()
+        
+        # INSTANTIATE CHOOSE MODE BUTTON
+        self.init_choose_mode() # Init buttons
+        
+        self.choose_mode_flag = True
+        choose_mode_launcher = self.choose_mode.get_updater()
+
+        self.manual_flag = False
+        manual_launcher = self.hint_button.get_updater()
+        self.hint_flag = False
+        
+        self.auto_index = 0
+        self.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+        self.trace_path.insert(0, self.start_pos)
+        
+        self.auto_flag = False
+        auto_launcher = self.auto_button.get_updater()
+        
+        # Deactivate player to choose mode
+        self.player.deactivate(active=False)
+        
         while True:
-            self.update_time()
-            for event in pygame.event.get():
+            events = pygame.event.get()
+            mouse_rel = pygame.mouse.get_rel()
+            
+            if self.choose_mode_flag:
+                choose_mode_launcher.update(events = events, mouse_rel = mouse_rel)
+            elif self.manual_flag:
+                manual_launcher.update(events = events, mouse_rel = mouse_rel)
+            elif self.auto_flag:
+                self.auto_move()
+                
+                pygame.time.delay(100)
+                
+                # Block player keyboard input
+                
+                auto_launcher.update(events = events, mouse_rel = mouse_rel)
+            
+            for event in events:
                 if event.type == pygame.QUIT:
-                    return None, None
-                if event.type == pygame.KEYDOWN:
-                    
-                    if event.key == pygame.K_m:
-                        self.sounds_handler.switch()
-                        continue
-                    
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN or event.type == pygame.USEREVENT:
                     if event.key == pygame.K_ESCAPE:
                         # Disable spamming button
                         pygame.key.set_repeat()
-                        start_pause_time = time.time()
                         next_scene, next_pos = self.toggle_panel()
                         # Enable spamming button again
-                        end_pause_time = time.time()
-                        pause_time = float(end_pause_time - start_pause_time)
-                        self.maze_time -= pause_time
                         pygame.key.set_repeat(200, 125)
-
+                        
                         if next_scene:
                             return next_scene, next_pos
-
+                        
                         break
                     if event.key == pygame.K_m:
                         pass
                         # Handle minimap here
-                    if event.key == pygame.K_x:
-                        self.solution_flag = not self.solution_flag
-                        self.minimap.solution_flag = not self.minimap.solution_flag
+                    # if event.key == pygame.K_x:
+                    #     self.solution_flag = not self.solution_flag
+                    #     self.minimap.solution_flag = not self.minimap.solution_flag
 
-                        self.minimap.update(self.minimap.maze_surface)
-                        self.visualize_maze(self.visual_maze, self.solution_flag)
+                    #     self.minimap.update(self.minimap.maze_surface)
+                    #     self.visualize_maze(self.visual_maze, self.solution_flag)
                     if event.key == pygame.K_g:
                         pass
                         # save = SaveFile(self.maze_toString, self.player)
@@ -359,8 +408,6 @@ class Gameplay:
 
                     self.minimap.update(self.minimap.maze_surface)
                     self.visualize_maze(self.visual_maze, self.solution_flag)
-
-                    pygame.display.update()
 
     # def update_maze(self):
     #     if self.file_name == '':
@@ -511,6 +558,124 @@ class Gameplay:
         self.screen.blit(copy_screen, (RESOLUTION[0] - copy_screen.get_width(), 0))
 
 
+        # test = convert_energy(self.maze_toString)
+        # for i in range(len(test)):
+        #     for j in range(len(test[0])):
+        #         print(test[i][j], end='')
+        #     print()
+
+    def init_background(self):
+        self.bg_cell_size = RESOLUTION[1] // self.minimap_grid_size[1]
+
+        screen_size = ((self.maze_row + self.minimap_grid_size[0] + 1) * self.bg_cell_size,
+                       (self.maze_col + self.minimap_grid_size[1] + 1) * self.bg_cell_size)
+
+
+        self.bg_surface = morph_image("Resources/cave_BG.png", screen_size)
+
+        maze_surface = pygame.Surface((self.maze_row * self.bg_cell_size, self.maze_col * self.bg_cell_size),
+                                      pygame.SRCALPHA, 32).convert_alpha()
+
+        start = morph_image("Resources/login_box.png", (self.bg_cell_size, self.bg_cell_size))
+        end = morph_image("Resources/kitchen_BG.png", (self.bg_cell_size, self.bg_cell_size))
+        print(self.bg_cell_size)
+        tuan = [
+            "cave_wall_1.png",
+            "cave_wall_2.png",
+            "cave_wall_3.png",
+            "cave_wall_4.png",
+            "cave_wall_5.png",
+            "cave_wall_6.png",
+            "cave_wall_7.png",
+            "cave_wall_8.png",
+        ]
+        wall = morph_image(RESOURCE_PATH + "cave_wall.png", (self.bg_cell_size, self.bg_cell_size))
+        for i in range(self.maze_row):
+            for j in range(self.maze_col):
+
+                pos = (j * self.bg_cell_size, i * self.bg_cell_size)
+                if self.maze_toString[i][j] == '#':
+                    img = pygame.image.load(RESOURCE_PATH + tuan[np.random.randint(0, len(tuan))]).convert_alpha()
+                    maze_surface.blit(img, pos)
+                    # pygame.draw.rect(maze_surface, (0,0,0), ceil_rect)
+                elif self.maze_toString[i][j] == 'S':
+                    maze_surface.blit(start, pos)
+                    # pygame.draw.rect(maze_surface, (255,255,0), ceil_rect)
+                elif self.maze_toString[i][j] == 'E':
+                    maze_surface.blit(end, pos)
+                    # pygame.draw.rect(maze_surface, (255,0,0), ceil_rect)
+
+        self.bg_surface.blit(maze_surface, (
+            self.minimap_grid_size[0] // 2 * self.bg_cell_size, self.minimap_grid_size[1] // 2 * self.bg_cell_size))
+
+    def set_start_pos(self):
+        for i in range(self.maze_row):
+            for j in range(self.maze_col):
+                if self.maze_toString[i][j] == 'S':
+                    self.start_pos = (i, j)
+                elif self.maze_toString[i][j] == 'E':
+                    self.end_pos = (i, j)
+
+    def visualize_maze(self, screen, solution_flag):
+        copy_screen = screen.copy()
+
+        if solution_flag:
+            copy_screen = self.show_solution(copy_screen)
+
+        copy_screen = self.draw_player(copy_screen)
+
+        self.screen.blit(copy_screen, (RESOLUTION[0] - self.visual_maze_resolution[0], 0))
+
+    def draw_player(self, screen):
+        copy_visual_maze = self.visual_maze.copy()
+
+        copy_visual_maze.blit(pygame.transform.scale_by(self.player.avatar, self.cell_size / self.minimap.cell_size),
+                             (self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size))
+
+        return copy_visual_maze
+
+    def update_screen(self):
+        self.minimap.update(self.minimap.maze_surface)
+        self.visualize_maze(self.visual_maze, self.solution_flag)
+    
+    def auto_move(self):
+        # Get the direction of the next move
+        def get_direction(pos1, pos2):
+            dx = pos2[0] - pos1[0]
+            dy = pos2[1] - pos1[1]
+
+            if dx > 0:
+                return "DOWN"
+            elif dx < 0:
+                return "UP"
+            elif dy < 0:
+                return "LEFT"
+            elif dy > 0:
+                return "RIGHT"
+            return "UP"
+        # Create custom pygame event
+        auto_event = pygame.event.Event(pygame.USEREVENT, key = None)
+        move_list = {
+            "UP": pygame.K_w,
+            "DOWN": pygame.K_s,
+            "LEFT": pygame.K_a,
+            "RIGHT": pygame.K_d,
+        }
+        
+        if not self.trace_path:
+            return
+        
+        if self.auto_index < len(self.trace_path) - 1:
+            direction = get_direction(self.trace_path[self.auto_index], self.trace_path[self.auto_index + 1])
+            auto_event.key = move_list[direction]
+            self.auto_index += 1
+        else:
+            direction = get_direction(self.trace_path[-1], self.end_pos)
+            auto_event.key = move_list[direction]
+         
+        pygame.event.post(auto_event)
+        pygame.event.post(auto_event)
+        
     def init_panel(self):
         # INSTANTIATE PANELS
         tp.init(self.screen, tp.theme_game1)
@@ -535,7 +700,6 @@ class Gameplay:
             self.associated_values[3] = 1
         def click_quit():
             self.associated_values[4] = 1
-
         self.escape_buttons[0].at_unclick = click_resume
         self.escape_buttons[1].at_unclick = click_restart
         self.escape_buttons[2].at_unclick = click_save
@@ -570,65 +734,146 @@ class Gameplay:
 
             m.update(events=events, mouse_rel = mouse_rel)
             pygame.display.flip()
-
+            
             for event in events:
                 if event.type == pygame.QUIT:
                     m.playing = False
                 if event.type == pygame.KEYDOWN:
                     key_pressed = event.key
                     if key_pressed == pygame.K_ESCAPE:
-                        self.player.deactivate(active=True)
+                        self.player.deactivate(active = True)
 
-                        self.minimap.update(self.minimap.maze_surface)
-                        self.visualize_maze(self.visual_maze, self.solution_flag)
-
+                        self.screen.fill((0,0,0))
+                        self.update_screen()
+                        pygame.display.update()
+                        
                         return None, None
-
+                
                 if self.associated_values[0]: #If click resume button
                     pygame.event.clear()
 
-                    self.associated_values[0] = 0
+                    self.associated_values[0] = 0                    
                     self.player.deactivate(active = True)
 
-                    self.minimap.update(self.minimap.maze_surface)
-                    self.visualize_maze(self.visual_maze, self.solution_flag)
+                    self.update_screen()
+                    pygame.display.update()
 
                     return None, None
-
-                if self.associated_values[1]: #If click restart button
+                
+                if self.associated_values[1]: # If click restart button
                     pass
-                if self.associated_values[2]: #If click save button
-                    self.associated_values[2] = 0
-                    self.save_data()
-                    self.save_fl = True  # Set save flag to True
-                    # if self.associated_values[3]: #If click auto button
-                    # choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
-                    # introduction_text = "Choose the algorithm to solve the maze"
-                    # options = tp.AlertWithChoices("Auto Mode Algorithms", choices, introduction_text, choice_mode="v")
-                    # def clicked():
-                    #     options.launch_alone() #see _example_launch for more options
-                    #     print("User has chosen:", options.choice)
-                    # self.escape_buttons[3].center_on(self.screen)
-                    # self.escape_buttons[3].at_unclick = clicked
-                    # self.escape_buttons[3].get_updater(fps = FPS, esc_quit = True)
-                    # return None, None
-
-                if self.associated_values[3]: #If click menu button
-                    self.player.deactivate(active=True)
-
+                if self.associated_values[2]: # If click save button
+                    pass  
+                if self.associated_values[3]: # If click menu button
+                    self.player.deactivate(active = True)
                     self.transition.transition(
                         pos=(SCENES["Menu"]["initial_pos"][0] * SCENES["Menu"]["cell"][0],
                              SCENES["Menu"]["initial_pos"][1] * SCENES["Menu"]["cell"][1]),
                         transition_type="reversed_hole",
                         next_scene="Menu")
-
                     return "Menu", SCENES["Menu"]["initial_pos"]
-
-                if self.associated_values[4]: #If click quit button
+                if self.associated_values[4]: # If click quit button
+                    sys.exit(0)
                     pygame.quit()
-
+        
         return None, None
-
+    
+    def init_choose_mode(self):
+        choose_mode_choices = ("Manual", "Auto Mode")
+        choose_mode = tp.AlertWithChoices("Choose Mode", choose_mode_choices, choice_mode="v")
+        choose_mode.set_topleft(890, 500)
+        
+        manual_choices = ("On", "Off") 
+        manual_mode = tp.AlertWithChoices("", manual_choices, choice_mode="v")
+        manual_mode.set_topleft(957, 485)
+        
+        auto_choices = ("BFS", "DFS", "A*", "Greedy", "Dijkstra")
+        auto_options = tp.AlertWithChoices("Auto Mode Algorithm", auto_choices, choice_mode="v")
+        auto_options.set_topleft(880, 500)
+        
+        def create_background(): # Ham fix cai background, khong co gi trong day
+            pass
+        def choose_mode_background():
+            self.screen.blit(self.minimap.new_background, self.minimap.display_pos, (self.minimap.cut_start_pos, self.minimap.cut_area))
+        def click_choose_mode():
+            choose_mode.launch_alone(choose_mode_background)
+            
+            if choose_mode.choice == "Manual":
+                self.choose_mode_flag = False
+                self.manual_flag = True
+                
+                self.player.deactivate(active=True)
+            elif choose_mode.choice == "Auto Mode":
+                self.choose_mode_flag = False
+                self.auto_flag = True
+                
+                self.solution_flag = True
+                self.minimap.solution_flag = True
+                
+                self.player.deactivate(active=True)
+            
+            self.screen.fill((0,0,0))
+            # self.auto_button.update(events)
+            self.update_screen()
+            
+            pygame.display.update()
+        def click_hint():
+            manual_mode.launch_alone(create_background)
+            
+            if manual_mode.choice == "On":
+                self.solution_flag = True
+                self.minimap.solution_flag = True
+                self.update_screen()
+                pygame.display.update()
+            elif manual_mode.choice == "Off":
+                self.solution_flag = False
+                self.minimap.solution_flag = False
+            
+            self.screen.fill((0,0,0))
+            # self.auto_button.update(events)
+            self.update_screen()
+            
+            pygame.display.update()
+            
+        # Run when click auto
+        def click_auto():
+            auto_options.launch_alone(create_background)
+            pygame.event.clear()
+            
+            if not auto_options.choice or auto_options.choice == 'BFS':
+                self.trace_path, _ = self.algorithms.bfs(self.player.grid_pos[::-1], self.end_pos)
+                self.auto_index = 0
+            elif auto_options.choice == 'DFS':
+                self.trace_path, _ = self.algorithms.dfs(self.player.grid_pos[::-1], self.end_pos)
+                self.auto_index = 0
+            elif auto_options.choice == 'A*':
+                self.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+                self.auto_index = 0
+            elif auto_options.choice == 'Greedy':
+                self.trace_path, _ = self.algorithms.greedy(self.player.grid_pos[::-1], self.end_pos)
+                self.auto_index = 0
+            elif auto_options.choice == 'Dijkstra':
+                self.trace_path, _ = self.algorithms.dijkstra(self.player.grid_pos[::-1], self.end_pos)
+                self.auto_index = 0
+            
+            self.screen.fill((0,0,0))
+            # self.auto_button.update(events)
+            self.update_screen()
+            
+            pygame.display.update()
+            
+        self.choose_mode = tp.Button("Mode")
+        self.choose_mode.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
+        self.choose_mode.at_unclick = click_choose_mode
+        
+        self.hint_button = tp.Button("Show Hint")
+        self.hint_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
+        self.hint_button.at_unclick = click_hint
+        
+        self.auto_button = tp.Button("Auto Mode")
+        self.auto_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
+        self.auto_button.at_unclick = click_auto
+    
     def show_solution(self, screen):
         copy_screen = screen.copy()
 

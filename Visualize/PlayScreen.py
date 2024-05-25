@@ -53,6 +53,7 @@ class PlayScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
+        # drawGrid(screen=self.screen)
 
         self.player = player
         self.player.re_init(name=self.player.name, scene=SCENE_NAME, dir=self.player.current_direction)
@@ -98,11 +99,24 @@ class PlayScreen:
                     next_scene, next_grid_pos = self.toggle_panel(self.chosen_door)
                     self.chosen_door = None
                     if next_scene:
+                        # self.transition.transition(pos=(next_grid_pos[0] * SCENES[next_scene]["cell"][0],
+                        #                                 next_grid_pos[1] * SCENES[next_scene]["cell"][0]),
+                        #                            transition_type="hole",
+                        #                            next_scene=next_scene)
                         return next_scene, next_grid_pos
 
                 if self.chosen_obj:
                     self.handle_object(self.chosen_obj)
                     self.chosen_obj = None  
+                    # if not self.panel_fl:
+                    #     if self.chosen_obj == "Load":
+                    #         self.screen.blit(self.load_panel, (0, 0))
+                    #     self.panel_fl = True
+                    # elif self.panel_fl and event.type == pygame.KEYDOWN:
+                    #     next_scene, next_grid_pos = self.toggle_panel(self.chosen_obj, event)
+                    #     if next_scene:
+                    #         return next_scene, next_grid_pos
+                    # pygame.display.update()
                     continue
 
                 self.mouse_handler.set_pos(mouse_pos)
