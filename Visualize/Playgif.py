@@ -41,6 +41,7 @@ def play_gif(screen, original_frame=None, name='welcome'):
         events = pygame.event.get()
         
         for event in events:
+            
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
