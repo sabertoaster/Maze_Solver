@@ -1,5 +1,6 @@
 import pygame
 import cv2
+import numpy as np
 
 from Visualize.Credit import Credit
 
@@ -64,15 +65,19 @@ class WinScreen:
             text = win_font.render("YOU WIN",
                                    True,
                                    (np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255)))
-            window.blit(text, ((RESOLUTION[0] - text.get_width()) / 2, (RESOLUTION[1] - text.get_height()) / 2))
+            self.screen.blit(text, ((RESOLUTION[0] - text.get_width()) / 2, (RESOLUTION[1] - text.get_height()) / 2))
             pygame.display.flip()
             pygame.time.delay(100)
-            window.fill((0,0,0))
+            self.screen.fill((0,0,0))
             pygame.display.flip()
             pygame.time.delay(100)
 
         pygame.event.clear()
         if_continue = pygame.image.load(RESOURCE_PATH + "continue.png")
+        self.screen.blit(if_continue, (
+            (RESOLUTION[0] - if_continue.get_width()) / 2, (RESOLUTION[1] - if_continue.get_height()) / 2))
+        pygame.display.flip()
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -81,7 +86,7 @@ class WinScreen:
                 if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
                     pygame.key.set_repeat(200, 125)
                     return "Menu", SCENES["Menu"]["initial_pos"]
-                window.blit(if_continue, (
+                self.screen.blit(if_continue, (
                 (RESOLUTION[0] - if_continue.get_width()) / 2, (RESOLUTION[1] - if_continue.get_height()) / 2))
                 pygame.display.flip()
 
