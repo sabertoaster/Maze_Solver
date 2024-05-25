@@ -17,18 +17,6 @@ RESOURCE_PATH += 'img/'
 
 SCENE_NAME = "Menu"
 
-def drawGrid(screen):
-    """
-    FOR FUCKING DEBUG THE GRID MAP
-    :param screen:
-    :return:
-    """
-    blockSize = SCENES[SCENE_NAME]["cell"][0]  # Set the size of the grid block
-    for x in range(0, RESOLUTION[0], blockSize):
-        for y in range(0, RESOLUTION[1], blockSize):
-            rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, COLORS.WHITE.value, rect, 1)
-
 
 # [PROTOTYPE]
 
@@ -67,7 +55,6 @@ class MenuScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        drawGrid(self.screen)
 
         self.player = player
         self.player.re_init(name=self.player.name, scene=SCENE_NAME)

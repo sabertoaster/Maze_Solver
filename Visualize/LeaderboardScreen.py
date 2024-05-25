@@ -91,7 +91,6 @@ class LeaderboardScreen:
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
-        drawGrid(self.screen)
 
         # Draw Player
         self.player = player
