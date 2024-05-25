@@ -407,26 +407,18 @@ class Gameplay:
         
         current_frame = self.screen.copy()
         blur = blur_screen(current_frame)
-        self.win_screen.play(background=blur)
+        scene, pos = self.win_screen.play(background=blur)
         
-        running = True
-        while running:
-            events = pygame.event.get()
-            for event in events:
-                if event.type == pygame.QUIT:
-                    return None, None
-                
-                mouse_pos = pygame.mouse.get_pos()
-                mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (
-                            mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
-                
-                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
-                    if event.key == pygame.K_m:
-                        running = False
-                        return "Menu", SCENES["Menu"]["initial_pos"]
-                    else:
-                        running = False
-                        return "Gameplay", SCENES["Gameplay"]["initial_pos"]
+        if scene == 'Menu':
+            self.player.deactivate(active=True)
+            self.transition.transition(
+                        pos=(SCENES["Menu"]["initial_pos"][0] * SCENES["Menu"]["cell"][0],
+                             SCENES["Menu"]["initial_pos"][1] * SCENES["Menu"]["cell"][1]),
+                        transition_type="reversed_hole", 
+                        next_scene=scene)
+            
+        return scene, pos
+            
 
     def init_maze(self):
         # INSTANTIATE MAZE

@@ -218,9 +218,16 @@ SCENES = {
         'BG': '',
         'DOORS': {},
         'DOORS_CLICK_RANGE': {},
-        'OBJECTS_POS': {},
-        'OBJECTS_INTERACT_RANGE': {},
-        'HOVER_FRAME': {},
+        'OBJECTS_POS': {
+            'yes': [(x, y) for x in range(11, 13) for y in range(8, 13)], 
+            'no': [(x, y) for x in range(11, 13) for y in range(16, 21)],
+        },
+        'OBJECTS_INTERACT_RANGE': {    
+        },
+        'HOVER_FRAME': {
+            'yes': 'continue_hover_yes.png',
+            'no': 'continue_hover_no.png',    
+        },
         "initial_pos": (0, 0),
         "cell": (40, 40),
         "BGM": "gameplay_BG.png",
