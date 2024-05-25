@@ -253,9 +253,11 @@ class Gameplay:
 
     def play(self, player):
         self.player = player
+        # Flag: có chọn mode energy không
+        self.energy_flag = True
+        # Khoi tao nang luong cho player
         self.energy = np.random.randint(5, 11)
         print("init energy", self.energy)
-        
         self.get_data()
 
         # INSTANTIATE MAZE
@@ -267,8 +269,10 @@ class Gameplay:
             "step": {"position": (900, 700, 568, 30), "color": Color.RED.value, "maximum_length": 16,
                          "focusable": False, "init_text": ""}})  # (x, y, width, height)
 
-        self.maze_toString = convert_energy(self.maze_toString)
-        self.init_maze_energy()
+        # Chuyển từ dạng string sang maze dạng string nhưng mỗi ô chứa năng lượng thay vì ' ' sẽ chứa số từ 1 -> 5 (str type)
+        if self.energy_flag:
+            self.maze_toString = convert_energy(self.maze_toString)
+        self.init_maze()
 
     
         # INSTANTIATE PLAYER
@@ -335,7 +339,7 @@ class Gameplay:
         self.player.deactivate(active=False)
         
         while True:
-            # self.visualize_time_and_step()
+            self.visualize_time_and_step()
             events = pygame.event.get()
             mouse_rel = pygame.mouse.get_rel()
 
@@ -357,7 +361,7 @@ class Gameplay:
                 if event.type == pygame.QUIT:
                     return None, None
                 if event.type == pygame.KEYDOWN or event.type == pygame.USEREVENT:
-                    
+ 
                     if event.key == pygame.K_m:
                         self.sounds_handler.switch()
                         continue
@@ -390,10 +394,16 @@ class Gameplay:
                     
                     if player_response == "Move" or event.type == pygame.USEREVENT:
                         self.maze_step += 1
-                        self.energy -= 1
+                        
+                        #Xử lí năng lượng
+                        self.energy -= 1 # Mỗi bước đi -1 energy
+                        #Nếu player đi qua ô có năng lượng
                         if self.maze_toString[self.player.grid_pos[1]][self.player.grid_pos[0]].isnumeric():
+                            # Cộng thêm năng lượng cho player
                             self.energy += int(self.maze_toString[self.player.grid_pos[1]][self.player.grid_pos[0]])
+                            # Bỏ năng lượng tại ô đó
                             self.maze_toString[self.player.grid_pos[1]][self.player.grid_pos[0]] = ' '
+                            
                         print("energy", self.energy)
                         
                         if self.player.get_grid_pos()[::-1] == self.end_pos:
@@ -409,8 +419,7 @@ class Gameplay:
                     #     ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
                     #     pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
                     
-                    self.update_screen_energy()
-                    #self.update_screen()
+                    self.update_screen()
                     
                 pygame.display.update()
 
@@ -421,48 +430,6 @@ class Gameplay:
     #     else:
     #         data = read_file(self.file_name)
     #         self.maze_toString = data['maze_toString']
-
-    def init_maze_energy(self):
-        # INSTANTIATE MAZE
-        # self.update_maze()
-
-        self.grid_map = GridMap("Maze", self.maze_size, (1, 1))
-
-        self.maze_row, self.maze_col = len(self.maze_toString), len(self.maze_toString[0])
-        self.cell_size = (RESOLUTION[0] - RESOLUTION[1]) // min(self.maze_row, self.maze_col)
-
-        self.visual_maze_resolution = (self.maze_row * self.cell_size, self.maze_col * self.cell_size)
-        self.visual_maze = pygame.Surface(self.visual_maze_resolution)
-        self.visual_maze.fill((0, 0, 0))
-
-        for i in range(self.maze_row):
-            for j in range(self.maze_col):
-                ceil_rect = pygame.Rect(j * self.cell_size, i * self.cell_size, self.cell_size,
-                                        self.cell_size)  # [PROTOTYPE]
-
-                if self.maze_toString[i][j] == ' ':
-                    pygame.draw.rect(self.visual_maze, (255, 255, 255), ceil_rect)
-                elif self.maze_toString[i][j] == '#':
-                    pygame.draw.rect(self.visual_maze, (0, 0, 0), ceil_rect)
-                elif self.maze_toString[i][j] == 'S':
-                    # self.start_pos = (i, j)
-                    pygame.draw.rect(self.visual_maze, (170, 170, 0), ceil_rect)
-                elif self.maze_toString[i][j] == 'E':
-                    # self.end_pos = (i, j)
-                    pygame.draw.rect(self.visual_maze, (255, 0, 0), ceil_rect)
-                elif self.maze_toString[i][j].isnumeric():
-                    # xu li cac so nang luong
-                    if self.maze_toString[i][j] == '1':
-                        color = (84, 245, 66)
-                    elif self.maze_toString[i][j] == '2':
-                        color = (66, 245, 152)
-                    elif self.maze_toString[i][j] == '3':
-                        color = (66, 245, 239)
-                    elif self.maze_toString[i][j] == '4':
-                        color = (66, 129, 245)
-                    elif self.maze_toString[i][j] == '5':
-                        color = (129, 66, 245)
-                    pygame.draw.rect(self.visual_maze, color, ceil_rect)
                     
     def init_maze(self):
         # INSTANTIATE MAZE
@@ -492,6 +459,21 @@ class Gameplay:
                 elif self.maze_toString[i][j] == 'E':
                     # self.end_pos = (i, j)
                     pygame.draw.rect(self.visual_maze, (255, 0, 0), ceil_rect)
+                    
+                if self.energy_flag: #Nếu có chọn mode energy
+                    if self.maze_toString[i][j].isnumeric():
+                        # Xử lí các ô năng lượng
+                        if self.maze_toString[i][j] == '1':
+                            color = (84, 245, 66)
+                        elif self.maze_toString[i][j] == '2':
+                            color = (66, 245, 152)
+                        elif self.maze_toString[i][j] == '3':
+                            color = (66, 245, 239)
+                        elif self.maze_toString[i][j] == '4':
+                            color = (66, 129, 245)
+                        elif self.maze_toString[i][j] == '5':
+                            color = (129, 66, 245)
+                        pygame.draw.rect(self.visual_maze, color, ceil_rect)
 
         self.visual_maze_display_pos = (0, RESOLUTION[0] - (RESOLUTION[0] - RESOLUTION[1]) / 2)
 
@@ -584,20 +566,18 @@ class Gameplay:
                 elif self.maze_toString[i][j] == 'E':
                     maze_surface.blit(end, pos)
                 
-                elif self.maze_toString[i][j].isnumeric():
-                    if self.maze_toString[i][j] =='1':
-                        pass
-                    elif self.maze_toString[i][j] =='2':
-                        pass
-                    elif self.maze_toString[i][j] =='3':
-                        pass
-                    elif self.maze_toString[i][j] =='4':
-                        pass
-                    elif self.maze_toString[i][j] =='5':
-                        pass
-
-                
-     
+                if self.energy_flag: # Xử lí năng lượng
+                    if self.maze_toString[i][j].isnumeric():
+                        if self.maze_toString[i][j] =='1':
+                            pass
+                        elif self.maze_toString[i][j] =='2':
+                            pass
+                        elif self.maze_toString[i][j] =='3':
+                            pass
+                        elif self.maze_toString[i][j] =='4':
+                            pass
+                        elif self.maze_toString[i][j] =='5':
+                            pass
 
         self.bg_surface.blit(maze_surface,((screen_size[0] - maze_surface.get_width()) // 2, (screen_size[1] - maze_surface.get_height()) // 2))
 
@@ -616,24 +596,6 @@ class Gameplay:
                     self.start_pos = (i, j)
                 elif self.maze_toString[i][j] == 'E':
                     self.end_pos = (i, j)
-
-    def visualize_maze_energy(self, screen, solution_flag):
-        copy_screen = screen.copy()
-
-        if solution_flag:
-            copy_screen = self.show_solution_energy(copy_screen)
-
-        copy_screen = self.draw_player(copy_screen)
-        self.screen.blit(copy_screen, (RESOLUTION[0] - copy_screen.get_width(), 0))
-    
-    # def visualize_maze_Qlearning(self, screen, solution_flag):
-    #     copy_screen = screen.copy()
-
-    #     if solution_flag:
-    #         copy_screen = self.show_solution_Qlearning(copy_screen)
-
-    #     copy_screen = self.draw_player(copy_screen)
-    #     self.screen.blit(copy_screen, (RESOLUTION[0] - copy_screen.get_width(), 0))
     
     def visualize_maze(self, screen, solution_flag):
         copy_screen = screen.copy()
@@ -643,14 +605,6 @@ class Gameplay:
 
         copy_screen = self.draw_player(copy_screen)
         self.screen.blit(copy_screen, (RESOLUTION[0] - copy_screen.get_width(), 0))
-
-    def update_screen_energy(self):
-        self.minimap.update(self.minimap.maze_surface)
-        self.visualize_maze_energy(self.visual_maze, self.solution_flag)
-        
-    # def update_screen_Qlearning(self):
-    #     self.minimap.update(self.minimap.maze_surface)
-    #     self.visualize_maze_Qlearning(self.visual_maze, self.solution_flag)
         
     def update_screen(self):
         self.minimap.update(self.minimap.maze_surface)
@@ -913,54 +867,15 @@ class Gameplay:
         self.auto_button.set_topleft((RESOLUTION[1] + RESOLUTION[0]) // 2 - 50, RESOLUTION[1] // 2 + 50)
         self.auto_button.at_unclick = click_auto
     
-    
-    def show_solution_energy(self, screen):
-        copy_screen = screen.copy()
-
-        self.minimap.trace_path, _ = self.algorithms.path_energy(self.energy, self.player.grid_pos[::-1], self.end_pos)
-        if self.minimap.trace_path:
-            self.minimap.trace_path.append(self.end_pos)
-
-        if not self.minimap.trace_path:
-            return screen
-        
-        color = (127,0,255)
-            
-        for pos in self.minimap.trace_path[:-1]:
-            ceil_rect = pygame.Rect(pos[1] * self.cell_size, pos[0] * self.cell_size, self.cell_size, self.cell_size)
-
-            pygame.draw.rect(copy_screen, color, ceil_rect)
-            
-        return copy_screen
-    
-    # def show_solution_Qlearning(self, screen):
-    #     copy_screen = screen.copy()
-
-    #     # Q = QLearning(self.maze_toString)
-    #     # Q.train(1000, self.player.grid_pos[::-1], self.end_pos)
-    #     # self.minimap.trace_path = Q.find_path()
-        
-    #     self.minimap.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
-    #     if self.minimap.trace_path:
-    #         self.minimap.trace_path.append(self.end_pos)
-
-    #     if not self.minimap.trace_path:
-    #         return screen
-        
-    #     color = (127,0,255)
-            
-    #     for pos in self.minimap.trace_path[:-1]:
-    #         ceil_rect = pygame.Rect(pos[1] * self.cell_size, pos[0] * self.cell_size, self.cell_size, self.cell_size)
-
-    #         pygame.draw.rect(copy_screen, color, ceil_rect)
-            
-    #     return copy_screen
-    
     def show_solution(self, screen):
         copy_screen = screen.copy()
-
         
-        self.minimap.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+        # Nếu chọn mode energy
+        if self.energy_flag:        
+            self.minimap.trace_path, _ = self.algorithms.path_energy(self.energy, self.player.grid_pos[::-1], self.end_pos)
+        else:
+            self.minimap.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+            
         if self.minimap.trace_path:
             self.minimap.trace_path.append(self.end_pos)
 
