@@ -74,8 +74,12 @@ class LoginScreen:
 
         self.panel_fl = False  # CÁI NI Bị DOWN
         # panel_shape = (RESOLUTION[0], RESOLUTION[1])
+        escape_button = pygame.image.load(RESOURCE_PATH + "ESCAPE_BUTTON.png").convert_alpha()
+
         login_panel = pygame.image.load(RESOURCE_PATH + "login_box.png").convert_alpha()
+        login_panel = add_element(login_panel, escape_button, (0, 0))
         register_panel = pygame.image.load(RESOURCE_PATH + "register_box.png").convert_alpha()
+        register_panel = add_element(register_panel, escape_button, (0, 0))
 
         self.blur = blur_screen(screen=self.screen)
         self.login_panel = add_element(self.blur, login_panel,

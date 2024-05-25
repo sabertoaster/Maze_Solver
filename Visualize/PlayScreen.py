@@ -61,7 +61,9 @@ class PlayScreen:
         # Add login panel background
 
         # Load panel momentos
+        escape_button = pygame.image.load(RESOURCE_PATH + "ESCAPE_BUTTON.png").convert_alpha()
         load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
+        load_panel = add_element(load_panel, escape_button, (0, 0))
         self.load_card = pygame.image.load(RESOURCE_PATH + "load_card.png").convert_alpha()
         self.load_cards = self.get_data_and_fill_in_load_panel(self.load_card, cards_top_left)
         self.card_hover_frame = pygame.image.load(RESOURCE_PATH + "load_card_hover.png").convert_alpha()

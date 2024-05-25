@@ -365,4 +365,9 @@ class LeaderboardScreen:
             leaderboard_panel_hard.blit(score, (440, 280 + pos * 60 - 20))
             pos += 1
 
+        escape_button = pygame.image.load(RESOURCE_PATH + "escape_button.png").convert_alpha()
+        leaderboard_panel_easy.blit(escape_button, (0, 0))
+        leaderboard_panel_medium.blit(escape_button, (0, 0))
+        leaderboard_panel_hard.blit(escape_button, (0, 0))
+
         return leaderboard_panel_easy, leaderboard_panel_medium, leaderboard_panel_hard
