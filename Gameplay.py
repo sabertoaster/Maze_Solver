@@ -250,12 +250,20 @@ class Gameplay:
         current_time = time.time()
         self.maze_time += float(current_time - self.start_time)
         self.start_time = current_time
+        self.visualize_time_and_step()
         
     def play(self, player):
         self.player = player
         self.get_data()
 
         # INSTANTIATE MAZE
+
+        # VISUALIZE TIME AND STEPS
+        self.text_box = FormManager(self.screen, {
+            "time": {"position": (0, 0, 568, 30), "color": Color.RED.value, "maximum_length": 16,
+                         "focusable": False, "init_text": ""},  # (x, y, width, height)
+            "step": {"position": (0, 100, 568, 30), "color": Color.RED.value, "maximum_length": 16,
+                         "focusable": False, "init_text": ""}})  # (x, y, width, height)
 
         self.init_maze()
 
@@ -324,6 +332,7 @@ class Gameplay:
         
         while True:
             self.update_time()
+            # self.visualize_time_and_step()
             events = pygame.event.get()
             mouse_rel = pygame.mouse.get_rel()
             
@@ -835,6 +844,12 @@ class Gameplay:
                          (self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size))
 
         return copy_screen
+
+    def visualize_time_and_step(self):
+        self.text_box.set_text("time", str(round(self.maze_time, 2)))
+        self.text_box.set_text("step", str(self.maze_step))
+        self.text_box.draw()
+        pygame.display.flip()
 # screen = pygame.display.set_mode((1300, 900))
 # test = Gameplay(screen, (0,0), (9, 9))
 # test.play()
