@@ -73,7 +73,7 @@ class Minimap:
 
         # self.screen.blit(screenCopy.copy(), (0,0))
         self.draw(screenCopy)
-        pygame.event.clear()
+        # pygame.event.clear()
 
     def init_at_start(self, screenCopy):
         self.draw_without_player(screenCopy)
