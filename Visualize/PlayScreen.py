@@ -61,7 +61,9 @@ class PlayScreen:
         # Add login panel background
 
         # Load panel momentos
+        escape_button = pygame.image.load(RESOURCE_PATH + "ESCAPE_BUTTON.png").convert_alpha()
         load_panel = pygame.image.load(RESOURCE_PATH + "load_panel.png").convert_alpha()
+        load_panel = add_element(load_panel, escape_button, (0, 0))
         self.load_card = pygame.image.load(RESOURCE_PATH + "load_card.png").convert_alpha()
         self.load_cards = self.get_data_and_fill_in_load_panel(self.load_card, cards_top_left)
         self.card_hover_frame = pygame.image.load(RESOURCE_PATH + "load_card_hover.png").convert_alpha()
@@ -77,8 +79,11 @@ class PlayScreen:
         self.load_panel = add_element(blur, load_panel,
                                       ((RESOLUTION[0] - load_panel.get_width()) / 2,
                                        (RESOLUTION[1] - load_panel.get_height()) / 2))
-
-        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
+        
+        self.show_instructions = [False]
+        self.instructions_frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]['BG_instructions'], RESOLUTION)
+        
+        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, self.show_instructions)
 
         self.chosen_obj = None
         self.chosen_door = None
@@ -118,6 +123,24 @@ class PlayScreen:
 
                 if event.type == pygame.KEYDOWN:
                     pressed = event.key
+                    
+                    if pressed == pygame.K_SPACE:
+                        if not self.show_instructions[0]:
+                            self.screen.blit(self.instructions_frame, (0, 0))
+                            self.screenCopy = self.screen.copy()
+                            self.player.update(self.screen.copy())
+                            pygame.display.flip()
+                            
+                            self.show_instructions[0] = True
+                            continue
+                        else:
+                            self.screen.blit(self.frame, (0, 0))
+                            self.screenCopy = self.screen.copy()
+                            self.player.update(self.screen.copy())
+                            pygame.display.flip()
+                            
+                            self.show_instructions[0] = False
+                            continue
                     
                     if pressed == pygame.K_m:
                         self.sounds_handler.switch()

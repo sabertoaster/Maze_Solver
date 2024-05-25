@@ -3,29 +3,25 @@ from Algorithms.Algorithms import *
 from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_energy
 from GridMapObject import GridMapObject
 from GridMap import GridMap
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FPS
-import os
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, FPS
 RESOURCE_PATH += 'img/'
-# from CURR_PLAYER_PARAMS import CURRENT_LEVEL, CURRENT_PLAY_MODE
-# Pre-defined imports
+
+import os
 import sys
 import pygame
 import numpy as np
-import cv2
 import json
 import thorpy as tp
-from enum import Enum
-from Visualize.ImageProcess import blur_screen, morph_image, add_element
-from Visualize.TextBox import TextBox, FormManager, Color
-from Visualize.MouseEvents import MouseEvents
+from Visualize.ImageProcess import blur_screen, morph_image
+from Visualize.TextBox import FormManager, Color
 from Visualize.Transition import Transition
-from Visualize.HangingSign import HangingSign
 from Minimap import Minimap
 from Player import *
 from random import shuffle
 import time
+from Visualize.WinScreen import WinScreen
 
-SCENE_NAME = "GamePlay"
+SCENE_NAME = "Gameplay"
 
 class Gameplay:
     def __init__(self, screen, start_pos, end_pos, file_name='', maze_size=(20, 20), sounds_handler=None):
@@ -51,6 +47,8 @@ class Gameplay:
         SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
 
         self.sounds_handler = sounds_handler    
+        
+        self.win_screen = WinScreen(self.screen, self.sounds_handler)
         
     def fill_grid_map(self):
         for i in range(len(self.maze_toString)):
@@ -350,8 +348,6 @@ class Gameplay:
             elif self.auto_flag:
                 self.auto_move()
 
-                pygame.time.delay(100)
-
                 # Block player keyboard input
 
                 auto_launcher.update(events=events, mouse_rel=mouse_rel)
@@ -379,9 +375,6 @@ class Gameplay:
                             return next_scene, next_pos
 
                         break
-                    if event.key == pygame.K_m:
-                        pass
-                        # Handle minimap here
                         
                     if event.key == pygame.K_g:
                         pass
@@ -409,7 +402,10 @@ class Gameplay:
                         if self.player.get_grid_pos()[::-1] == self.end_pos:
                             if self.auto_flag != True:
                                 self.save_data(is_win=True)
-                            return "Win", SCENES["Win"]["initial_pos"]
+
+                            scene_name, initial_pos = self.finish_game_panel()
+                            if scene_name:
+                                return scene_name, initial_pos
                         pygame.event.clear()
                         
                         if self.energy <= 0: # xu li thua
@@ -430,7 +426,32 @@ class Gameplay:
     #     else:
     #         data = read_file(self.file_name)
     #         self.maze_toString = data['maze_toString']
-                    
+
+    def finish_game_panel(self):
+        
+        current_frame = self.screen.copy()
+        blur = blur_screen(current_frame)
+        self.win_screen.play(background=blur)
+        
+        running = True
+        while running:
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.QUIT:
+                    return None, None
+                
+                mouse_pos = pygame.mouse.get_pos()
+                mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (
+                            mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
+                
+                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
+                    if event.key == pygame.K_m:
+                        running = False
+                        return "Menu", SCENES["Menu"]["initial_pos"]
+                    else:
+                        running = False
+                        return "Gameplay", SCENES["Gameplay"]["initial_pos"]
+
     def init_maze(self):
         # INSTANTIATE MAZE
         # self.update_maze()
@@ -736,7 +757,8 @@ class Gameplay:
 
                     return None, None
                 if self.associated_values[1]: #If click restart button
-                    pass
+                    self.associated_values[1] = 0
+                    return "Gameplay", SCENES["Gameplay"]["initial_pos"]
                 if self.associated_values[2]: #If click save button
                     self.associated_values[2] = 0
                     self.save_data()
@@ -765,8 +787,8 @@ class Gameplay:
                     return "Menu", SCENES["Menu"]["initial_pos"]
 
                 if self.associated_values[4]: #If click quit button
-                    sys.exit(0)
                     pygame.quit()
+                    exit()
 
         return None, None
     
