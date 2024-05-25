@@ -19,10 +19,11 @@ class WinScreen:
         self.screen = screen    
         self.sounds_handler = sounds_handler
 
-    def play(self):
+    def play(self, background=None):
         """
         Play the scene
         """
+        
         video = cv2.VideoCapture("Resources/animation/win.mp4")
         success, video_image = video.read()
         fps = video.get(cv2.CAP_PROP_FPS)
@@ -57,4 +58,8 @@ class WinScreen:
             pygame.display.flip()
             
         pygame.key.set_repeat(200, 125)
+        
+        if background:
+            self.screen.blit(background, (0, 0))
+    
         return "Menu", SCENES["Menu"]["initial_pos"]

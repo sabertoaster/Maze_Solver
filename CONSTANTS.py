@@ -344,7 +344,7 @@ SOUNDS = {
             'file_name': 'town_bgm.mp3',
             'volume': 0.5
         },
-        'GamePlay': {
+        'Gameplay': {
             'file_name': 'town_bgm.mp3',
             'volume': 0.5
         },

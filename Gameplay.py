@@ -21,7 +21,7 @@ from random import shuffle
 import time
 from Visualize.WinScreen import WinScreen
 
-SCENE_NAME = "GamePlay"
+SCENE_NAME = "Gameplay"
 
 class Gameplay:
     def __init__(self, screen, start_pos, end_pos, file_name='', maze_size=(20, 20), sounds_handler=None):
@@ -368,9 +368,6 @@ class Gameplay:
                             return next_scene, next_pos
 
                         break
-                    if event.key == pygame.K_m:
-                        pass
-                        # Handle minimap here
                         
                     if event.key == pygame.K_g:
                         pass
@@ -386,7 +383,7 @@ class Gameplay:
                         if self.player.get_grid_pos()[::-1] == self.end_pos:
                             if self.auto_flag != True:
                                 self.save_data(is_win=True)
-                            self.win_screen.play()
+
                             scene_name, initial_pos = self.finish_game_panel()
                             if scene_name:
                                 return scene_name, initial_pos
@@ -410,12 +407,21 @@ class Gameplay:
 
     def finish_game_panel(self):
         
+        current_frame = self.screen.copy()
+        blur = blur_screen(current_frame)
+        self.win_screen.play(background=blur)
+        
         running = True
         while running:
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
                     return None, None
+                
+                mouse_pos = pygame.mouse.get_pos()
+                mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (
+                            mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
+                
                 if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
                     if event.key == pygame.K_m:
                         running = False
@@ -702,7 +708,8 @@ class Gameplay:
 
                     return None, None
                 if self.associated_values[1]: #If click restart button
-                    pass
+                    self.associated_values[1] = 0
+                    return "Gameplay", SCENES["Gameplay"]["initial_pos"]
                 if self.associated_values[2]: #If click save button
                     self.associated_values[2] = 0
                     self.save_data()
