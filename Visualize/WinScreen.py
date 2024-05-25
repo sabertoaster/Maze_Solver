@@ -46,7 +46,11 @@ class WinScreen:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
-
+                    pygame.quit()
+                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
+                    run = False
+                    break
+                    
             success, video_image = video.read()
             if success:
                 video_surf = pygame.image.frombuffer(

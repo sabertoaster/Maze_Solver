@@ -71,7 +71,7 @@ class PlayScreen:
             1 : {},
             2 : {},   
         }
-        self.load__saved_games()
+        self.load_saved_games()
         
         blur = blur_screen(screen=self.screenCopy)
         self.load_panel = add_element(blur, load_panel,
@@ -286,7 +286,7 @@ class PlayScreen:
         except:
             return []
         
-    def load__saved_games(self):
+    def load_saved_games(self):
         try:
             with open("./SaveFile/" + self.player.name + ".json", "r+") as fi:
                 data = json.load(fi)

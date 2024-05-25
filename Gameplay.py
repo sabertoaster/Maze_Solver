@@ -22,7 +22,7 @@ from Visualize.HangingSign import HangingSign
 from Minimap import Minimap
 from Save import *
 from Player import *
-from random import choice
+from random import shuffle
 import time
 
 SCENE_NAME = "GamePlay"
@@ -413,16 +413,23 @@ class Gameplay:
                     else:
                         floor = morph_image(RESOURCE_PATH + "floor.png", (self.bg_cell_size, self.bg_cell_size))
                         maze_surface.blit(floor, pos)
-
+        rand = list(range(0, len(walls)))
+        shuffle(rand)
+        index = 0
         for i in range(self.maze_row):
             for j in range(self.maze_col):
                 pos = (j * self.bg_cell_size, i * self.bg_cell_size)
 
                 if self.maze_toString[i][j] == '#':
                     # img = pygame.image.load(RESOURCE_PATH + walls[np.random.randint(0, len(walls))]).convert_alpha()
-                    img = morph_image(RESOURCE_PATH + walls[np.random.randint(0, len(walls))],
+                    img = morph_image(RESOURCE_PATH + walls[rand[index]],
                                       (self.bg_cell_size, self.bg_cell_size * 2))
                     maze_surface.blit(img, pos)
+                    
+                    index += 1
+                    if index == len(walls):
+                        shuffle(rand)
+                        index = 0
 
                 elif self.maze_toString[i][j] == 'S':
 
