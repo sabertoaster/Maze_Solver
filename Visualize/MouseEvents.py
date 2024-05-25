@@ -42,6 +42,8 @@ class MouseEvents:
     def get_hover_frame(self, prev_frame, prev_door=None, player_touch=None):
         if player_touch:
             
+            self.show_instructions[0] = False
+            
             if player_touch == self.player_touch:
                 return prev_frame, prev_door
             

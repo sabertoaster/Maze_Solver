@@ -108,7 +108,8 @@ class PlayScreen:
                 self.mouse_handler.set_pos(mouse_pos)
 
                 self.screenCopy, self.hovered_obj = self.mouse_handler.get_hover_frame(self.screenCopy,
-                                                                                       self.hovered_obj, self.player.touched_obj)
+                                                                                       self.hovered_obj, 
+                                                                                       self.player.touched_obj)
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     self.chosen_door, self.chosen_obj = self.mouse_handler.click()
