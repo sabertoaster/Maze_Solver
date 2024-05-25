@@ -274,7 +274,7 @@ class LeaderboardScreen:
             },
         }
         try:
-            path = "./SaveFile/"
+            path = "./WinRecord/"
             for file in os.listdir(path):
                 with open(path + file, "r") as fi:
                     if file.endswith(".json"):

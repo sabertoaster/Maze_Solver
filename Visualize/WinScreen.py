@@ -56,4 +56,4 @@ class WinScreen:
             window.blit(video_surf, ((RESOLUTION[0] - video_surf.get_width()) / 2, (RESOLUTION[1] - video_surf.get_height()) / 2))
             pygame.display.flip()
 
-        return "Menu"
+        return "Menu", SCENES["Menu"]["initial_pos"]

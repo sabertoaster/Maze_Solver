@@ -4,6 +4,7 @@ from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_ene
 from GridMapObject import GridMapObject
 from GridMap import GridMap
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FPS
+import os
 RESOURCE_PATH += 'img/'
 # from CURR_PLAYER_PARAMS import CURRENT_LEVEL, CURRENT_PLAY_MODE
 # Pre-defined imports
@@ -109,6 +110,52 @@ class Gameplay:
 
     def save_data(self, is_win=False):
         snapshot = self.minimap.get_snapshot()
+        if is_win:
+            if self.old_save:
+                with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
+                    file_data = json.load(fi)
+                    for i in range(len(file_data)):
+                        if file_data[i]["id"] == self.maze_id:
+                            file_data.pop(i)
+                            os.remove("SaveFile\\" + self.player.name + str(self.maze_id) + ".png")
+                            break
+                    fi.seek(0)
+                    open("SaveFile\\" + self.player.name + ".json", 'w').close()
+                    json.dump(file_data, fi, indent=4)
+                return
+
+            data = {
+                "player.name": self.player.name,
+                "player.grid_pos": self.player.grid_pos,
+                "player.visual_pos": self.player.visual_pos,
+                "level": self.maze_level,
+                "mode": self.maze_mode,
+                "score": round(self.maze_time, 2) if (is_win and round(self.maze_time, 2) < self.maze_score) or (
+                            self.maze_score == 0 and is_win) else self.maze_score,
+                "time": round(self.maze_time, 2),
+                "step": self.maze_step,
+                "maze_toString": self.maze_toString
+            }
+
+            try:
+                with open("WinRecord\\" + self.player.name + ".json", "r+") as fi:
+                    try:
+                        file_data = json.load(fi)
+                        self.maze_id = file_data[-1]["id"] + 1
+                        data["id"] = self.maze_id
+                        file_data.append(data)
+                    except json.JSONDecodeError:
+                        data["id"] = 0
+                        file_data = [data]
+                    fi.seek(0)
+                    open("WinRecord\\" + self.player.name + ".json", 'w').close()
+                    json.dump(file_data, fi, indent=4)
+            except FileNotFoundError:
+                with open("WinRecord\\" + self.player.name + ".json", "w+") as fi:
+                    data["id"] = 0
+                    json.dump([data], fi, indent=4)
+            return
+
         if self.old_save:
             data = {
                 "player.name": self.player.name,
@@ -124,6 +171,7 @@ class Gameplay:
             with open("SaveFile\\" + self.player.name + ".json", "r+") as fi:
                 try:
                     file_data = json.load(fi)
+
                     data["id"] = self.maze_id
                     file_data[self.maze_id] = data
                 except json.JSONDecodeError:
@@ -155,6 +203,8 @@ class Gameplay:
                         self.maze_id = file_data[-1]["id"] + 1
                         data["id"] = self.maze_id
                         file_data.append(data)
+                        if len(file_data) > 3: # Xoa bot file save
+                            file_data.pop(0)
                     except json.JSONDecodeError:
                         data["id"] = 0
                         file_data = [data]
