@@ -688,6 +688,7 @@ class Gameplay:
                     if not self.choose_mode_flag:
                         self.player.deactivate(active = True)
 
+                    self.screen.fill((0,0,0))
                     self.update_screen()
                     pygame.display.update()
 
