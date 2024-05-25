@@ -75,25 +75,12 @@ class Gameplay:
         with open("current_profile.json") as fi:
             data = json.load(fi)
             self.player.name = data['player.name']
-            self.player.re_init(self.player.name, "Gameplay")
             self.player.grid_pos = data['player.grid_pos']
             self.player.visual_pos = data['player.visual_pos']
-            if (data["level"] == "Easy"):
-                self.maze_size = (10, 10)
-                self.minimap_grid_size = (20, 20)
-            elif (data["level"] == "Medium"):
-                self.maze_size = (20, 20)
-                self.minimap_grid_size = (20, 20)
-            elif (data["level"] == "Hard"):
-                self.maze_size = (50, 50)
-                self.minimap_grid_size = (20, 20)
-            SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
-            if data["maze_toString"]:
-                self.maze_toString = data["maze_toString"]
-
-            else:
-                self.maze = Maze("Wilson", self.maze_size)
-                self.maze_toString = convert_maze(self.maze)
+            self.maze_level = data['level']
+            self.maze_mode = data['mode']
+            self.maze_score = data["score"]
+            self.maze_time = data["time"]
 
             if (data["level"] == "Easy"):
                 self.maze_size = (10, 10)
@@ -143,7 +130,7 @@ class Gameplay:
                 "player.visual_pos": self.player.visual_pos,
                 "level": self.maze_level,
                 "mode": self.maze_mode,
-                "score": round(self.maze_time, 2) if (is_win and round(self.maze_time, 2) < self.maze_score) or (
+                "score": 100 + round(self.maze_time, 2) if (is_win and round(self.maze_time, 2) < self.maze_score) or (
                             self.maze_score == 0 and is_win) else self.maze_score,
                 "time": round(self.maze_time, 2),
                 "step": self.maze_step,
@@ -571,13 +558,13 @@ class Gameplay:
                        (self.maze_col + self.minimap_grid_size[1] + 1) * self.bg_cell_size)
 
 
-        self.bg_surface = morph_image("Resources/cave_BG.png", screen_size)
+        self.bg_surface = morph_image(RESOURCE_PATH + "cave_BG.png", screen_size)
 
         maze_surface = pygame.Surface((self.maze_row * self.bg_cell_size, self.maze_col * self.bg_cell_size),
                                       pygame.SRCALPHA, 32).convert_alpha()
 
-        start = morph_image("Resources/login_box.png", (self.bg_cell_size, self.bg_cell_size))
-        end = morph_image("Resources/kitchen_BG.png", (self.bg_cell_size, self.bg_cell_size))
+        start = morph_image(RESOURCE_PATH + "login_box.png", (self.bg_cell_size, self.bg_cell_size))
+        end = morph_image(RESOURCE_PATH + "kitchen_BG.png", (self.bg_cell_size, self.bg_cell_size))
         print(self.bg_cell_size)
         tuan = [
             "cave_wall_1.png",
@@ -763,7 +750,9 @@ class Gameplay:
                 if self.associated_values[1]: # If click restart button
                     pass
                 if self.associated_values[2]: # If click save button
-                    pass  
+                    self.associated_values[2] = 0
+                    self.save_data()
+                    self.save_fl = True
                 if self.associated_values[3]: # If click menu button
                     self.player.deactivate(active = True)
                     self.transition.transition(

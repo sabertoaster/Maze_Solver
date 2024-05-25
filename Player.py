@@ -67,6 +67,8 @@ class Player:
 
         self.interacted_obj = None
 
+        self.touched_obj = None
+
     def switch_skin(self, skin):
         lst = list(AVATAR.keys())
         self.skin = lst[(lst.index(skin) + 1) % len(lst)]

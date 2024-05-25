@@ -103,10 +103,10 @@ class Minimap:
 
                     self.screen.blit(self.new_background, self.display_pos, (self.cut_start_pos, self.cut_area))
 
-                    # self.cut_start_pos = (self.player.visual_pos[0] - self.cell_size * self.col // 2,
-                    #                       self.player.visual_pos[1] - self.cell_size * self.row // 2)
+                    self.cut_start_pos = (self.player.visual_pos[0] - self.cell_size * self.col // 2,
+                                          self.player.visual_pos[1] - self.cell_size * self.row // 2)
 
-                    self.cut_start_pos = (self.player.visual_pos[0] - self.cell_size * self.col / 2, self.player.visual_pos[1] - self.cell_size * self.row / 2)
+                    # self.cut_start_pos = (self.player.visual_pos[0] - self.cell_size * self.col / 2, self.player.visual_pos[1] - self.cell_size * self.row / 2)
                     
                     pygame.display.flip()
                 self.player.visualize_direction = (self.player.visualize_direction[1], self.player.visualize_direction[1])
