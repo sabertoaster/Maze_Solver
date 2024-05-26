@@ -306,7 +306,7 @@ class LoginScreen:
 
                         if cur_input["password"] == "":
                             #("Vui long nhap mat khau")
-                            self.notify_text_box.set_text("notification", "Please enter password")
+                            self.notify_text_box.set_text("notification", "Please enter password.")
                             self.notify_text_box.draw()
 
                             # pygame.display.flip()
@@ -316,13 +316,24 @@ class LoginScreen:
                             file.close()
                             
                             return None, None
+                        if cur_input["username"] == "":
+                            # ("Vui long nhap mat khau")
+                            self.notify_text_box.set_text("notification", "Please enter username.")
+                            self.notify_text_box.draw()
 
+                            # pygame.display.flip()
+                            # pygame.event.clear()
+                            # pygame.time.delay(1000)
+
+                            file.close()
+
+                            return None, None
                         for dic in data:
                             if dic["username"] == cur_input["username"]:
                                 #("Ten nguoi choi da duoc dang ki, vui long dang ki ten khac")
                                 self.notify_text_box.set_color("notification", Color.RED.value)
                                 self.notify_text_box.set_text("notification",
-                                                              "The username has been registered, please register another username")
+                                                              "The username has been registered.")
                                 self.notify_text_box.draw()
                                 
                                 file.close()

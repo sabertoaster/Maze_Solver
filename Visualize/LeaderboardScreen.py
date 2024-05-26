@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
@@ -228,6 +230,7 @@ class LeaderboardScreen:
             for event in events:
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    sys.exit()
 
                 mouse_pos = pygame.mouse.get_pos()
                 mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (

@@ -263,6 +263,11 @@ class Gameplay:
                     self.end_pos = (i, j)
                     
         self.screen.fill((0, 0, 0))
+        text = TextBox(self.screen, (100, 100, 400, 40), Color.GREEN.value, None, "Click to choose start position first, then end position")
+        text.draw()
+        text = TextBox(self.screen, (180, 700, 400, 50), Color.RED.value, None, "Press Escape key to choose random")
+        text.draw()
+
         pygame.display.flip()
         rect_list = []
             
@@ -351,7 +356,9 @@ class Gameplay:
                             
             pygame.display.flip()
             pygame.time.delay(10)
-        
+
+        self.screen.fill((0, 0, 0))
+
 
     def play(self, player):
         self.player = player
