@@ -275,6 +275,7 @@ class PlayScreen:
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     if mouse_grid_pos in escape_button_zone:
+                        self.sounds_handler.play_sfx('interact')
                         self.screen.blit(self.frame, (0, 0))
                         self.player.update(self.screenCopy)
                         running = False

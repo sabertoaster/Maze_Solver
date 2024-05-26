@@ -265,6 +265,7 @@ class LeaderboardScreen:
                         continue
                     
                     if mouse_grid_pos in esc_button_zone:
+                        self.sounds_handler.play_sfx('interact')
                         return "Login", self.player.get_grid_pos()
 
     def get_data_for_leaderboard(self):

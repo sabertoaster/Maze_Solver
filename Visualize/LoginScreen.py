@@ -224,6 +224,7 @@ class LoginScreen:
             mouse_pos = pygame.mouse.get_pos()
             mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
             if mouse_grid_pos in self.esc_button:
+                self.sounds_handler.play_sfx('interact')
                 return "Login", self.player.get_grid_pos()
         
         if event.type == pygame.KEYDOWN:
@@ -285,6 +286,7 @@ class LoginScreen:
             mouse_pos = pygame.mouse.get_pos()
             mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
             if mouse_grid_pos in self.esc_button:
+                self.sounds_handler.play_sfx('interact2')
                 return "Login", self.player.get_grid_pos()
             
         if event.type == pygame.KEYDOWN:
