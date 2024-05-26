@@ -537,7 +537,7 @@ class Gameplay:
                     
                     self.update_screen()
                     
-                    if event.type != pygame.USEREVENT and len(events) > 1:
+                    if event.type != pygame.USEREVENT:
                         pygame.event.clear()
                     
                 pygame.display.update()
