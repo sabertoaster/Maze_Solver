@@ -219,6 +219,7 @@ class LeaderboardScreen:
         """
         esc_button_zone = [(1, 1), (1, 2), (2, 1), (2, 2)]
         esc_button = morph_image(RESOURCE_PATH + "escape_button.png", (SCENES[SCENE_NAME]["cell"][0] * 2, SCENES[SCENE_NAME]["cell"][1] * 2))
+
         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
         self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
         pygame.display.update()
@@ -246,12 +247,14 @@ class LeaderboardScreen:
                         self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
                         self.current_level_leaderboard_panel = list_level.pop()
                         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
+                        self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
                         pygame.display.update()
                         continue
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
                         self.current_level_leaderboard_panel = list_level.back()
                         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
+                        self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
                         pygame.display.update()
                         continue
                 if event.type == pygame.MOUSEBUTTONUP:
@@ -259,6 +262,7 @@ class LeaderboardScreen:
                         self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
                         self.current_level_leaderboard_panel = list_level.back()
                         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
+                        self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
                         pygame.display.update()
                         continue
                     elif mouse_grid_pos == panel_control_buttons[1]:
@@ -279,7 +283,6 @@ class LeaderboardScreen:
         """
         leaderboard_data = {
             "Easy": {
-
             },
             "Medium": {
 
@@ -295,36 +298,23 @@ class LeaderboardScreen:
                     if file.endswith(".json"):
                         data = json.load(fi)
                         for profile in data:
-                            if profile["level"] == "Easy":
-                                if len(leaderboard_data["Easy"]) < 5:
-                                    if profile["score"] != 0:
-                                        if profile["player.name"] not in leaderboard_data["Easy"]:
-                                            leaderboard_data["Easy"][profile["player.name"]] = profile["score"]
-                                        else:
-                                            if profile["score"] < leaderboard_data["Easy"][profile["player.name"]]:
-                                                leaderboard_data["Easy"][profile["player.name"]] = profile["score"]
+                            level = profile["level"]
+                            if len(leaderboard_data[level]) < 5:
+                                if profile["score"] != 0:
+                                    if profile["player.name"] not in leaderboard_data[level]:
+                                        score = profile["score"]
+                                        step = profile["step"]
+                                        leaderboard_data[level][profile["player.name"]] = (score, step)
+                                    else:
+                                        if profile["score"] < leaderboard_data[level][profile["player.name"]][0]:
+                                            score = profile["score"]
+                                            step = profile["step"]
+                                            leaderboard_data[level][profile["player.name"]] = (score, step)
 
-                            if profile["level"] == "Medium":
-                                if len(leaderboard_data["Medium"]) < 5:
-                                    if profile["score"] != 0:
-                                        if profile["player.name"] not in leaderboard_data["Medium"]:
-                                            leaderboard_data["Medium"][profile["player.name"]] = profile["score"]
-                                        else:
-                                            if profile["score"] < leaderboard_data["Medium"][profile["player.name"]]:
-                                                leaderboard_data["Medium"][profile["player.name"]] = profile["score"]
 
-                            if profile["level"] == "Hard":
-                                if len(leaderboard_data["Hard"]) < 5:
-                                    if profile["score"] != 0:
-                                        if profile["player.name"] not in leaderboard_data["Hard"]:
-                                            leaderboard_data["Hard"][profile["player.name"]] = profile["score"]
-                                        else:
-                                            if profile["score"] < leaderboard_data["Hard"][profile["player.name"]]:
-                                                leaderboard_data["Hard"][profile["player.name"]] = profile["score"]
-
-            leaderboard_data["Easy"] = dict(sorted(leaderboard_data["Easy"].items(), key=lambda x: x[1]))
-            leaderboard_data["Medium"] = dict(sorted(leaderboard_data["Medium"].items(), key=lambda x: x[1]))
-            leaderboard_data["Hard"] = dict(sorted(leaderboard_data["Hard"].items(), key=lambda x: x[1]))
+            leaderboard_data["Easy"] = dict(sorted(leaderboard_data["Easy"].items(), key=lambda x: x[1][0]))
+            leaderboard_data["Medium"] = dict(sorted(leaderboard_data["Medium"].items(), key=lambda x: x[1][0]))
+            leaderboard_data["Hard"] = dict(sorted(leaderboard_data["Hard"].items(), key=lambda x: x[1][0]))
 
             return leaderboard_data
         except:
@@ -338,9 +328,9 @@ class LeaderboardScreen:
         leaderboard_panel_easy = pygame.image.load(RESOURCE_PATH + "leaderboard_easy.png").convert_alpha()
         leaderboard_panel_medium = pygame.image.load(RESOURCE_PATH + "leaderboard_medium.png").convert_alpha()
         leaderboard_panel_hard = pygame.image.load(RESOURCE_PATH + "leaderboard_hard.png").convert_alpha()
-
         name_font = pygame.font.Font(FONTS["default_bold"], 30)
         score_font = pygame.font.Font(FONTS["default"], 40)
+
         pos = 0
 
         for key, value in leaderboard_data["Easy"].items():
@@ -348,10 +338,12 @@ class LeaderboardScreen:
             if len(player_name) > 6:
                 player_name = player_name[:6] + "..."
             name = name_font.render(str(pos + 1) + ". " + player_name, True, COLORS.LIGHT_YELLOW.value)
-            score = score_font.render(str(value), True, COLORS.BLACK.value)
+            score = score_font.render(str(value[0]), True, COLORS.BLACK.value)
+            steps = score_font.render(str(value[1]), True, COLORS.BLACK.value)
 
-            leaderboard_panel_easy.blit(name, (240, 280 + pos * 60 - 10))
-            leaderboard_panel_easy.blit(score, (440, 280 + pos * 60 - 20))
+            leaderboard_panel_easy.blit(name, (140, 280 + pos * 60 - 10))
+            leaderboard_panel_easy.blit(score, (380, 280 + pos * 60 - 20))
+            leaderboard_panel_easy.blit(steps, (580, 280 + pos * 60 - 20))
             pos += 1
 
         pos = 0
@@ -361,10 +353,12 @@ class LeaderboardScreen:
             if len(player_name) > 6:
                 player_name = player_name[:6] + "..."
             name = name_font.render(str(pos + 1) + ". " + player_name, True, COLORS.LIGHT_YELLOW.value)
-            score = score_font.render(str(value), True, COLORS.BLACK.value)
+            score = score_font.render(str(value[0]), True, COLORS.BLACK.value)
+            steps = score_font.render(str(value[1]), True, COLORS.BLACK.value)
 
-            leaderboard_panel_medium.blit(name, (240, 280 + pos * 60 - 10))
-            leaderboard_panel_medium.blit(score, (440, 280 + pos * 60 - 20))
+            leaderboard_panel_medium.blit(name, (140, 280 + pos * 60 - 10))
+            leaderboard_panel_medium.blit(score, (380, 280 + pos * 60 - 20))
+            leaderboard_panel_medium.blit(steps, (580, 280 + pos * 60 - 20))
             pos += 1
 
         pos = 0
@@ -374,10 +368,12 @@ class LeaderboardScreen:
             if len(player_name) > 6:
                 player_name = player_name[:6] + "..."
             name = name_font.render(str(pos + 1) + ". " + player_name, True, COLORS.LIGHT_YELLOW.value)
-            score = score_font.render(str(value), True, COLORS.BLACK.value)
+            score = score_font.render(str(value[0]), True, COLORS.BLACK.value)
+            steps = score_font.render(str(value[1]), True, COLORS.BLACK.value)
 
-            leaderboard_panel_hard.blit(name, (240, 280 + pos * 60 - 10))
-            leaderboard_panel_hard.blit(score, (440, 280 + pos * 60 - 20))
+            leaderboard_panel_hard.blit(name, (140, 280 + pos * 60 - 10))
+            leaderboard_panel_hard.blit(score, (380, 280 + pos * 60 - 20))
+            leaderboard_panel_hard.blit(steps, (580, 280 + pos * 60 - 20))
             pos += 1
 
         return leaderboard_panel_easy, leaderboard_panel_medium, leaderboard_panel_hard
