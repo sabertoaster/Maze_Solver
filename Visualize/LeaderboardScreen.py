@@ -34,7 +34,7 @@ def drawGrid(screen):
 
 # [PROTOTYPE]
 list_level = CircularLinkedList(["Easy", "Medium", "Hard"])
-panel_buttons = ((8, 5), (8, 9))  # left right
+panel_control_buttons = ((8, 5), (8, 9))  # left right
 
 
 class LeaderboardScreen:
@@ -89,6 +89,7 @@ class LeaderboardScreen:
         """
 
         # Background and stuff go here
+        drawGrid(self.screen)
         self.screen.blit(self.frame, (0, 0))
         pygame.display.flip()
 
@@ -214,7 +215,10 @@ class LeaderboardScreen:
         Leaderboard
         :return:
         """
+        esc_button_zone = [(1, 1), (1, 2), (2, 1), (2, 2)]
+        esc_button = morph_image(RESOURCE_PATH + "escape_button.png", (SCENES[SCENE_NAME]["cell"][0] * 2, SCENES[SCENE_NAME]["cell"][1] * 2))
         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
+        self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
         pygame.display.update()
 
         running = True
@@ -246,16 +250,19 @@ class LeaderboardScreen:
                         pygame.display.update()
                         continue
                 if event.type == pygame.MOUSEBUTTONUP:
-                    if mouse_grid_pos == panel_buttons[0]:
+                    if mouse_grid_pos == panel_control_buttons[0]:
                         self.current_level_leaderboard_panel = list_level.back()
                         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
                         pygame.display.update()
                         continue
-                    elif mouse_grid_pos == panel_buttons[1]:
+                    elif mouse_grid_pos == panel_control_buttons[1]:
                         self.current_level_leaderboard_panel = list_level.pop()
                         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
                         pygame.display.update()
                         continue
+                    
+                    if mouse_grid_pos in esc_button_zone:
+                        return "Login", self.player.get_grid_pos()
 
     def get_data_for_leaderboard(self):
         """
@@ -364,10 +371,5 @@ class LeaderboardScreen:
             leaderboard_panel_hard.blit(name, (240, 280 + pos * 60 - 10))
             leaderboard_panel_hard.blit(score, (440, 280 + pos * 60 - 20))
             pos += 1
-
-        escape_button = pygame.image.load(RESOURCE_PATH + "escape_button.png").convert_alpha()
-        leaderboard_panel_easy.blit(escape_button, (0, 0))
-        leaderboard_panel_medium.blit(escape_button, (0, 0))
-        leaderboard_panel_hard.blit(escape_button, (0, 0))
 
         return leaderboard_panel_easy, leaderboard_panel_medium, leaderboard_panel_hard

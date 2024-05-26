@@ -212,18 +212,25 @@ SCENES = {
         'HOVER_FRAME': {},
         "initial_pos": (0, 0),
         "cell": (40, 40),
-        "BGM": "gameplay_BG.png",
+        "BGM": "gameplay.png",
     },
     "Win": {
         'BG': '',
         'DOORS': {},
         'DOORS_CLICK_RANGE': {},
-        'OBJECTS_POS': {},
-        'OBJECTS_INTERACT_RANGE': {},
-        'HOVER_FRAME': {},
+        'OBJECTS_POS': {
+            'yes': [(x, y) for x in range(11, 13) for y in range(8, 13)], 
+            'no': [(x, y) for x in range(11, 13) for y in range(16, 21)],
+        },
+        'OBJECTS_INTERACT_RANGE': {    
+        },
+        'HOVER_FRAME': {
+            'yes': 'continue_hover_yes.png',
+            'no': 'continue_hover_no.png',    
+        },
         "initial_pos": (0, 0),
         "cell": (40, 40),
-        "BGM": "gameplay_BG.png",
+        "BGM": "win.mp3",
     }
     # "full_variables_of_a_scene": {
     #     'BG': '',
@@ -344,11 +351,19 @@ SOUNDS = {
             'volume': 0.5
         },
         'Credit': {
-            'file_name': 'town_bgm.mp3',
+            'file_name': 'credit.mp3',
             'volume': 0.5
         },
         'Gameplay': {
-            'file_name': 'town_bgm.mp3',
+            'file_name': 'gameplay.mp3',
+            'volume': 0.5
+        },
+        'Win': {
+            'file_name': 'win.mp3',
+            'volume': 0.5
+        },
+        'Chasing': {
+            'file_name': 'chasing.mp3',
             'volume': 0.5
         },
     },
@@ -362,11 +377,11 @@ SOUNDS = {
             'volume': 1.0
         },
         'circle_in': {
-            'file_name': 'door_enter.mp3',
+            'file_name': 'circle.mp3',
             'volume': 1.0
         },
         'circle_out': {
-            'file_name': 'door_enter.mp3',
+            'file_name': 'circle.mp3',
             'volume': 1.0
         },
         'zelda_lr': {
@@ -385,8 +400,12 @@ SOUNDS = {
             'file_name': 'door_enter.mp3',
             'volume': 1.0
         },
-        'hole': {
-            'file_name': 'door_enter.mp3',
+        'falling': {
+            'file_name': 'falling_down.mp3',
+            'volume': 1.0
+        },
+        'landing': {
+            'file_name': 'landing.mp3',
             'volume': 1.0
         },
     }

@@ -13,17 +13,17 @@ RESOURCE_PATH += 'img/'
 
 SCENE_NAME = "Login"
 
-# def drawGrid(screen):
-#     """
-#     FOR FUCKING DEBUG THE GRID MAP
-#     :param screen:
-#     :return:
-#     """
-#     blockSize = SCENES[SCENE_NAME]["cell[]SCENE_NAME][0]  # Set the size of the grid block
-#     for x in range(0, RESOLUTION[0], blockSize):
-#         for y in range(0, RESOLUTION[1], blockSize):
-#             rect = pygame.Rect(x, y, blockSize, blockSize)
-#             pygame.draw.rect(screen, COLORS['WHITE'], rect, 1)
+def drawGrid(screen):
+    """
+    FOR FUCKING DEBUG THE GRID MAP
+    :param screen:
+    :return:
+    """
+    blockSize = SCENES[SCENE_NAME]['cell'][0]
+    for x in range(0, RESOLUTION[0], blockSize):
+        for y in range(0, RESOLUTION[1], blockSize):
+            rect = pygame.Rect(x, y, blockSize, blockSize)
+            pygame.draw.rect(screen, (255, 255, 255), rect, 1)
 
 class LoginScreen:
     """
@@ -49,10 +49,10 @@ class LoginScreen:
 
         # Tạo textbox hiển thị notification cho login/ register screen
 
-
         self.sounds_handler = sounds_handler
         
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
+        
 
     def play(self, player):
         """
@@ -61,7 +61,6 @@ class LoginScreen:
         :return:
         """
         self.screen.blit(self.frame, (0, 0))
-        pygame.display.flip()
         
         self.player = player
         self.player.re_init(name=self.player.name, scene=SCENE_NAME, dir=self.player.current_direction)
@@ -88,6 +87,9 @@ class LoginScreen:
                                        ((RESOLUTION[0] - register_panel.get_width()) / 2,
                                         (RESOLUTION[1] - register_panel.get_height()) / 2))
         self.register_panel = add_element(self.register_panel, self.escape_button, (0, 0))
+        
+        self.esc_button = [(x, y) for x in range(1, 4) for y in range(0, 4)]
+
 
         self.notify_text_box = FormManager(self.screen, {
             "notification": {"position": ((RESOLUTION[0] - login_panel.get_width()) // 2 + 85, 550, 568, 40), "color": Color.BLACK.value, "maximum_length": 50,
@@ -106,10 +108,8 @@ class LoginScreen:
                                    transition_type='circle_out')  # draw transition effect
 
         self.transition.transition(transition_type='sign_pop', box=self.sign)
-        # pygame.display.flip()
+        pygame.display.flip()
         
-
-
         self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
         
         self.chosen_door = None
@@ -135,7 +135,7 @@ class LoginScreen:
                     #         transition_type='circle_in')
                     return None, None  # Fucking transmit signal to another scene here, this is just a prototype
                 if self.chosen_door:
-                    if self.panel_fl and event.type == pygame.KEYDOWN:
+                    if self.panel_fl:
                         next_scene, next_grid_pos = self.toggle_panel(event, self.chosen_door)
                         if next_scene:
                             return next_scene, next_grid_pos
@@ -219,11 +219,17 @@ class LoginScreen:
 
         return None, None
 
+    
     def login(self, event):
         """
         Login panel
         """
-        #("hello nigga")
+        if event.type == pygame.MOUSEBUTTONUP:
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
+            if mouse_grid_pos in self.esc_button:
+                return "Login", self.player.get_grid_pos()
+        
         if event.type == pygame.KEYDOWN:
             self.screen.blit(self.login_panel, (0, 0))
             self.text_box.draw()
@@ -269,7 +275,7 @@ class LoginScreen:
                 else:
                     self.notify_text_box.set_text("notification", "The player hasn't registered yet")
                     self.notify_text_box.draw()
-
+            
         pygame.display.update()
 
         return None, None
@@ -279,6 +285,12 @@ class LoginScreen:
         Register panel
         :return: username and password
         """
+        if event.type == pygame.MOUSEBUTTONUP:
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
+            if mouse_grid_pos in self.esc_button:
+                return "Login", self.player.get_grid_pos()
+            
         if event.type == pygame.KEYDOWN:
             self.screen.blit(self.register_panel, (0, 0))
             self.text_box.draw()
@@ -304,6 +316,9 @@ class LoginScreen:
                             # pygame.display.flip()
                             # pygame.event.clear()
                             # pygame.time.delay(1000)
+                            
+                            file.close()
+                            
                             return None, None
 
                         for dic in data:
@@ -313,6 +328,8 @@ class LoginScreen:
                                 self.notify_text_box.set_text("notification",
                                                               "The username has been registered, please register another username")
                                 self.notify_text_box.draw()
+                                
+                                file.close()
 
                                 return None, None
 
@@ -327,6 +344,9 @@ class LoginScreen:
                             # pygame.display.flip()
                             # pygame.event.clear()
                             # pygame.time.delay(1000)
+                        
+                            file.close()
+                            
                             return None, None
                         data = [cur_input]
                     # Rewind to top of the file
@@ -338,7 +358,14 @@ class LoginScreen:
                     self.notify_text_box.set_color("notification", Color.GREEN.value)
                     self.notify_text_box.set_text("notification", "Register successfully")
                     self.notify_text_box.draw()
-                file.close()
+                    pygame.display.flip()
+                    
+                    pygame.time.delay(500)
+                    
+                    file.close()
+                    
+                    return "Login", self.player.get_grid_pos()
+    
 
         pygame.display.update()
 
@@ -351,7 +378,7 @@ class LoginScreen:
         pygame.display.flip()
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
                     return
                 if event.type == pygame.QUIT:
                     pygame.quit()
