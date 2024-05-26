@@ -305,7 +305,8 @@ class Gameplay:
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    pygame.quit()
+                    exit()
                 
                 if start_flag and end_flag:
                     running = False
