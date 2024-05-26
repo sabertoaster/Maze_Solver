@@ -497,14 +497,13 @@ class Gameplay:
                             end_pause_time = time.time()
                             pause_time = float(end_pause_time - start_pause_time)
                             self.maze_time -= pause_time
-                            pygame.key.set_repeat(200, 125)
+                            
                         next_scene, next_pos = self.toggle_panel()
                         pygame.key.set_repeat(200, 125)
                         
                         if next_scene:
                             return next_scene, next_pos
                         
-                        pygame.key.set_repeat(200, 125)
                         pygame.event.clear()
                         break
                         
@@ -534,6 +533,9 @@ class Gameplay:
                     #     pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
                     
                     self.update_screen()
+                    
+                    if event.type != pygame.USEREVENT and len(events) > 1:
+                        pygame.event.clear()
                     
                 pygame.display.update()
 
