@@ -33,12 +33,15 @@ class Transition:
         self.player = player
 
     def circle(self, pos, zoom_in=True):  # pos: x, y
+
+        tmp = pygame.surfarray.array3d(self.screen.copy())
+        self.screen.fill((0, 0, 0))
+        pygame.display.flip()
+
         RADIUS = max(calc_distance(pos, (0, 0)),
                      calc_distance(pos, (0, RESOLUTION[0])),
                      calc_distance(pos, (RESOLUTION[1], 0)),
                      calc_distance(pos, (RESOLUTION[1], RESOLUTION[0])))
-
-        tmp = pygame.surfarray.array3d(self.screen.copy())
 
         rate = 96
         size = 16

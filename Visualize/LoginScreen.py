@@ -103,10 +103,9 @@ class LoginScreen:
 
         # Start transition effect 9 60 9 190
         if self.player.previous_scene == "Menu" or self.is_first_time[0]:
-            self.transition.transition(transition_type='fade', next_scene="Menu")
             self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                                             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                                    transition_type='circle_out')  # draw transition effect
+                                            transition_type='circle_out')  # draw transition effect
             self.transition.transition(transition_type='sign_pop', box=self.sign)
         
         self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, sounds_handler=self.sounds_handler)
