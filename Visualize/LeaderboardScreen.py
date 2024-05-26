@@ -327,8 +327,12 @@ class LeaderboardScreen:
         name_font = pygame.font.Font(FONTS["default_bold"], 30)
         score_font = pygame.font.Font(FONTS["default"], 40)
         pos = 0
+
         for key, value in leaderboard_data["Easy"].items():
-            name = name_font.render(str(pos + 1) + ". " + str(key), True, COLORS.LIGHT_YELLOW.value)
+            player_name = str(key)
+            if len(player_name) > 6:
+                player_name = player_name[:6] + "..."
+            name = name_font.render(str(pos + 1) + ". " + player_name, True, COLORS.LIGHT_YELLOW.value)
             score = score_font.render(str(value), True, COLORS.BLACK.value)
 
             leaderboard_panel_easy.blit(name, (240, 280 + pos * 60 - 10))
@@ -336,21 +340,34 @@ class LeaderboardScreen:
             pos += 1
 
         pos = 0
+
         for key, value in leaderboard_data["Medium"].items():
-            name = name_font.render(str(pos + 1) + ". " + str(key), True, COLORS.LIGHT_YELLOW.value)
+            player_name = str(key)
+            if len(player_name) > 6:
+                player_name = player_name[:6] + "..."
+            name = name_font.render(str(pos + 1) + ". " + player_name, True, COLORS.LIGHT_YELLOW.value)
             score = score_font.render(str(value), True, COLORS.BLACK.value)
 
             leaderboard_panel_medium.blit(name, (240, 280 + pos * 60 - 10))
-            leaderboard_panel_medium.blit(score, (460, 280 + pos * 60 - 20))
+            leaderboard_panel_medium.blit(score, (440, 280 + pos * 60 - 20))
             pos += 1
 
         pos = 0
+
         for key, value in leaderboard_data["Hard"].items():
-            name = name_font.render(str(pos + 1) + ". " + str(key), True, COLORS.LIGHT_YELLOW.value)
+            player_name = str(key)
+            if len(player_name) > 6:
+                player_name = player_name[:6] + "..."
+            name = name_font.render(str(pos + 1) + ". " + player_name, True, COLORS.LIGHT_YELLOW.value)
             score = score_font.render(str(value), True, COLORS.BLACK.value)
 
             leaderboard_panel_hard.blit(name, (240, 280 + pos * 60 - 10))
-            leaderboard_panel_hard.blit(score, (460, 280 + pos * 60 - 20))
+            leaderboard_panel_hard.blit(score, (440, 280 + pos * 60 - 20))
             pos += 1
+
+        escape_button = pygame.image.load(RESOURCE_PATH + "escape_button.png").convert_alpha()
+        leaderboard_panel_easy.blit(escape_button, (0, 0))
+        leaderboard_panel_medium.blit(escape_button, (0, 0))
+        leaderboard_panel_hard.blit(escape_button, (0, 0))
 
         return leaderboard_panel_easy, leaderboard_panel_medium, leaderboard_panel_hard

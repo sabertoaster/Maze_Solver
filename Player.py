@@ -153,7 +153,7 @@ class Player:
     def re_init(self, name='Guest', scene='Login', dir='down'):
         if scene != self.current_scene:
             self.previous_scene = self.current_scene
-        
+        self.touched_obj = None
         self.current_scene = scene
         self.name = name
 

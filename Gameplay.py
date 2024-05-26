@@ -1,32 +1,27 @@
 # Custom imports
 from Algorithms.Algorithms import *
-from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_energy
+from Algorithms.MazeGeneration import Maze, convert as convert_maze
 from GridMapObject import GridMapObject
 from GridMap import GridMap
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, COLORS, FPS
-import os
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, FPS
 RESOURCE_PATH += 'img/'
-# from CURR_PLAYER_PARAMS import CURRENT_LEVEL, CURRENT_PLAY_MODE
-# Pre-defined imports
+
+import os
 import sys
 import pygame
 import numpy as np
-import cv2
 import json
 import thorpy as tp
-from enum import Enum
-from Visualize.ImageProcess import blur_screen, morph_image, add_element
-from Visualize.TextBox import TextBox, FormManager, Color
-from Visualize.MouseEvents import MouseEvents
+from Visualize.ImageProcess import blur_screen, morph_image
+from Visualize.TextBox import FormManager, Color
 from Visualize.Transition import Transition
-from Visualize.HangingSign import HangingSign
 from Minimap import Minimap
-from Save import *
 from Player import *
 from random import shuffle
 import time
+from Visualize.WinScreen import WinScreen
 
-SCENE_NAME = "GamePlay"
+SCENE_NAME = "Gameplay"
 
 class Gameplay:
     def __init__(self, screen, start_pos, end_pos, file_name='', maze_size=(20, 20), sounds_handler=None):
@@ -39,7 +34,7 @@ class Gameplay:
 
         # INSTANTIATE PANELS
         self.init_panel()
-        self.start_time = time.time()
+        self.start_time = 0
         self.maze_time = 0
         self.maze_score = 0
         self.maze_step = 0
@@ -52,6 +47,8 @@ class Gameplay:
         SCENES["Gameplay"]["cell"] = (RESOLUTION[1] // self.minimap_grid_size[0], RESOLUTION[1] // self.minimap_grid_size[0])
 
         self.sounds_handler = sounds_handler    
+        
+        self.win_screen = WinScreen(self.screen, self.sounds_handler)
         
     def fill_grid_map(self):
         for i in range(len(self.maze_toString)):
@@ -250,12 +247,20 @@ class Gameplay:
         current_time = time.time()
         self.maze_time += float(current_time - self.start_time)
         self.start_time = current_time
-        
+        self.visualize_time_and_step()
+
     def play(self, player):
         self.player = player
         self.get_data()
 
         # INSTANTIATE MAZE
+
+        # VISUALIZE TIME AND STEPS
+        self.text_box = FormManager(self.screen, {
+            "time": {"position": (900, 600, 568, 30), "color": Color.RED.value, "maximum_length": 16,
+                         "focusable": False, "init_text": ""},  # (x, y, width, height)
+            "step": {"position": (900, 700, 568, 30), "color": Color.RED.value, "maximum_length": 16,
+                         "focusable": False, "init_text": ""}})  # (x, y, width, height)
 
         self.init_maze()
 
@@ -320,10 +325,10 @@ class Gameplay:
         self.player.deactivate(active=False)
         
         while True:
-            self.update_time()
+            # self.visualize_time_and_step()
             events = pygame.event.get()
             mouse_rel = pygame.mouse.get_rel()
-            
+
             if self.choose_mode_flag:
                 choose_mode_launcher.update(events=events, mouse_rel=mouse_rel)
             elif self.manual_flag:
@@ -331,12 +336,11 @@ class Gameplay:
             elif self.auto_flag:
                 if self.auto_on:
                     self.auto_move()
-                
                 # Block player keyboard input
-                
                 auto_launcher.update(events=events, mouse_rel=mouse_rel)
                 running_launcher.update(events=events, mouse_rel=mouse_rel)
-            
+                
+            self.update_time() if self.manual_flag else None
             for event in events:
                 if event.type == pygame.QUIT:
                     return None, None
@@ -346,23 +350,18 @@ class Gameplay:
                         continue
                     
                     if event.key == pygame.K_ESCAPE:
-                        # Disable spamming button
+                        if self.manual_flag:
+                            start_pause_time = time.time()
+                            end_pause_time = time.time()
+                            pause_time = float(end_pause_time - start_pause_time)
+                            self.maze_time -= pause_time
+                            pygame.key.set_repeat(200, 125)
                         pygame.key.set_repeat()
-                        start_pause_time = time.time()
                         next_scene, next_pos = self.toggle_panel()
-                        # Enable spamming button again
-                        end_pause_time = time.time()
-                        pause_time = float(end_pause_time - start_pause_time)
-                        self.maze_time -= pause_time
-                        pygame.key.set_repeat(200, 125)
-
                         if next_scene:
                             return next_scene, next_pos
 
                         break
-                    if event.key == pygame.K_m:
-                        pass
-                        # Handle minimap here
                         
                     if event.key == pygame.K_g:
                         pass
@@ -380,7 +379,10 @@ class Gameplay:
                         if self.player.get_grid_pos()[::-1] == self.end_pos:
                             if self.auto_flag != True:
                                 self.save_data(is_win=True)
-                            return "Win", SCENES["Win"]["initial_pos"]
+
+                            scene_name, initial_pos = self.finish_game_panel()
+                            if scene_name:
+                                return scene_name, initial_pos
                         if event.type != pygame.USEREVENT:
                             pygame.event.clear()
                         
@@ -397,6 +399,31 @@ class Gameplay:
     #     else:
     #         data = read_file(self.file_name)
     #         self.maze_toString = data['maze_toString']
+
+    def finish_game_panel(self):
+        
+        current_frame = self.screen.copy()
+        blur = blur_screen(current_frame)
+        self.win_screen.play(background=blur)
+        
+        running = True
+        while running:
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.QUIT:
+                    return None, None
+                
+                mouse_pos = pygame.mouse.get_pos()
+                mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (
+                            mouse_pos[0] // SCENES[SCENE_NAME]['cell'][1])
+                
+                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
+                    if event.key == pygame.K_m:
+                        running = False
+                        return "Menu", SCENES["Menu"]["initial_pos"]
+                    else:
+                        running = False
+                        return "Gameplay", SCENES["Gameplay"]["initial_pos"]
 
     def init_maze(self):
         # INSTANTIATE MAZE
@@ -694,7 +721,8 @@ class Gameplay:
 
                     return None, None
                 if self.associated_values[1]: #If click restart button
-                    pass
+                    self.associated_values[1] = 0
+                    return "Gameplay", SCENES["Gameplay"]["initial_pos"]
                 if self.associated_values[2]: #If click save button
                     self.associated_values[2] = 0
                     self.save_data()
@@ -712,8 +740,8 @@ class Gameplay:
                     return "Menu", SCENES["Menu"]["initial_pos"]
 
                 if self.associated_values[4]: #If click quit button
-                    sys.exit(0)
                     pygame.quit()
+                    exit()
 
         return None, None
     
@@ -741,6 +769,7 @@ class Gameplay:
             choose_mode.launch_alone(create_background)
             
             if choose_mode.choice == "Manual":
+                self.start_time = time.time()
                 self.choose_mode_flag = False
                 self.manual_flag = True
                 
@@ -874,6 +903,14 @@ class Gameplay:
                          (self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size))
 
         return copy_screen
+
+    def visualize_time_and_step(self):
+        self.text_box.set_text("time", str(round(self.maze_time, 2)))
+        self.text_box.set_text("step", str(self.maze_step))
+
+        self.text_box.get_textbox("time").draw(background=True)
+        self.text_box.get_textbox("step").draw(background=True)
+        pygame.display.flip()
 # screen = pygame.display.set_mode((1300, 900))
 # test = Gameplay(screen, (0,0), (9, 9))
 # test.play()
