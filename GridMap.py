@@ -155,9 +155,3 @@ class MapManager:
         """
 
         return self.map_grids[name]
-
-    # def modify_gridmap(maze: Maze):
-    #     var 
-    #     for 
-    #     for  == "#"
-    #     self.get_map("Gameplay") = var

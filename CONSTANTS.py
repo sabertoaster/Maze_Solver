@@ -462,7 +462,7 @@ CREDIT = {
 
     "SPECIAL THANKS TO": {
         "Nguyen Tran Duy Minh and Le Thanh Tung": "For guidance and support throughout the project.",
-        "Chan Nguyen": "For the inspiration and motivation to complete the project.",
+        # "Chan Nguyen": "For the inspiration and motivation to complete the project.",
         "HCMUS": "For providing the opportunity to learn and grow.",
         "You": "For playing our game.",
     },

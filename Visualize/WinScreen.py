@@ -115,7 +115,6 @@ class WinScreen:
                 elif not idling and not key:
                     self.screen.blit(continue_panel, (
                         (RESOLUTION[0] - continue_panel.get_width()) / 2, (RESOLUTION[1] - continue_panel.get_height()) / 2))
-\
                 pygame.display.flip()
 
         

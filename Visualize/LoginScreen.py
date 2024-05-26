@@ -15,7 +15,7 @@ SCENE_NAME = "Login"
 
 def drawGrid(screen):
     """
-    FOR FUCKING DEBUG THE GRID MAP
+    FOR DEBUG THE GRID MAP
     :param screen:
     :return:
     """

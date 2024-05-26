@@ -257,9 +257,9 @@ class Gameplay:
 
         # VISUALIZE TIME AND STEPS
         self.text_box = FormManager(self.screen, {
-            "time": {"position": (900, 600, 568, 30), "color": Color.RED.value, "maximum_length": 16,
+            "time": {"position": (850, 600, 568, 30), "color": Color.RED.value, "maximum_length": 16,
                          "focusable": False, "init_text": ""},  # (x, y, width, height)
-            "step": {"position": (900, 700, 568, 30), "color": Color.RED.value, "maximum_length": 16,
+            "step": {"position": (850, 700, 568, 30), "color": Color.BLUE.value, "maximum_length": 16,
                          "focusable": False, "init_text": ""}})  # (x, y, width, height)
 
         self.init_maze()
@@ -367,10 +367,6 @@ class Gameplay:
                         
                     if event.key == pygame.K_g:
                         pass
-                        # save = SaveFile(self.maze_toString, self.player)
-                        # save.run_save('test1')
-                        
-                        # Handle minimap here
                         
                     player_response = self.player.handle_event(event.key)
                     
@@ -387,20 +383,10 @@ class Gameplay:
                                 return scene_name, initial_pos
                         if event.type != pygame.USEREVENT:
                             pygame.event.clear()
-                        
-                    # if self.solution_flag:
-                    #     ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
-                    #     pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
+
                     
                 pygame.display.update()
 
-    # def update_maze(self):
-    #     if self.file_name == '':
-    #         self.maze = Maze("Wilson", self.maze_size)
-    #         self.maze_toString = convert_maze(self.maze)
-    #     else:
-    #         data = read_file(self.file_name)
-    #         self.maze_toString = data['maze_toString']
 
     def finish_game_panel(self):
         
@@ -450,11 +436,6 @@ class Gameplay:
 
         self.visual_maze_display_pos = (0, RESOLUTION[0] - (RESOLUTION[0] - RESOLUTION[1]) / 2)
 
-        # test = convert_energy(self.maze_toString)
-        # for i in range(len(test)):
-        #     for j in range(len(test[0])):
-        #         print(test[i][j], end='')
-        #     print()
 
     def init_background(self):
         self.bg_cell_size = RESOLUTION[1] // self.minimap_grid_size[1]
@@ -719,8 +700,9 @@ class Gameplay:
                     return "Gameplay", SCENES["Gameplay"]["initial_pos"]
                 if self.associated_values[2]: #If click save button
                     self.associated_values[2] = 0
-                    self.save_data()
-                    self.save_fl = True  # Set save flag to True
+                    if not self.auto_flag:
+                        self.save_data()
+                        self.save_fl = True  # Set save flag to True
 
                 if self.associated_values[3]: #If click menu button
                     self.player.deactivate(active=True)
@@ -757,8 +739,6 @@ class Gameplay:
         
         def create_background(): # Ham fix cai background, khong co gi trong day
             pass
-        # def choose_mode_background():
-        #     self.screen.blit(self.minimap.new_background, self.minimap.display_pos, (self.minimap.cut_start_pos, self.minimap.cut_area))
         def click_choose_mode():
             choose_mode.launch_alone(create_background)
             
@@ -873,7 +853,7 @@ class Gameplay:
             
         return copy_screen
 
-    #Draw each cell of the finding path process of the algorithm
+    # Draw each cell of the finding path process of the algorithm
     def visualize_solution(self, screen): #Screen: The finding path surface
         pos = self.minimap.visited[self.minimap.visited_index]
         
@@ -900,12 +880,9 @@ class Gameplay:
         return copy_screen
 
     def visualize_time_and_step(self):
-        self.text_box.set_text("time", str(round(self.maze_time, 2)))
-        self.text_box.set_text("step", str(self.maze_step))
+        self.text_box.set_text("time", "Time passed: " + str(round(self.maze_time, 2)))
+        self.text_box.set_text("step", "Number of steps: " + str(self.maze_step))
 
         self.text_box.get_textbox("time").draw(background=True)
         self.text_box.get_textbox("step").draw(background=True)
         pygame.display.flip()
-# screen = pygame.display.set_mode((1300, 900))
-# test = Gameplay(screen, (0,0), (9, 9))
-# test.play()

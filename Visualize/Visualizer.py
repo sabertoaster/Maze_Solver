@@ -77,25 +77,3 @@ class Visualizer:
         del scene
         return next_scene, next_grid_pos
 
-    def apply_transition(self):
-
-        pass
-
-    # def matching_entity(self, entity: str) -> pygame.Surface:
-    #     match entity:
-    #         case "Login":
-    #             return login(RESOURCE_PATH)
-    #         case "Register":
-    #             pass
-    #         case "Menu":
-    #             pass
-    #         case "Play":
-    #             pass
-    #         case "Pause":
-    #             pass
-    #         case "Leaderboard":
-    #             pass
-    #         case "Settings":
-    #             pass
-    #         case "GameOver":
-    #             pass

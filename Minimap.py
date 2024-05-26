@@ -65,20 +65,11 @@ class Minimap:
         self.player.name_box.set_position(
             (self.player.visual_pos[0] - (self.player.name_length // 2) + self.cell_size // 2,
              self.player.visual_pos[1] - 1.5 * self.cell_size))
-        # self.visual_step = self.player.grid_step * self.cell_size
-
-    # def resize_surface(self, new_size, new_display_pos, new_zoom_percentage):
-    #     self.length = new_size[0]
-    #     self.miniscreen = pygame.Surface((new_size[1], new_size[0]))
-    #     self.display_pos = new_display_pos
-    #     self.zoom_percentage = new_zoom_percentage
 
     def update(self, screenCopy):
         # Draw the maze on minimap everytime the player move
 
-        # self.screen.blit(screenCopy.copy(), (0,0))
         self.draw(screenCopy)
-        # pygame.event.clear()
 
     def init_at_start(self, screenCopy):
         self.draw_without_player(screenCopy)
@@ -88,20 +79,10 @@ class Minimap:
         Input:
         - size: Get the size of the displayed minimap
         '''
-        # x_start = current_player_pos[0] - int((size[0] // 2) * self.zoom_percentage)
-        # x_end = current_player_pos[0] + int((size[0] // 2) * self.zoom_percentage)
-        # y_start = current_player_pos[1] - int((size[1] // 2) * self.zoom_percentage)
-        # y_end = current_player_pos[1] + int((size[1] // 2) * self.zoom_percentage)
 
-        # ceil_rect = pygame.Rect((j - y_start) * self.cell_size, (i - x_start) * self.cell_size, self.cell_size, self.cell_size)
 
         if self.player.active:
             if self.player.visualize_direction[0] != self.player.visualize_direction[1]:
-                # self.cut_surface = self.cut_maze(screenCopy)
-
-                # self.screen.blit(self.cut_surface, self.display_pos) 
-
-                # pygame.display.update() 
                 rate = 12
                 for i in range(rate):
                     self.new_background = self.cut_maze(screenCopy, rate)
@@ -128,20 +109,9 @@ class Minimap:
         Input:
         - size: Get the size of the displayed minimap
         '''
-        # x_start = current_player_pos[0] - int((size[0] // 2) * self.zoom_percentage)
-        # x_end = current_player_pos[0] + int((size[0] // 2) * self.zoom_percentage)
-        # y_start = current_player_pos[1] - int((size[1] // 2) * self.zoom_percentage)
-        # y_end = current_player_pos[1] + int((size[1] // 2) * self.zoom_percentage)
-
-        # ceil_rect = pygame.Rect((j - y_start) * self.cell_size, (i - x_start) * self.cell_size, self.cell_size, self.cell_size)
 
         if self.player.active:
             if self.player.visualize_direction[0] != self.player.visualize_direction[1]:
-                # self.cut_surface = self.cut_maze(screenCopy)
-
-                # self.screen.blit(self.cut_surface, self.display_pos)
-
-                # pygame.display.update()
                 rate = 60
                 for i in range(0, rate, 4):
                     self.new_background = self.screen_without_player(screenCopy)
@@ -198,17 +168,6 @@ class Minimap:
         self.player.draw_on_minimap(copy_screen, self.cell_size, ratio)
         # Convert surface to numpy array
         return copy_screen
-        # maze_surface = pygame.surfarray.array3d(copy_screen)
-
-        # Get a local area of the maze surrounding players
-        # maze_surface = maze_surface[self.maze_cell_size * (self.player.grid_pos[0]) : self.maze_cell_size * (self.player.grid_pos[0] + self.row)
-        #                             ,self.maze_cell_size * (self.player.grid_pos[1]) : self.maze_cell_size * (self.player.grid_pos[1] + self.col)]
-
-        # maze_surface = maze_surface[int(self.player.visual_pos[0]) - self.cell_size * self.col // 2 : int(self.player.visual_pos[0]) + self.cell_size * self.col // 2
-        #                             ,int(self.player.visual_pos[1]) - self.cell_size * self.row // 2 : int(self.player.visual_pos[1]) + self.cell_size * self.row // 2]
-
-        # return pygame.surfarray.make_surface(maze_surface)
-
     def screen_without_player(self, screen):
         copy_screen = screen.copy()
 
