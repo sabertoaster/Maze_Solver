@@ -572,7 +572,7 @@ class Gameplay:
         copy_screen = self.draw_player(copy_screen)
         self.screen.blit(copy_screen, (RESOLUTION[0] - copy_screen.get_width(), 0))
 
-    def update_screen(self):
+    def update_screen(self, continue_showing = False):
         if self.solution_flag and self.auto_flag:
             if self.auto_algorithm == "BFS":
                 self.minimap.trace_path, self.minimap.visited = self.algorithms.bfs(self.player.grid_pos[::-1], self.end_pos)
@@ -587,7 +587,7 @@ class Gameplay:
                 
         self.minimap.update(self.minimap.maze_surface)
         
-        if self.solution_flag and self.auto_flag and not self.minimap.finish_finding_path:
+        if self.solution_flag and self.auto_flag and not self.minimap.finish_finding_path and not continue_showing:
             while self.minimap.visited_index < len(self.minimap.visited):
                 self.visualize_solution(self.finding_path_surface)
             
@@ -821,12 +821,13 @@ class Gameplay:
                 self.auto_algorithm = auto_options.choice
                 
             # Reset finding path
-            self.minimap.visited_index = 0
-            self.finding_path_surface = self.visual_maze.copy()
-            self.minimap.finish_finding_path = False
+            if bool(auto_options.choice):
+                self.minimap.visited_index = 0
+                self.finding_path_surface = self.visual_maze.copy()
+                self.minimap.finish_finding_path = False
             
             self.screen.fill((0,0,0))
-            self.update_screen()
+            self.update_screen(not bool(auto_options.choice))
             
             pygame.display.update()
         def click_running():
