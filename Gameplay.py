@@ -356,11 +356,13 @@ class Gameplay:
                             pause_time = float(end_pause_time - start_pause_time)
                             self.maze_time -= pause_time
                             pygame.key.set_repeat(200, 125)
+                            
                         pygame.key.set_repeat()
                         next_scene, next_pos = self.toggle_panel()
+                        pygame.key.set_repeat(200, 125)
+                        
                         if next_scene:
                             return next_scene, next_pos
-
                         break
                         
                     if event.key == pygame.K_g:
@@ -573,7 +575,7 @@ class Gameplay:
         self.screen.blit(copy_screen, (RESOLUTION[0] - copy_screen.get_width(), 0))
 
     def update_screen(self, continue_showing = False):
-        if self.solution_flag and self.auto_flag:
+        if self.solution_flag and self.auto_flag and not self.minimap.finish_finding_path and not continue_showing:
             if self.auto_algorithm == "BFS":
                 self.minimap.trace_path, self.minimap.visited = self.algorithms.bfs(self.player.grid_pos[::-1], self.end_pos)
             elif self.auto_algorithm == "DFS":
@@ -895,7 +897,7 @@ class Gameplay:
         self.screen.blit(screen, (RESOLUTION[0] - screen.get_width(), 0))
         
         pygame.display.update()
-        pygame.time.delay(10)
+        pygame.time.delay(5)
 
     def draw_player(self, screen):
         copy_screen = screen.copy()
