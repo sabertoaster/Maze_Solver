@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 import pygame.locals as pl
 from pygame_textinput import TextInputVisualizer, TextInputManager
@@ -101,7 +103,7 @@ class LeaderboardScreen:
         
         self.show_instructions = [False]
 
-        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, self.show_instructions)
+        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, self.show_instructions, sounds_handler=self.sounds_handler)
 
         self.chosen_door = None
         self.chosen_obj = None
@@ -228,6 +230,7 @@ class LeaderboardScreen:
             for event in events:
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    sys.exit()
 
                 mouse_pos = pygame.mouse.get_pos()
                 mouse_grid_pos = (mouse_pos[1] // SCENES[SCENE_NAME]['cell'][0]), (

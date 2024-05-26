@@ -37,13 +37,15 @@ class Visualizer:
         
         self.sounds_handler = sounds_handler
         
+        self.FIRST_TIME = [True]
+        
         self.reset_scene_collection()
         
     def reset_scene_collection(self):
         self.scenes_collection = {
-            "Login": login(self.screen, self.sounds_handler),
+            "Login": login(self.screen, self.sounds_handler, is_first_time=self.FIRST_TIME),
             "Register": None,  # Chung với Login
-            "Menu": menu(self.screen, self.sounds_handler),
+            "Menu": menu(self.screen, sounds_handler=self.sounds_handler),
             "Play": play(self.screen, self.sounds_handler),  # Chọn mode
             "Leaderboard": leaderboard(self.screen, self.sounds_handler),
             "Settings": None,
@@ -64,6 +66,7 @@ class Visualizer:
         :param scene_name:
         :return:
         """
+        
         if scene_name == "Gameplay":
             file_name = ''
             gameplay_scene = Gameplay(self.screen, (0, 0), (0, 0), file_name, sounds_handler=self.sounds_handler)

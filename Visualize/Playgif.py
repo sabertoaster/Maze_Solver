@@ -1,5 +1,5 @@
 import pygame
-from Visualize.ImageProcess import morph_image
+from Visualize.ImageProcess import morph_image, blur_screen
 from CONSTANTS import RESOLUTION, RESOURCE_PATH
 RESOURCE_PATH += 'animation/'
 import os
@@ -21,7 +21,7 @@ def play_gif(screen, original_frame=None, name='welcome', sounds_handler=None):
     for filename in os.listdir(RESOURCE_PATH + name):
         if filename.endswith(".png"):
             if filename == 'background.png':
-                background = morph_image(RESOURCE_PATH + name + "/" + filename, RESOLUTION)
+                background = blur_screen(morph_image(RESOURCE_PATH + name + "/" + filename, RESOLUTION))
                 continue
             frame = morph_image(RESOURCE_PATH + name + "/" + filename, RESOLUTION)
             frames.append(frame)

@@ -81,7 +81,7 @@ class PlayScreen:
         self.show_instructions = [False]
         self.instructions_frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]['BG_instructions'], RESOLUTION)
         
-        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, self.show_instructions)
+        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, self.show_instructions, sounds_handler=self.sounds_handler)
 
         self.chosen_obj = None
         self.chosen_door = None

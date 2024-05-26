@@ -4,7 +4,7 @@ from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH
 RESOURCE_PATH += 'img/'
 
 class MouseEvents:
-    def __init__(self, screen, player, original_frame, show_instructions=[False]):
+    def __init__(self, screen, player, original_frame, show_instructions=[False], sounds_handler=None):
         self.screen = screen
         self.player = player
         self.current_scene = self.player.current_scene
@@ -15,6 +15,9 @@ class MouseEvents:
         self.player_idling = True
         
         self.show_instructions = show_instructions
+        
+        if sounds_handler:
+            self.sounds_handler = sounds_handler
 
     def set_pos(self, pos):
         x, y = (pos[1] // SCENES[self.current_scene]['cell'][0]), (pos[0] // SCENES[self.current_scene]['cell'][1])
@@ -30,11 +33,16 @@ class MouseEvents:
         for key, value in SCENES[self.current_scene]['DOORS_CLICK_RANGE'].items():
             for item in value:
                 if item == self.pos:
+                    if self.sounds_handler and self.current_scene == 'Login':
+                        self.sounds_handler.play_sfx('door_open')
+
                     return key, None
                 
         for key, value in SCENES[self.current_scene]['OBJECTS_POS'].items():
             for item in value:
                 if item == self.pos:
+                    if self.sounds_handler:
+                        self.sounds_handler.play_sfx('interact')
                     return None, key
                     
         return None, None

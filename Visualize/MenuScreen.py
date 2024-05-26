@@ -52,7 +52,6 @@ class MenuScreen:
 
         # Background and stuff go here
         self.screen.blit(self.frame, (0, 0))
-        pygame.display.flip()
 
         self.player = player
         self.player.re_init(name=self.player.name, scene=SCENE_NAME, dir=self.player.current_direction)  
@@ -61,6 +60,9 @@ class MenuScreen:
         # Add login panel background
         self.blur = blur_screen(screen=self.screen.copy())
         if self.player.previous_scene == "Login":
+            self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                                                                self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                                                        transition_type='circle_out')            
             self.transition.transition(transition_type='sign_pop', box=self.sign)
         
         # Play BGM
@@ -68,7 +70,7 @@ class MenuScreen:
 
         self.show_instructions = [False]
 
-        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, self.show_instructions)
+        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, self.show_instructions, sounds_handler=self.sounds_handler)
         
         self.chosen_obj = None
         self.chosen_door = None
@@ -171,6 +173,9 @@ class MenuScreen:
         if name:
                         
             if name == "Login":
+                
+                self.sounds_handler.play_sfx('door_open')
+                
                 self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                                                 self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                                            transition_type='circle_in')

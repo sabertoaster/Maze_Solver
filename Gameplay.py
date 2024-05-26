@@ -263,6 +263,11 @@ class Gameplay:
                     self.end_pos = (i, j)
                     
         self.screen.fill((0, 0, 0))
+        text = TextBox(self.screen, (100, 100, 400, 40), Color.GREEN.value, None, "Click to choose start position first, then end position")
+        text.draw()
+        text = TextBox(self.screen, (180, 700, 400, 50), Color.RED.value, None, "Press Escape key to choose random")
+        text.draw()
+
         pygame.display.flip()
         rect_list = []
             
@@ -351,7 +356,9 @@ class Gameplay:
                             
             pygame.display.flip()
             pygame.time.delay(10)
-        
+
+        self.screen.fill((0, 0, 0))
+
 
     def play(self, player):
         self.player = player
@@ -490,14 +497,13 @@ class Gameplay:
                             end_pause_time = time.time()
                             pause_time = float(end_pause_time - start_pause_time)
                             self.maze_time -= pause_time
-                            pygame.key.set_repeat(200, 125)
+                            
                         next_scene, next_pos = self.toggle_panel()
                         pygame.key.set_repeat(200, 125)
                         
                         if next_scene:
                             return next_scene, next_pos
                         
-                        pygame.key.set_repeat(200, 125)
                         pygame.event.clear()
                         break
                         
@@ -527,6 +533,9 @@ class Gameplay:
                     #     pygame.draw.rect(self.visual_maze, (255,255,255), ceil_rect)
                     
                     self.update_screen()
+                    
+                    if event.type != pygame.USEREVENT and len(events) > 1:
+                        pygame.event.clear()
                     
                 pygame.display.update()
 
@@ -883,6 +892,7 @@ class Gameplay:
                         return None, None
 
                 if self.associated_values[0]: #If click resume button
+                    self.sounds_handler.play_sfx('interact')
                     pygame.event.clear()
 
                     self.associated_values[0] = 0
@@ -896,15 +906,18 @@ class Gameplay:
 
                     return None, None
                 if self.associated_values[1]: #If click restart button
+                    self.sounds_handler.play_sfx('interact')
                     self.associated_values[1] = 0
                     return "Gameplay", SCENES["Gameplay"]["initial_pos"]
                 if self.associated_values[2]: #If click save button
+                    self.sounds_handler.play_sfx('interact')
                     self.associated_values[2] = 0
                     if not self.auto_flag:
                         self.save_data()
                         self.save_fl = True  # Set save flag to True
 
                 if self.associated_values[3]: #If click menu button
+                    self.sounds_handler.play_sfx('interact')
                     self.player.deactivate(active=True)
 
                     self.transition.transition(
@@ -916,6 +929,7 @@ class Gameplay:
                     return "Menu", SCENES["Menu"]["initial_pos"]
 
                 if self.associated_values[4]: #If click quit button
+                    self.sounds_handler.play_sfx('interact')
                     pygame.quit()
                     exit()
 
@@ -942,13 +956,17 @@ class Gameplay:
         def click_choose_mode():
             choose_mode.launch_alone(create_background)
             
+            self.sounds_handler.play_sfx('interact')
+            
             if choose_mode.choice == "Manual":
+                self.sounds_handler.play_sfx('interact')
                 self.start_time = time.time()
                 self.choose_mode_flag = False
                 self.manual_flag = True
                 
                 self.player.deactivate(active=True)
             elif choose_mode.choice == "Auto Mode":
+                self.sounds_handler.play_sfx('interact')
                 self.choose_mode_flag = False
                 self.auto_flag = True
                 
@@ -965,13 +983,17 @@ class Gameplay:
         def click_hint():
             manual_mode.launch_alone(create_background)
             
+            self.sounds_handler.play_sfx('interact')
+            
             if manual_mode.choice == "On":
+                self.sounds_handler.play_sfx('interact')
                 self.solution_flag = True
                 self.minimap.solution_flag = True
                 self.minimap.hint_flag = True
                 self.update_screen()
                 pygame.display.update()
             elif manual_mode.choice == "Off":
+                self.sounds_handler.play_sfx('interact')
                 self.solution_flag = False
                 self.minimap.solution_flag = False
                 self.minimap.hint_flag = False
@@ -989,9 +1011,13 @@ class Gameplay:
             auto_options.launch_alone(create_background)
             pygame.event.clear()
             
+# <<<<<<< HEAD
+            self.sounds_handler.play_sfx('interact')
             if not auto_options.choice:
+                self.sounds_handler.play_sfx('interact')
                 self.auto_algorithm = "A*"
             else:
+                self.sounds_handler.play_sfx('interact')
                 self.auto_algorithm = auto_options.choice
                 
             # Reset finding path
@@ -999,6 +1025,30 @@ class Gameplay:
                 self.minimap.visited_index = 0
                 self.finding_path_surface = self.visual_maze.copy()
                 self.minimap.finish_finding_path = False
+# =======
+#             self.sounds_handler.play_sfx('interact')
+#
+#             if not auto_options.choice or auto_options.choice == 'BFS':
+#                 self.sounds_handler.play_sfx('interact')
+#                 self.trace_path, _ = self.algorithms.bfs(self.player.grid_pos[::-1], self.end_pos)
+#                 self.auto_index = 0
+#             elif auto_options.choice == 'DFS':
+#                 self.sounds_handler.play_sfx('interact')
+#                 self.trace_path, _ = self.algorithms.dfs(self.player.grid_pos[::-1], self.end_pos)
+#                 self.auto_index = 0
+#             elif auto_options.choice == 'A*':
+#                 self.sounds_handler.play_sfx('interact')
+#                 self.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+#                 self.auto_index = 0
+#             elif auto_options.choice == 'Greedy':
+#                 self.sounds_handler.play_sfx('interact')
+#                 self.trace_path, _ = self.algorithms.greedy(self.player.grid_pos[::-1], self.end_pos)
+#                 self.auto_index = 0
+#             elif auto_options.choice == 'Dijkstra':
+#                 self.sounds_handler.play_sfx('interact')
+#                 self.trace_path, _ = self.algorithms.dijkstra(self.player.grid_pos[::-1], self.end_pos)
+#                 self.auto_index = 0
+# >>>>>>> An-Visualize
             
             self.screen.fill((0,0,0))
             self.update_screen(not bool(auto_options.choice))

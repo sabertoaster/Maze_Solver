@@ -302,12 +302,10 @@ class Player:
         Interact with the environment
         :return:
         """
-        if self.current_scene != 'GamePlay':
-            self.sounds_handler.play_sfx('interact')
-    
-            self.interacted_obj = None
-            for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
-                if self.grid_pos in val:
-                    self.interacted_obj = key
-                    break
+        self.interacted_obj = None
+        for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
+            if self.grid_pos in val:
+                self.sounds_handler.play_sfx('interact')
+                self.interacted_obj = key
+                break
 
