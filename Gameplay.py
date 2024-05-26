@@ -263,7 +263,7 @@ class Gameplay:
                     self.maze_toString[i][j] = ' '
                     self.end_pos = (i, j)
                     
-        self.screen.fill((0,0,0))
+        self.screen.fill((0, 0, 0))
         pygame.display.flip()
         rect_list = []
             
@@ -279,6 +279,22 @@ class Gameplay:
         running = True
         start_flag = False
         end_flag = False
+
+        for i in range(len(self.maze_toString)):
+            for j in range(len(self.maze_toString[0])):
+                ceil_rect = rect_list[i][j]
+                if self.maze_toString[i][j] == 'S':
+                    pygame.draw.rect(self.screen, (255, 255, 0), ceil_rect)
+                elif self.maze_toString[i][j] == 'E':
+                    pygame.draw.rect(self.screen, (255, 0, 0), ceil_rect)
+                elif self.maze_toString[i][j] == '#':
+                    pygame.draw.rect(self.screen, (0, 0, 0), ceil_rect)
+                else:
+                    pygame.draw.rect(self.screen, (255, 255, 255), ceil_rect)
+
+        pygame.display.flip()
+        pygame.time.delay(10)
+
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -486,8 +502,7 @@ class Gameplay:
                 if event.type == pygame.QUIT:
                     return None, None
                 if event.type == pygame.KEYDOWN or event.type == pygame.USEREVENT:
-                    print(self.player.get_grid_pos())
- 
+
                     if event.key == pygame.K_m:
                         self.sounds_handler.switch()
                         continue
@@ -516,7 +531,8 @@ class Gameplay:
                         # Handle minimap here
                         
                     player_response = self.player.handle_event(event.key)
-                    
+
+
                     if player_response == "Move" or event.type == pygame.USEREVENT:
                         
                         self.maze_step += 1
@@ -529,11 +545,9 @@ class Gameplay:
                             self.energy += int(self.maze_toString[self.player.grid_pos[1]][self.player.grid_pos[0]])
                             # Bỏ năng lượng tại ô đó
                             self.maze_toString[self.player.grid_pos[1]][self.player.grid_pos[0]] = ' '
-                            
-                            self.draw_cell(self.player.grid_pos[1],self.player.grid_pos[0])
-                            
-                        print("energy", self.energy)
-                        
+                            self.draw_maze()
+                            self.bg_surface.blit(self.maze_no_energy, self.player.visual_pos)
+                            self.update_screen()
                         if self.player.get_grid_pos()[::-1] == self.end_pos:
                             if self.auto_flag != True:
                                 self.save_data(is_win=True)
@@ -543,9 +557,8 @@ class Gameplay:
                                 return scene_name, initial_pos
                         pygame.event.clear()
                         
-                        if self.energy <= 0: # xu li thua
-                                pass
-                            # 
+                        if self.energy < 0:
+                            return "Menu", SCENES["Menu"]["initial_pos"]
                         
                     # if self.solution_flag:
                     #     ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
@@ -731,6 +744,8 @@ class Gameplay:
         maze_surface = pygame.Surface(((self.maze_row) * (self.bg_cell_size), ((self.maze_col) * self.bg_cell_size)),
                                       pygame.SRCALPHA, 32).convert_alpha()
 
+        self.maze_no_energy = maze_surface
+
         start = morph_image(RESOURCE_PATH + "start.png", (self.bg_cell_size, self.bg_cell_size))
         end = morph_image(RESOURCE_PATH + "jerry_icon.png", (self.bg_cell_size, self.bg_cell_size))
         walls = [
@@ -743,6 +758,7 @@ class Gameplay:
             "cave_wall_7.png",
             "cave_wall_8.png",
         ]
+        energy = morph_image(RESOURCE_PATH + "energy.png", (self.bg_cell_size, self.bg_cell_size))
         for i in range(self.maze_row):
             for j in range(self.maze_col):
                 pos = (j * self.bg_cell_size, i * self.bg_cell_size)
@@ -750,32 +766,41 @@ class Gameplay:
                     if j == 0:
                         floor = morph_image(RESOURCE_PATH + "floor_ul.png", (self.bg_cell_size, self.bg_cell_size))
                         maze_surface.blit(floor, pos)
+                        self.maze_no_energy.blit(floor, pos)
                     elif j == self.maze_row - 1:
                         floor = morph_image(RESOURCE_PATH + "floor_ur.png", (self.bg_cell_size, self.bg_cell_size))
                         maze_surface.blit(floor, pos)
+                        self.maze_no_energy.blit(floor, pos)
                     else:
                         floor = morph_image(RESOURCE_PATH + "floor_u.png", (self.bg_cell_size, self.bg_cell_size))
                         maze_surface.blit(floor, pos)
+                        self.maze_no_energy.blit(floor, pos)
                 elif i == self.maze_col - 1:
                     if j == 0:
                         floor = morph_image(RESOURCE_PATH + "floor_dl.png", (self.bg_cell_size, self.bg_cell_size))
                         maze_surface.blit(floor, pos)
+                        self.maze_no_energy.blit(floor, pos)
                     elif j == self.maze_row - 1:
                         floor = morph_image(RESOURCE_PATH + "floor_dr.png", (self.bg_cell_size, self.bg_cell_size))
                         maze_surface.blit(floor, pos)
+                        self.maze_no_energy.blit(floor, pos)
                     else:
                         floor = morph_image(RESOURCE_PATH + "floor_d.png", (self.bg_cell_size, self.bg_cell_size))
                         maze_surface.blit(floor, pos)
+                        self.maze_no_energy.blit(floor, pos)
                 else:
                     if j == 0:
                         floor = morph_image(RESOURCE_PATH + "floor_l.png", (self.bg_cell_size, self.bg_cell_size))
                         maze_surface.blit(floor, pos)
+                        self.maze_no_energy.blit(floor, pos)
                     elif j == self.maze_row - 1:
                         floor = morph_image(RESOURCE_PATH + "floor_r.png", (self.bg_cell_size, self.bg_cell_size))
                         maze_surface.blit(floor, pos)
+                        self.maze_no_energy.blit(floor, pos)
                     else:
                         floor = morph_image(RESOURCE_PATH + "floor.png", (self.bg_cell_size, self.bg_cell_size))
                         maze_surface.blit(floor, pos)
+                        self.maze_no_energy.blit(floor, pos)
         rand = list(range(0, len(walls)))
         shuffle(rand)
         index = 0
@@ -788,6 +813,7 @@ class Gameplay:
                     img = morph_image(RESOURCE_PATH + walls[rand[index]],
                                       (self.bg_cell_size, self.bg_cell_size * 2))
                     maze_surface.blit(img, pos)
+                    self.maze_no_energy.blit(img, pos)
                     
                     index += 1
                     if index == len(walls):
@@ -799,24 +825,18 @@ class Gameplay:
                     maze_surface.blit(start,
                                       (pos[0] + (self.bg_cell_size - start.get_width()) / 2,
                                             pos[1] + (self.bg_cell_size - start.get_height()) / 2))
+                    self.maze_no_energy.blit(start, pos)
 
                 elif self.maze_toString[i][j] == 'E':
                     maze_surface.blit(end, pos)
+                    self.maze_no_energy.blit(end, pos)
                 
                 if self.energy_flag: # Xử lí năng lượng
                     if self.maze_toString[i][j].isnumeric():
-                        if self.maze_toString[i][j] =='1':
-                            pass
-                        elif self.maze_toString[i][j] =='2':
-                            pass
-                        elif self.maze_toString[i][j] =='3':
-                            pass
-                        elif self.maze_toString[i][j] =='4':
-                            pass
-                        elif self.maze_toString[i][j] =='5':
-                            pass
+                        maze_surface.blit(energy, pos)
 
         self.bg_surface.blit(maze_surface,((screen_size[0] - maze_surface.get_width()) // 2, (screen_size[1] - maze_surface.get_height()) // 2))
+
 
     def set_start_pos(self):
         if self.old_save == True:

@@ -256,6 +256,7 @@ class Player:
             
             return "Move"
         self.sounds_handler.play_sfx("bump")
+        return None
 
     def is_legal_move(self, cmd):
         """
