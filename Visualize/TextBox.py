@@ -1,20 +1,8 @@
 import pygame
 from pygame_textinput import TextInputManager, TextInputVisualizer
-from typing import Dict, List
-from enum import Enum
-import numpy
-import cv2
+from typing import Dict
 
-from CONSTANTS import FONTS
-
-class Color(Enum):
-    DEFAULT = (60, 107, 114)
-    WHITE = (255, 255, 255)
-    BLACK = (0, 0, 0)
-    RED = (255, 0, 0)
-    GREEN = (0, 255, 0)
-    BLUE = (0, 0, 255)
-
+from CONSTANTS import FONTS, COLORS as Color
 
 class TextBox:
     def __init__(self, screen, position, font_color, manager, text='', focusable=True, background=None):
