@@ -315,8 +315,6 @@ class Gameplay:
                         for j in range(len(self.maze_toString[0])):
                             ceil_rect = rect_list[i][j]
                             if ceil_rect.collidepoint(mouse_pos):
-                                print("Button clicked!")
-                                
                                 if self.maze_toString[i][j] != '#':
                                     if start_flag == False:
                                         self.start_pos = (i, j)
@@ -342,8 +340,6 @@ class Gameplay:
                         else:
                                 pygame.draw.rect(self.screen, (255, 255, 255), ceil_rect)
                         if rect_list[i][j].collidepoint(mouse_pos):
-                            print("YES")
-                            
                             if self.maze_toString[i][j] == '#':
                                 pygame.draw.rect(self.screen, (100, 110, 100), ceil_rect)
                             else:
@@ -394,8 +390,6 @@ class Gameplay:
         
         
         # INSTANTIATE PLAYER
-        
-        print(self.start_pos, self.end_pos)
         
         
         self.player.grid_pos = self.start_pos[::-1]

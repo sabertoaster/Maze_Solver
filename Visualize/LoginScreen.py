@@ -133,7 +133,7 @@ class LoginScreen:
                     # self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
                     #             self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
                     #         transition_type='circle_in')
-                    return None, None  # Fucking transmit signal to another scene here, this is just a prototype
+                    return None, None  # Transmit signal to another scene here, this is just a prototype
                 if self.chosen_door:
                     if self.panel_fl:
                         next_scene, next_grid_pos = self.toggle_panel(event, self.chosen_door)
@@ -294,7 +294,7 @@ class LoginScreen:
         if event.type == pygame.KEYDOWN:
             self.screen.blit(self.register_panel, (0, 0))
             self.text_box.draw()
-            # self.notify_text_box.set_text("notification", "ME MAY CUC BEO")
+            # self.notify_text_box.set_text("notification", "text")
 
             # self.notify_text_box.draw()
             if event.key == pygame.K_ESCAPE:
