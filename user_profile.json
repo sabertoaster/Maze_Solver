@@ -26,5 +26,9 @@
     {
         "username": "asda",
         "password": "121"
+    },
+    {
+        "username": "test",
+        "password": "123"
     }
 ]
