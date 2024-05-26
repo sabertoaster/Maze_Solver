@@ -396,6 +396,10 @@ SOUNDS = {
             'file_name': 'landing.mp3',
             'volume': 1.0
         },
+        'interact2': {
+            'file_name': 'interact2.mp3',
+            'volume': 1.0
+        },
     }
 }
 

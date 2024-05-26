@@ -101,10 +101,10 @@ class WinScreen:
                     if key is not None:
                         pygame.key.set_repeat(200, 125)
                         if key == 'no':
-                            self.sounds_handler.play_sfx('interact')
+                            self.sounds_handler.play_sfx('interact2')
                             return "Menu", SCENES["Menu"]["initial_pos"]
                         elif key == 'yes':
-                            self.sounds_handler.play_sfx('interact')
+                            self.sounds_handler.play_sfx('interact2')
                             return "Gameplay", SCENES["Gameplay"]["initial_pos"]
                         
                 if key and not idling:
