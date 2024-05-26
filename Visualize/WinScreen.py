@@ -2,7 +2,7 @@ import pygame
 import cv2
 import numpy as np
 
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, FONTS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, FONTS, COLORS
 
 RESOURCE_PATH += 'img/'
 
@@ -21,11 +21,12 @@ class WinScreen:
         self.screen = screen    
         self.sounds_handler = sounds_handler
 
-    def play(self, background=None):
+    def play(self, background=None, mode="Manual", time=0, steps=0, win=False):
         """
         Play the scene
         """
-        text_font = pygame.font.Font(FONTS["default_bold"], 100)
+        bold_text_font = pygame.font.Font(FONTS["default_bold"], 100)
+        normal_text_font = pygame.font.Font(FONTS["default"], 45)
         video = cv2.VideoCapture("Resources/animation/win.mp4")
         success, video_image = video.read()
         fps = video.get(cv2.CAP_PROP_FPS)
@@ -58,7 +59,7 @@ class WinScreen:
                 break
                 
             self.screen.blit(video_surf, ((RESOLUTION[0] - video_surf.get_width()) / 2, (RESOLUTION[1] - video_surf.get_height()) / 2))
-            text = text_font.render("YOU WIN",
+            text = bold_text_font.render("YOU WIN",
                                    True,
                                    (np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255)))
             self.screen.blit(text, ((RESOLUTION[0] - text.get_width()) / 2, (RESOLUTION[1] - text.get_height()) / 2))
@@ -68,7 +69,23 @@ class WinScreen:
             self.screen.blit(background, (0, 0))
 
         pygame.event.clear()
+        
+        
+        steps_text = normal_text_font.render(f"Steps: {steps}",
+                                            True,
+                                            COLORS.LIGHT_BLUE.value)
+        time_text = normal_text_font.render(f"Time: {time:.2f}s",
+                                            True,
+                                            COLORS.RED.value)      
         continue_panel = pygame.image.load(RESOURCE_PATH + "continue.png")
+        hovered_yes_continue_panel = pygame.image.load(RESOURCE_PATH + SCENES[SCENE_NAME]['HOVER_FRAME']['yes'])
+        hovered_no_continue_panel = pygame.image.load(RESOURCE_PATH + SCENES[SCENE_NAME]['HOVER_FRAME']['no'])
+        hovered_yes_continue_panel.blit(steps_text, ((RESOLUTION[0] - steps_text.get_width()) / 2 + 150 , (RESOLUTION[1] - steps_text.get_height()) / 2 - 25))
+        hovered_yes_continue_panel.blit(time_text, ((RESOLUTION[0] - time_text.get_width()) / 2 - 150, (RESOLUTION[1] - time_text.get_height()) / 2 - 25))
+        hovered_no_continue_panel.blit(steps_text, ((RESOLUTION[0] - steps_text.get_width()) / 2 + 150 , (RESOLUTION[1] - steps_text.get_height()) / 2 - 25))
+        hovered_no_continue_panel.blit(time_text, ((RESOLUTION[0] - time_text.get_width()) / 2 - 150, (RESOLUTION[1] - time_text.get_height()) / 2 - 25))
+        continue_panel.blit(steps_text, ((RESOLUTION[0] - steps_text.get_width()) / 2 + 150 , (RESOLUTION[1] - steps_text.get_height()) / 2 - 25))
+        continue_panel.blit(time_text, ((RESOLUTION[0] - time_text.get_width()) / 2 - 150, (RESOLUTION[1] - time_text.get_height()) / 2 - 25))
         self.screen.blit(continue_panel, (
             (RESOLUTION[0] - continue_panel.get_width()) / 2, (RESOLUTION[1] - continue_panel.get_height()) / 2))
         pygame.display.flip()
@@ -108,8 +125,14 @@ class WinScreen:
                             return "Gameplay", SCENES["Gameplay"]["initial_pos"]
                         
                 if key and not idling:
-                    hovered = pygame.image.load(RESOURCE_PATH + SCENES[SCENE_NAME]['HOVER_FRAME'][key])
+                    hovered = None
+                    if key == 'yes':
+                        hovered = hovered_yes_continue_panel
+                    elif key == 'no':
+                        hovered = hovered_no_continue_panel
+                        
                     self.screen.blit(hovered, ((RESOLUTION[0] - continue_panel.get_width()) / 2, (RESOLUTION[1] - continue_panel.get_height()) / 2))
+                
                 elif not idling and not key:
                     self.screen.blit(continue_panel, (
                         (RESOLUTION[0] - continue_panel.get_width()) / 2, (RESOLUTION[1] - continue_panel.get_height()) / 2))

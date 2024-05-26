@@ -243,22 +243,26 @@ class LeaderboardScreen:
                         running = False
                         break
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
                         self.current_level_leaderboard_panel = list_level.pop()
                         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
                         pygame.display.update()
                         continue
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
                         self.current_level_leaderboard_panel = list_level.back()
                         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
                         pygame.display.update()
                         continue
                 if event.type == pygame.MOUSEBUTTONUP:
                     if mouse_grid_pos == panel_control_buttons[0]:
+                        self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
                         self.current_level_leaderboard_panel = list_level.back()
                         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
                         pygame.display.update()
                         continue
                     elif mouse_grid_pos == panel_control_buttons[1]:
+                        self.screen.blit(esc_button, (SCENES[SCENE_NAME]["cell"][0], SCENES[SCENE_NAME]["cell"][1]))
                         self.current_level_leaderboard_panel = list_level.pop()
                         self.screen.blit(self.leaderboard_panel[self.current_level_leaderboard_panel], (0, 0))
                         pygame.display.update()

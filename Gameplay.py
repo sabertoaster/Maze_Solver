@@ -3,7 +3,7 @@ from Algorithms.Algorithms import *
 from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_energy
 from GridMapObject import GridMapObject
 from GridMap import GridMap
-from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, FPS
+from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, FPS, COLORS as Color
 RESOURCE_PATH += 'img/'
 
 import os
@@ -13,7 +13,7 @@ import numpy as np
 import json
 import thorpy as tp
 from Visualize.ImageProcess import blur_screen, morph_image
-from Visualize.TextBox import FormManager, Color
+from Visualize.TextBox import FormManager
 from Visualize.Transition import Transition
 from Minimap import Minimap
 from Player import *
@@ -376,7 +376,7 @@ class Gameplay:
         self.text_box = FormManager(self.screen, {
             "time": {"position": (850, 600, 568, 30), "color": Color.RED.value, "maximum_length": 16,
                          "focusable": False, "init_text": ""},  # (x, y, width, height)
-            "step": {"position": (850, 700, 568, 30), "color": Color.BLUE.value, "maximum_length": 16,
+            "step": {"position": (850, 700, 568, 30), "color": Color.LIGHT_BLUE.value, "maximum_length": 16,
                          "focusable": False, "init_text": ""}})  # (x, y, width, height)
 
         # Chuyển từ dạng string sang maze dạng string nhưng mỗi ô chứa năng lượng thay vì ' ' sẽ chứa số từ 1 -> 5 (str type)
@@ -547,7 +547,7 @@ class Gameplay:
         
         current_frame = self.screen.copy()
         blur = blur_screen(current_frame)
-        scene, pos = self.win_screen.play(background=blur)
+        scene, pos = self.win_screen.play(background=blur, mode=self.maze_mode, steps=self.maze_step, time=self.maze_time)
         
         if scene == 'Menu':
             self.player.deactivate(active=True)
