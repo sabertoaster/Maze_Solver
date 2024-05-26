@@ -126,6 +126,73 @@ class Transition:
             pygame.display.flip()
             pygame.time.delay(10)
 
+    def choose_position_1(self, pos, prev_scene):
+        rate = 96
+        # tmp_screen for handling the transition
+        tmp_screen = pygame.Surface((RESOLUTION[0], RESOLUTION[1] * 3), pygame.SRCALPHA)
+
+        tmp_screen.fill((0, 0, 0))
+
+        tmp_screen.blit(self.screen, (0, RESOLUTION[1] * 2))
+
+        next_scene_screen = pygame.image.load(RESOURCE_PATH + SCENES[prev_scene]["BG"]).convert_alpha()
+        tmp_screen.blit(next_scene_screen, (0, 0))
+
+        for _ in range(rate):
+            self.screen.blit(tmp_screen, (0, 0), (0, (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0], RESOLUTION[1]))
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+    
+    def choose_position_2(self, pos, prev_scene):
+        rate = 96
+        # tmp_screen for handling the transition
+        tmp_screen = pygame.Surface((RESOLUTION[0], RESOLUTION[1] * 3), pygame.SRCALPHA)
+
+        tmp_screen.fill((0, 0, 0))
+
+        tmp_screen.blit(self.screen, (0, RESOLUTION[1] * 2))
+
+        next_scene_screen = pygame.image.load(RESOURCE_PATH + SCENES[prev_scene]["BG"]).convert_alpha()
+        tmp_screen.blit(next_scene_screen, (0, 0))
+
+        # for _ in range(rate):
+        #     self.screen.blit(tmp_screen, (0, 0), (0, (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0], RESOLUTION[1]))
+        #     pygame.display.flip()
+        #     pygame.time.delay(10)
+
+        player_sprite = morph_image(RESOURCE_PATH + AVATAR[self.player.skin]["down"],
+                                        SCENES[self.player.current_scene]["cell"])
+
+        for _ in range(rate):
+            self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1], RESOLUTION[0], RESOLUTION[1]))
+            self.screen.blit(pygame.transform.rotate(player_sprite, (_ + 1) * 360 / rate),
+                             (pos[0], (_ + 1) * pos[1] / rate))
+
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+        for _ in range(rate):
+            self.screen.blit(tmp_screen, (0, 0),
+                             (0, RESOLUTION[1] + (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0], RESOLUTION[1]))
+            self.screen.blit(pygame.transform.rotate(player_sprite, (_ + 1) * 360 / rate), pos)
+
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+        tmp_screen.blit(player_sprite, (pos[0], pos[1] + RESOLUTION[1] * 2))
+
+        for _ in range(rate):
+            self.screen.blit(tmp_screen,
+                             (0 + random.randint(-3, 3), 0 + random.randint(-3, 3)),
+                             (0, RESOLUTION[1] * 2, RESOLUTION[0], RESOLUTION[1]))
+
+            pygame.display.flip()
+            pygame.time.delay(10)
+
+        self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1] * 2, RESOLUTION[0], RESOLUTION[1]))
+        pygame.display.flip()
+         
     def hole(self, pos, prev_scene):
         rate = 96
         # tmp_screen for handling the transition
@@ -253,6 +320,14 @@ class Transition:
         elif transition_type == 'hole':
             pos = (pos[1], pos[0])
             self.hole(pos, prev_scene)
+        
+        elif transition_type == 'choose_position_1':
+            pos = (pos[1], pos[0])
+            self.choose_position_1(pos, prev_scene)
+        
+        elif transition_type == 'choose_position_2':
+            pos = (pos[1], pos[0])
+            self.choose_position_2(pos, prev_scene)  
 
         elif transition_type == 'reversed_hole':
             pos = (pos[1], pos[0])
