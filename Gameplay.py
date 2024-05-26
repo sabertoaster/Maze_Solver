@@ -1,6 +1,5 @@
 # Custom imports
 from Algorithms.Algorithms import *
-from Algorithms.QLearning import *
 from Algorithms.MazeGeneration import Maze, convert as convert_maze, convert_energy
 from GridMapObject import GridMapObject
 from GridMap import GridMap
@@ -360,13 +359,7 @@ class Gameplay:
 
     def play(self, player):
         self.player = player
-        # Flag: có chọn mode energy không
-        self.energy_flag = True
-        # Flag: có chọn mode Q learning không
-        self.Qlearning_flag = False
-        # Khoi tao nang luong cho player
-        self.energy = np.random.randint(5, 11)
-        print("init energy", self.energy)
+
         self.get_data()
 
         # INSTANTIATE MAZE
@@ -392,8 +385,6 @@ class Gameplay:
         
 
         
-        if self.energy_flag:
-            self.maze_toString = convert_energy(self.maze_toString)
         
         self.set_start_pos()
         
@@ -409,11 +400,6 @@ class Gameplay:
         
         self.player.grid_pos = self.start_pos[::-1]
         # self.update_player()
-        
-        # Chay Q learning neu chon che do Q learning
-        if self.Qlearning_flag == True:
-            self.Q = QLearning(self.maze_toString)
-            self.Q.train(300, self.player.grid_pos[::-1], self.end_pos)
         
 
         # INSTANTIATE ALGORITHMS
@@ -531,19 +517,7 @@ class Gameplay:
                         
                         self.maze_step += 1
                         
-                        #Xử lí năng lượng
-                        self.energy -= 1 # Mỗi bước đi -1 energy
-                        #Nếu player đi qua ô có năng lượng
-                        if self.maze_toString[self.player.grid_pos[1]][self.player.grid_pos[0]].isnumeric():
-                            # Cộng thêm năng lượng cho player
-                            self.energy += int(self.maze_toString[self.player.grid_pos[1]][self.player.grid_pos[0]])
-                            # Bỏ năng lượng tại ô đó
-                            self.maze_toString[self.player.grid_pos[1]][self.player.grid_pos[0]] = ' '
-                            self.draw_maze()
-                            self.bg_surface.blit(self.maze_no_energy, self.player.visual_pos)
-                            self.update_screen()
-                            # self.minimap.update(self.minimap.maze_surface)
-                            # self.minimap.update_after_energy(self.maze_no_energy)
+                        
                         if self.player.get_grid_pos()[::-1] == self.end_pos:
                             if self.auto_flag != True:
                                 self.save_data(is_win=True)
@@ -553,8 +527,6 @@ class Gameplay:
                                 return scene_name, initial_pos
                         if event.type != pygame.USEREVENT:
                             pygame.event.clear()                       
-                        if self.energy < 0:
-                            return "Menu", SCENES["Menu"]["initial_pos"]
                         
                     # if self.solution_flag:
                     #     ceil_rect = pygame.Rect(self.player.grid_pos[0] * self.cell_size, self.player.grid_pos[1] * self.cell_size, self.cell_size, self.cell_size) # [PROTOTYPE]
@@ -596,37 +568,6 @@ class Gameplay:
         self.visual_maze.fill((0, 0, 0))
 
     
-    def draw_cell(self, i, j):
-        ceil_rect = pygame.Rect(j * self.cell_size, i * self.cell_size, self.cell_size,
-                                        self.cell_size)  # [PROTOTYPE]
-
-        if self.maze_toString[i][j] == ' ':
-            pygame.draw.rect(self.visual_maze, (255, 255, 255), ceil_rect)
-        elif self.maze_toString[i][j] == '#':
-            pygame.draw.rect(self.visual_maze, (0, 0, 0), ceil_rect)
-        elif self.maze_toString[i][j] == 'S':
-            # self.start_pos = (i, j)
-            pygame.draw.rect(self.visual_maze, (170, 170, 0), ceil_rect)
-        elif self.maze_toString[i][j] == 'E':
-            # self.end_pos = (i, j)
-            pygame.draw.rect(self.visual_maze, (255, 0, 0), ceil_rect)
-            
-        if self.energy_flag: #Nếu có chọn mode energy
-            if self.maze_toString[i][j].isnumeric():
-                # Xử lí các ô năng lượng
-                if self.maze_toString[i][j] == '1':
-                    color = (84, 245, 66)
-                elif self.maze_toString[i][j] == '2':
-                    color = (66, 245, 152)
-                elif self.maze_toString[i][j] == '3':
-                    color = (66, 245, 239)
-                elif self.maze_toString[i][j] == '4':
-                    color = (66, 129, 245)
-                elif self.maze_toString[i][j] == '5':
-                    color = (129, 66, 245)
-                pygame.draw.rect(self.visual_maze, color, ceil_rect)
-
-        self.visual_maze_display_pos = (0, RESOLUTION[0] - (RESOLUTION[0] - RESOLUTION[1]) / 2)
         
     def draw_maze(self):
         for i in range(self.maze_row):
@@ -645,20 +586,6 @@ class Gameplay:
                     # self.end_pos = (i, j)
                     pygame.draw.rect(self.visual_maze, (255, 0, 0), ceil_rect)
                     
-                if self.energy_flag: #Nếu có chọn mode energy
-                    if self.maze_toString[i][j].isnumeric():
-                        # Xử lí các ô năng lượng
-                        if self.maze_toString[i][j] == '1':
-                            color = (84, 245, 66)
-                        elif self.maze_toString[i][j] == '2':
-                            color = (66, 245, 152)
-                        elif self.maze_toString[i][j] == '3':
-                            color = (66, 245, 239)
-                        elif self.maze_toString[i][j] == '4':
-                            color = (66, 129, 245)
-                        elif self.maze_toString[i][j] == '5':
-                            color = (129, 66, 245)
-                        pygame.draw.rect(self.visual_maze, color, ceil_rect)
 
         self.visual_maze_display_pos = (0, RESOLUTION[0] - (RESOLUTION[0] - RESOLUTION[1]) / 2)
           
@@ -691,20 +618,6 @@ class Gameplay:
         #             # self.end_pos = (i, j)
         #             pygame.draw.rect(self.visual_maze, (255, 0, 0), ceil_rect)
                     
-        #         if self.energy_flag: #Nếu có chọn mode energy
-        #             if self.maze_toString[i][j].isnumeric():
-        #                 # Xử lí các ô năng lượng
-        #                 if self.maze_toString[i][j] == '1':
-        #                     color = (84, 245, 66)
-        #                 elif self.maze_toString[i][j] == '2':
-        #                     color = (66, 245, 152)
-        #                 elif self.maze_toString[i][j] == '3':
-        #                     color = (66, 245, 239)
-        #                 elif self.maze_toString[i][j] == '4':
-        #                     color = (66, 129, 245)
-        #                 elif self.maze_toString[i][j] == '5':
-        #                     color = (129, 66, 245)
-        #                 pygame.draw.rect(self.visual_maze, color, ceil_rect)
 
         # self.visual_maze_display_pos = (0, RESOLUTION[0] - (RESOLUTION[0] - RESOLUTION[1]) / 2)
 
@@ -733,7 +646,8 @@ class Gameplay:
             "cave_wall_6.png",
             "cave_wall_7.png",
             "cave_wall_8.png",
-        ]
+        ] 
+        self.energy_flag = False
         energy = morph_image(RESOURCE_PATH + "energy.png", (self.bg_cell_size, self.bg_cell_size))
         for i in range(self.maze_row):
             for j in range(self.maze_col):
@@ -1129,17 +1043,7 @@ class Gameplay:
         copy_screen = screen.copy()
         
         
-        
-       
-        # Neu cho Q learning
-        if self.Qlearning_flag == True:
-            self.minimap.trace_path = self.Q.find_path(self.player.grid_pos[::-1], self.end_pos)
-        
-        # Nếu chọn mode energy
-        elif self.energy_flag:        
-            self.minimap.trace_path, _ = self.algorithms.path_energy(self.energy, self.player.grid_pos[::-1], self.end_pos)
-        else:
-            self.minimap.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
+        self.minimap.trace_path, _ = self.algorithms.a_star(self.player.grid_pos[::-1], self.end_pos)
             
         if self.minimap.trace_path:
             self.minimap.trace_path.append(self.end_pos)
