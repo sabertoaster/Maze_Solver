@@ -1,6 +1,5 @@
 numpy
 opencv-python
-jsons
 pygame
 pygame-textinput
-keyboard
+thorpy

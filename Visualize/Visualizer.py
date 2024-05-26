@@ -4,44 +4,52 @@ import pygame
 import cv2
 from Visualize.LoginScreen import LoginScreen as login
 from Visualize.MenuScreen import MenuScreen as menu
+from Visualize.PlayScreen import PlayScreen as play
+from Visualize.LeaderboardScreen import LeaderboardScreen as leaderboard
+from Visualize.WinScreen import WinScreen as win
+from Gameplay import Gameplay
+from Sounds import SoundsHandler
+from CONSTANTS import RESOLUTION, RESOURCE_PATH, CURRENT_PLAY_MODE
+RESOURCE_PATH += 'img/'
 
 class Visualizer:
-    def __init__(self, params, screen, player):
+    def __init__(self, screen, player, sounds_handler):
         """
         A Structure to visualize the game
-        :param params:
         :param screen:
         :param player:
         A Visualizer consists of following variables:
         - Resources path
         - Resolution
-        - Screen (to draw on, the fuck you think?)
-        - Player (to move, duh)
-        - Scene Sets (for indexing)
+        - Screen
+        - Player
+        - Scene Sets
         """
-        self.params = params.copy() # Assign dict to do convention sussy thing
-        self.pth_re = params["resources"]  # Assign resources path to look for images, audio, font, stuffs, etc
-        self.resolution = params["resolution"]
-        self.cell = params["cell"]
         self.screen = screen
         self.player = player
-        self.reset_scene_collection()
-        self.logo = pygame.image.load(self.pth_re + "logo.png")  # Load logo image
+        self.logo = pygame.image.load(RESOURCE_PATH + "logo.png")  # Load logo image
 
-
-        self.panel_collection = { # Pop-up panel, with buttons to choose, information presentation, sths like that
+        self.panel_collection = {  # Pop-up panel, with buttons to choose, information presentation, sths like that
             "Pause": None,
             "GameOver": None,
             "Generic": None
         }
+        
+        self.sounds_handler = sounds_handler
+        
+        self.FIRST_TIME = [True]
+        
+        self.reset_scene_collection()
+        
     def reset_scene_collection(self):
         self.scenes_collection = {
-            "Login": login(self.screen, (self.resolution, self.cell["Login"]), self.pth_re),
+            "Login": login(self.screen, self.sounds_handler, is_first_time=self.FIRST_TIME),
             "Register": None,  # Chung với Login
-            "Menu": menu(self.screen, (self.resolution, self.cell["Menu"]), self.pth_re),
-            "Play": None,  # Chọn mode
-            "Leaderboard": None,
+            "Menu": menu(self.screen, sounds_handler=self.sounds_handler),
+            "Play": play(self.screen, self.sounds_handler),  # Chọn mode
+            "Leaderboard": leaderboard(self.screen, self.sounds_handler),
             "Settings": None,
+            "Win": win(self.screen, self.sounds_handler),
         }
     def start_visualize(self):
         """
@@ -58,39 +66,17 @@ class Visualizer:
         :param scene_name:
         :return:
         """
+        
+        if scene_name == "Gameplay":
+            file_name = ''
+            gameplay_scene = Gameplay(self.screen, (0, 0), (0, 0), file_name, sounds_handler=self.sounds_handler)
+            next_scene, next_grid_pos = gameplay_scene.play(player=self.player)
+            del gameplay_scene
+            return next_scene, next_grid_pos
 
-        self.scenes_collection = {
-            "Login": login(self.screen, (self.resolution, self.cell), self.pth_re),
-            "Register": None,  # Chung với Login
-            "Menu": menu(self.screen, (self.resolution, self.cell), self.pth_re),
-            "Play": None,  # Chọn mode
-            "Leaderboard": None,
-            "Settings": None,
-        }
+        self.reset_scene_collection()
         scene = self.scenes_collection[scene_name]
         next_scene, next_grid_pos = scene.play(player=self.player)  # Chac chan co next scene, next grid_pos
         del scene
         return next_scene, next_grid_pos
 
-    def apply_transition(self):
-
-        pass
-
-    # def matching_entity(self, entity: str) -> pygame.Surface:
-    #     match entity:
-    #         case "Login":
-    #             return login(self.pth_re)
-    #         case "Register":
-    #             pass
-    #         case "Menu":
-    #             pass
-    #         case "Play":
-    #             pass
-    #         case "Pause":
-    #             pass
-    #         case "Leaderboard":
-    #             pass
-    #         case "Settings":
-    #             pass
-    #         case "GameOver":
-    #             pass

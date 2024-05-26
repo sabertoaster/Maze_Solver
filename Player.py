@@ -2,16 +2,15 @@ from copy import deepcopy
 
 import numpy as np
 import pygame
-import cv2
 from GridMapObject import GridMapObject as Gmo
 from Visualize.ImageProcess import morph_image
+from Visualize.TextBox import TextBox
+from pygame_textinput import TextInputManager, TextInputVisualizer
 
-AVATAR = {
-    "down": "tom_icon_1.png",
-    "right": "tom_icon_2.png",
-    "left": "tom_icon_3.png",
-    "up": "tom_icon_4.png"
-}
+from CONSTANTS import AVATAR
+from CONSTANTS import SCENES, RESOLUTION, RESOURCE_PATH, AVATAR, MOVEMENT
+RESOURCE_PATH += 'img/'
+
 
 
 class Player:
@@ -19,41 +18,61 @@ class Player:
     This is a class to represent Player Instance
     """
 
-    def __init__(self, screen, res_cell, grid_map, current_scene, initial_pos, params):
+    def __init__(self, screen, grid_map, current_scene, initial_pos, skin="blackTom", player_name='Guest',
+                 sounds_handler=None):
 
         """
         :param screen:
-        :param res_cell:
         :param grid_map:
         :param current_scene:
         """
-        from copy import deepcopy
+        self.door_pos = None
+        self.score = 0
         self.active = True
         self.screen = screen
-        self.params = params
-        resolution, cell = res_cell
-        self.resolution = resolution
-        self.cell_collection = cell
-        self.grid_map = grid_map
-        self.movement = {
-            "left": (-1, 0),
-            "right": (1, 0),
-            "up": (0, -1),
-            "down": (0, 1)
-        }
-
-        self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], res_cell[1][current_scene])  # [PROTOTYPE]
         self.current_scene = current_scene
-        self.cell = cell[current_scene]
-        self.ratio = (resolution[0] // cell[current_scene][0], resolution[1] // cell[current_scene][1])
+        self.previous_scene = None
+
+        self.grid_map = grid_map
+
+        self.skin = skin
+        self.current_direction = 'down'
+        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
+                                  SCENES[self.current_scene]["cell"])
+
+        self.ratio = (
+        RESOLUTION[0] // SCENES[self.current_scene]["cell"][0], RESOLUTION[1] // SCENES[self.current_scene]["cell"][1])
 
         self.grid_pos = initial_pos  # [PROTOTYPE]
-        self.visual_pos = (self.grid_pos[0] * cell[current_scene][0], self.grid_pos[1] * cell[current_scene][1])
+        self.visual_pos = (self.grid_pos[0] * SCENES[self.current_scene]["cell"][0],
+                           self.grid_pos[1] * SCENES[self.current_scene]["cell"][1])
         self.grid_step = 1
-        self.visual_step = self.grid_step * cell[current_scene][0]
+        self.visual_step = self.grid_step * SCENES[self.current_scene]["cell"][0]
         self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
 
+        self.name = player_name
+
+        self.name_box = TextBox(screen=self.screen,
+                                position=(
+                                0, 0, SCENES[self.current_scene]["cell"][0] * 2, SCENES[self.current_scene]["cell"][1]),
+                                font_color=(0, 0, 0),
+                                manager=TextInputManager(),
+                                text=self.name)
+
+        self.name_length = self.name_box.get_length()
+
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
+
+        self.sounds_handler = sounds_handler
+
+        self.interacted_obj = None
+        self.touched_obj = None
+
+    def switch_skin(self, skin):
+        lst = list(AVATAR.keys())
+        self.skin = lst[(lst.index(skin) + 1) % len(lst)]
+        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
+                                  resolution=SCENES[self.current_scene]["cell"])
 
     def set_current_scene(self, target_scene, initial_pos):
         """
@@ -62,16 +81,18 @@ class Player:
         """
         self.current_scene = target_scene
 
-        self.cell = self.cell_collection[target_scene]
-        self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], self.cell)  # [PROTOTYPE]
-        print(self.grid_map.get_map(self.current_scene).get_grid())
-        self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], self.cell)  # [PROTOTYPE]
-        self.ratio = (self.resolution[0] // self.cell[0], self.resolution[1] // self.cell[1])
+        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["down"],
+                                  SCENES[target_scene]["cell"])  # [PROTOTYPE]
+        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin]["down"],
+                                  SCENES[target_scene]["cell"])  # [PROTOTYPE]
+        self.ratio = (
+        RESOLUTION[0] // SCENES[target_scene]["cell"][0], RESOLUTION[1] // SCENES[target_scene]["cell"][1])
 
         self.grid_pos = initial_pos  # [PROTOTYPE]
-        self.visual_pos = (self.grid_pos[0] * self.cell[0], self.grid_pos[1] * self.cell[1])
+        self.visual_pos = (
+        self.grid_pos[0] * SCENES[target_scene]["cell"][0], self.grid_pos[1] * SCENES[target_scene]["cell"][1])
         self.grid_step = 1
-        self.visual_step = self.grid_step * self.cell[0]
+        self.visual_step = self.grid_step * SCENES[self.current_scene]["cell"][0]
         self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
 
         self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(self.visual_pos))
@@ -83,7 +104,6 @@ class Player:
         return self.door_pos
 
     def handle_event(self, key_pressed):
-        print("Key pressed: ", key_pressed)
         """
         Handle event from keyboard
         :param key_pressed:
@@ -93,20 +113,31 @@ class Player:
         if self.active:
             response = None
             if key_pressed == pygame.K_RIGHT or key_pressed == pygame.K_d:
-                response = self.move("right")
-                self.avatar = morph_image("Visualize/Resources/" + AVATAR["right"], resolution=self.cell)
+                self.current_direction = 'right'
+                response = self.move(self.current_direction)
+                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
+                                          resolution=SCENES[self.current_scene]["cell"])
             if key_pressed == pygame.K_LEFT or key_pressed == pygame.K_a:
-                response = self.move("left")
-                self.avatar = morph_image("Visualize/Resources/" + AVATAR["left"], resolution=self.cell)
+                self.current_direction = 'left'
+                response = self.move(self.current_direction)
+                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
+                                          resolution=SCENES[self.current_scene]["cell"])
             if key_pressed == pygame.K_DOWN or key_pressed == pygame.K_s:
-                response = self.move("down")
-                self.avatar = morph_image("Visualize/Resources/" + AVATAR["down"], resolution=self.cell)
+                self.current_direction = 'down'
+                response = self.move(self.current_direction)
+                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
+                                          resolution=SCENES[self.current_scene]["cell"])
             if key_pressed == pygame.K_UP or key_pressed == pygame.K_w:
-                response = self.move("up")
-                self.avatar = morph_image("Visualize/Resources/" + AVATAR["up"], resolution=self.cell)
+                self.current_direction = 'up'
+                response = self.move(self.current_direction)
+                self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
+                                          resolution=SCENES[self.current_scene]["cell"])
+
             if key_pressed == pygame.K_e:
                 self.interact()
                 return "Interact"
+
+            pygame.event.clear()
             return response
         return None
 
@@ -119,35 +150,81 @@ class Player:
         self.screen.blit(screenCopy.copy(), (0, 0))
         self.draw(screenCopy)
 
+    def re_init(self, name='Guest', scene='Login', dir='down'):
+        if scene != self.current_scene:
+            self.previous_scene = self.current_scene
+        self.touched_obj = None
+        self.current_scene = scene
+        self.name = name
+
+        self.current_direction = dir
+        self.avatar = morph_image(RESOURCE_PATH + AVATAR[self.skin][self.current_direction],
+                                  SCENES[self.current_scene]["cell"])  # [PROTOTYPE]
+
+
+        self.name_box = TextBox(screen=self.screen,
+                                position=(0, 0, SCENES[self.current_scene]["cell"][0] * 2, SCENES[self.current_scene]["cell"][1]),
+                                font_color=(0, 0, 0),
+                                manager=TextInputManager(),
+                                text=self.name)
+
+        self.name_length = self.name_box.get_length()
+
     def draw(self, screenCopy):
         """
         Draw player
         :return:
         """
+
         copy_scr = screenCopy.copy()
         if self.active:
             if self.visualize_direction[0] != self.visualize_direction[1]:
-                for i in range(0, 24):
-                    self.visual_pos = (self.visual_pos[0] + (
-                            self.visualize_direction[1][0] - self.visualize_direction[0][
-                        0]) * self.grid_step * 1 / 24,
-                                       self.visual_pos[1] + (
-                                               self.visualize_direction[1][1] - self.visualize_direction[0][
-                                           1]) * self.grid_step * 1 / 24)
-                    self.screen.blit(self.avatar, self.visual_pos)
-                    pygame.time.delay(2)
-                    if (i % 2 == 0):
+                rate = 90
+                for i in range(0, rate):
+                    self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / rate,
+                                       self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / rate)
+
+                    if i % 4 == 0:
+                        self.screen.blit(self.avatar, self.visual_pos)
+                        self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + (
+                                    SCENES[self.current_scene]["cell"][0] // 2),
+                                                    self.visual_pos[1] - SCENES[self.current_scene]["cell"][0] * 1.5))
+                        self.name_box.draw(True)
+                        pygame.time.delay(1)
                         pygame.display.flip()
-                        pygame.time.wait(2)
-                    self.screen.blit(copy_scr, (0, 0))
-                    # pygame.display.flip()
-                    # if ~(i % 5):
-                    #     pygame.display.flip()
-                    # pygame.time.delay(2)
+                        self.screen.blit(copy_scr, (0, 0))
                 self.visualize_direction = (self.visualize_direction[1], self.visualize_direction[1])
                 return
+
             self.screen.blit(self.avatar, self.visual_pos)
+            self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + (
+                        SCENES[self.current_scene]["cell"][0] // 2),
+                                        self.visual_pos[1] - SCENES[self.current_scene]["cell"][0] * 1.5))
+            self.name_box.draw(True)
             pygame.display.flip()
+
+
+    def draw_on_minimap(self, screen, maze_cell_size, ratio):  # Input the background surface
+        if self.active:
+            if self.visualize_direction[0] != self.visualize_direction[1]:
+                self.visual_pos = (self.visual_pos[0] + (self.visualize_direction[1][0] - self.visualize_direction[0][0]) * self.grid_step * 1 / ratio,
+                                   self.visual_pos[1] + (self.visualize_direction[1][1] - self.visualize_direction[0][1]) * self.grid_step * 1 / ratio)
+
+                screen.blit(self.avatar, self.visual_pos)
+                self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + maze_cell_size // 2,
+                                            self.visual_pos[1] - 1.5 * maze_cell_size))
+                self.name_box.draw_on_minimap(screen, background=True)
+
+                pygame.display.flip()
+
+                return
+
+            
+        screen.blit(self.avatar, self.visual_pos)
+        self.name_box.set_position((self.visual_pos[0] - (self.name_length // 2) + maze_cell_size // 2,
+                                    self.visual_pos[1] - 1.5 * maze_cell_size))
+        self.name_box.draw_on_minimap(screen, background=True)
+        pygame.display.flip()
 
     def move(self, cmd):
         """
@@ -156,18 +233,30 @@ class Player:
         :return:
         """
         status = self.is_legal_move(cmd)
-        if status == Gmo.DOOR:
-            self.set_current_door((self.grid_pos[0] + self.movement[cmd][0], self.grid_pos[1] + self.movement[cmd][1]))
-            return "Door"
-        if cmd in self.movement and (status != Gmo.WALL) and self.active:
-            x, y = self.movement[cmd]
+        if status != Gmo.WALL:
+            x, y = MOVEMENT[cmd]
             self.visualize_direction = (deepcopy(self.visual_pos), deepcopy(
                 (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)))
-            self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.FREE
-            self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
-            # self.visual_pos = (self.visual_pos[0] + x * self.visual_step, self.visual_pos[1] + y * self.visual_step)
-            self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
-        return "Move"
+
+            if status == Gmo.DOOR:
+                self.set_current_door((self.grid_pos[0] + x, self.grid_pos[1] + y))
+                return "Door"
+
+            if cmd in MOVEMENT and self.active:
+                self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.FREE
+                self.grid_pos = (self.grid_pos[0] + x, self.grid_pos[1] + y)
+                self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.PLAYER
+            
+            # [PROTOTYPE]
+            self.touched_obj = None
+            for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
+                if self.grid_pos in val:
+                    self.touched_obj = key
+                    break
+            
+            return "Move"
+        self.sounds_handler.play_sfx("bump")
+        return None
 
     def is_legal_move(self, cmd):
         """
@@ -175,12 +264,12 @@ class Player:
         :param cmd:
         :return:
         """
-        x, y = self.movement[cmd]
-        # print(self.grid_pos[0] + x, self.grid_pos[1] + y)
-        # print(self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] + y][self.grid_pos[0] + x])
+        x, y = MOVEMENT[cmd]
+
         if (0 <= self.grid_pos[0] + x < self.ratio[0]) and (0 <= self.grid_pos[1] + y < self.ratio[1]):
             return self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] + y][
                 self.grid_pos[0] + x]
+
         return Gmo.WALL
 
     def get_grid_pos(self):
@@ -201,17 +290,6 @@ class Player:
                 if grid[i][j] == Gmo.PLAYER:
                     return j, i
 
-    def distance_from_door(self):
-        """
-        return y, x position of grid_map
-        return position of GridMapObject.FREE from self.grid_pos (must at door)
-        """
-        self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1]][self.grid_pos[0]] = Gmo.DOOR
-        cells = self.grid_map.get_map(self.current_scene).get_grid()[self.grid_pos[1] - 1:self.grid_pos[1] + 2, self.grid_pos[0] - 1:self.grid_pos[0] + 2]  # - set(self.grid_pos)
-        relative_position = tuple([val.tolist()[0] - 1 for val in list(np.where(cells == Gmo.FREE))])
-
-        return relative_position
-
     def deactivate(self, active):
         """
         Deactivate player movement and stuff
@@ -224,4 +302,10 @@ class Player:
         Interact with the environment
         :return:
         """
-        pass
+        self.interacted_obj = None
+        for key, val in SCENES[self.current_scene]["OBJECTS_INTERACT_RANGE"].items():
+            if self.grid_pos in val:
+                self.sounds_handler.play_sfx('interact')
+                self.interacted_obj = key
+                break
+
