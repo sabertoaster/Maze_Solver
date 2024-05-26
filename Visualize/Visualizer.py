@@ -21,9 +21,9 @@ class Visualizer:
         A Visualizer consists of following variables:
         - Resources path
         - Resolution
-        - Screen
-        - Player
-        - Scene Sets
+        - Screen (to draw on, the fuck you think?)
+        - Player (to move, duh)
+        - Scene Sets (for indexing)
         """
         self.screen = screen
         self.player = player
