@@ -85,7 +85,7 @@ class Minimap:
             if self.player.visualize_direction[0] != self.player.visualize_direction[1]:
                 rate = 12
                 for i in range(rate):
-                    self.new_background = self.cut_maze(screenCopy, rate)
+                    self.new_background = self.draw_on_background(screenCopy, rate)
 
                     self.screen.blit(self.new_background, self.display_pos, (self.cut_start_pos, self.cut_area))
 
@@ -95,11 +95,10 @@ class Minimap:
                     pygame.display.flip()
                 self.player.visualize_direction = (self.player.visualize_direction[1], self.player.visualize_direction[1])
                 
-        self.new_background = self.cut_maze(screenCopy)
+        self.new_background = self.draw_on_background(screenCopy)
         self.screen.blit(self.new_background, (0, 0), (self.cut_start_pos, self.cut_area))
 
         pygame.display.update()
-
     def get_snapshot(self):
         self.snapshot.blit(self.new_background, (0, 0), (self.cut_start_pos, self.cut_area))
         return self.snapshot
@@ -155,8 +154,7 @@ class Minimap:
                 screen.blit(footprints[direction], (
                             self.display_pos[0] + self.cell_size * (self.col + 1) / 2 + self.cell_size * self.trace_path[i][1],
                             self.display_pos[1] + self.cell_size * (self.row + 1) / 2 + self.cell_size * self.trace_path[i][0]))
-
-    def cut_maze(self, screen, ratio=1):
+    def draw_on_background(self, screen, ratio=1):
         copy_screen = screen.copy()
 
         if self.solution_flag:

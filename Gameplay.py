@@ -542,6 +542,8 @@ class Gameplay:
                             self.draw_maze()
                             self.bg_surface.blit(self.maze_no_energy, self.player.visual_pos)
                             self.update_screen()
+                            # self.minimap.update(self.minimap.maze_surface)
+                            # self.minimap.update_after_energy(self.maze_no_energy)
                         if self.player.get_grid_pos()[::-1] == self.end_pos:
                             if self.auto_flag != True:
                                 self.save_data(is_win=True)
@@ -718,7 +720,7 @@ class Gameplay:
         maze_surface = pygame.Surface(((self.maze_row) * (self.bg_cell_size), ((self.maze_col) * self.bg_cell_size)),
                                       pygame.SRCALPHA, 32).convert_alpha()
 
-        self.maze_no_energy = maze_surface
+        self.maze_no_energy = maze_surface.copy()
 
         start = morph_image(RESOURCE_PATH + "start.png", (self.bg_cell_size, self.bg_cell_size))
         end = morph_image(RESOURCE_PATH + "jerry_icon.png", (self.bg_cell_size, self.bg_cell_size))
