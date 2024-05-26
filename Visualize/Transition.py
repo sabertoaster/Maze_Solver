@@ -1,5 +1,4 @@
 # import random
-from itertools import cycle
 import numpy as np
 import pygame
 from CONSTANTS import RESOLUTION, SCENES, RESOURCE_PATH, AVATAR
@@ -46,12 +45,14 @@ class Transition:
 
         radius = RADIUS if zoom_in else 0
 
+        if self.sounds_handler:
+            self.sounds_handler.play_sfx('circle')
+            
         for _ in range(rate):
             radius += -1 * 1 * RADIUS / rate if zoom_in else 1 * 1 * RADIUS / rate
 
             # Create mask
-            filter = create_circular_mask(h=RESOLUTION[0], w=RESOLUTION[1], center=pos, radius=radius,
-                                          bit_size=size)
+            filter = create_circular_mask(h=RESOLUTION[0], w=RESOLUTION[1], center=pos, radius=radius, bit_size=size)
             filter = filter.repeat(size, 0)
             filter = filter.repeat(size, 1)
             filter = filter.reshape((RESOLUTION[0], RESOLUTION[1], 1)).repeat(3, axis=2)
@@ -59,6 +60,9 @@ class Transition:
             self.screen.blit(pygame.surfarray.make_surface(tmp * filter), (0, 0))
             pygame.display.flip()
 
+        if self.sounds_handler:
+            self.sounds_handler.stop_sfx('circle')
+            
     def sign_pop(self, box):
         box = box.to_surface()
         box_shape = box.get_size()
@@ -201,7 +205,7 @@ class Transition:
             pygame.display.flip()
             pygame.time.delay(10)
 
-        self.sounds_handler.play_sfx('landing')
+        # self.sounds_handler.play_sfx('landing')
         for _ in range(rate):
             self.screen.blit(tmp_screen, (0, 0), (0, RESOLUTION[1] - (_ + 1) * RESOLUTION[1] / rate, RESOLUTION[0], RESOLUTION[1]))
             self.screen.blit(pygame.transform.rotate(player_sprite, (_ + 1) * 360 / rate), pos)
@@ -222,18 +226,12 @@ class Transition:
         """
 
         pos = (pos[1], pos[0])
-
-        if self.sounds_handler:
-            self.sounds_handler.play_sfx(transition_type)
         
         if transition_type == 'circle_in':
             self.circle(pos, zoom_in=True)
-            self.sounds_handler.stop_sfx(transition_type)
 
         elif transition_type == 'circle_out':
             self.circle(pos, zoom_in=False)
-            self.sounds_handler.stop_sfx(transition_type)
-
 
         elif transition_type == 'zelda_lr':
             self.zelda(next_scene, reversed=False)

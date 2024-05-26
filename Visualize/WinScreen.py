@@ -37,7 +37,6 @@ class WinScreen:
         self.sounds_handler.play_bgm(SCENE_NAME)
         
         run = success
-        first = True
         while run:
             clock.tick(fps)
             for event in pygame.event.get():
@@ -45,9 +44,6 @@ class WinScreen:
                     run = False
                     pygame.quit()
                     break
-                if first:
-                    first = False
-                    continue
                 if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONUP:
                     run = False
                     break
@@ -105,8 +101,10 @@ class WinScreen:
                     if key is not None:
                         pygame.key.set_repeat(200, 125)
                         if key == 'no':
+                            self.sounds_handler.play_sfx('interact')
                             return "Menu", SCENES["Menu"]["initial_pos"]
                         elif key == 'yes':
+                            self.sounds_handler.play_sfx('interact')
                             return "Gameplay", SCENES["Gameplay"]["initial_pos"]
                         
                 if key and not idling:

@@ -376,27 +376,15 @@ SOUNDS = {
             'file_name': 'interact.mp3',
             'volume': 1.0
         },
-        'circle_in': {
+        'door_open': {
+            'file_name': 'door_enter.mp3',
+            'volume': 1.0
+        },
+        'circle': {
             'file_name': 'circle.mp3',
             'volume': 1.0
         },
-        'circle_out': {
-            'file_name': 'circle.mp3',
-            'volume': 1.0
-        },
-        'zelda_lr': {
-            'file_name': 'door_enter.mp3',
-            'volume': 1.0
-        },
-        'zelda_rl': {
-            'file_name': 'door_enter.mp3',
-            'volume': 1.0
-        },
-        'zelda_ud': {
-            'file_name': 'door_enter.mp3',
-            'volume': 1.0
-        },
-        'zelda_du': {
+        'zelda': {
             'file_name': 'door_enter.mp3',
             'volume': 1.0
         },
@@ -515,3 +503,5 @@ class CircularLinkedList():
             temp = temp.next
         self.head = temp.next
         return temp.data
+
+FIRST_SCENE = True

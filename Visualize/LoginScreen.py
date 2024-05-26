@@ -13,34 +13,34 @@ RESOURCE_PATH += 'img/'
 
 SCENE_NAME = "Login"
 
-def drawGrid(screen):
-    """
-    FOR FUCKING DEBUG THE GRID MAP
-    :param screen:
-    :return:
-    """
-    blockSize = SCENES[SCENE_NAME]['cell'][0]
-    for x in range(0, RESOLUTION[0], blockSize):
-        for y in range(0, RESOLUTION[1], blockSize):
-            rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(screen, (255, 255, 255), rect, 1)
+# def drawGrid(screen):
+#     """
+#     FOR FUCKING DEBUG THE GRID MAP
+#     :param screen:
+#     :return:
+#     """
+#     blockSize = SCENES[SCENE_NAME]['cell'][0]
+#     for x in range(0, RESOLUTION[0], blockSize):
+#         for y in range(0, RESOLUTION[1], blockSize):
+#             rect = pygame.Rect(x, y, blockSize, blockSize)
+#             pygame.draw.rect(screen, (255, 255, 255), rect, 1)
 
 class LoginScreen:
     """
     This is a class to manage Login Screen Instance, (Pokémon theme)
     """
 
-    def __init__(self, screen, sounds_handler):
+    def __init__(self, screen, sounds_handler, is_first_time=[True]):
         """
         :param screen:
         :param res_cel:
         :param path_resources:
         """
+        self.is_first_time = is_first_time
 
         self.frame = morph_image(RESOURCE_PATH + SCENES[SCENE_NAME]["BG"], RESOLUTION)
         self.screen = screen
         
-
         self.text_box = FormManager(self.screen, {
             "username": {"position": (500, 426, 568, 30), "color": Color.WHITE.value, "maximum_length": 16,
                          "focusable": True, "init_text": ""},  # (x, y, width, height)
@@ -53,7 +53,7 @@ class LoginScreen:
         
         self.sign = HangingSign(SCENE_NAME.upper(), 50)
         
-
+        
     def play(self, player):
         """
         Play the scene
@@ -102,22 +102,25 @@ class LoginScreen:
         self.sounds_handler.play_bgm(SCENE_NAME)
 
         # Start transition effect 9 60 9 190
-        self.transition.transition(transition_type='fade', next_scene="Menu")
-        self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
-                                        self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
-                                   transition_type='circle_out')  # draw transition effect
-
-        self.transition.transition(transition_type='sign_pop', box=self.sign)
-        pygame.display.flip()
+        if self.player.previous_scene == "Menu" or self.is_first_time[0]:
+            self.transition.transition(transition_type='fade', next_scene="Menu")
+            self.transition.transition(pos=(self.player.visual_pos[0] + SCENES[SCENE_NAME]["cell"][0] / 2,
+                                            self.player.visual_pos[1] + SCENES[SCENE_NAME]["cell"][1] / 2),
+                                    transition_type='circle_out')  # draw transition effect
+            self.transition.transition(transition_type='sign_pop', box=self.sign)
         
-        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame)
+        self.mouse_handler = MouseEvents(self.screen, self.player, self.frame, sounds_handler=self.sounds_handler)
         
         self.chosen_door = None
         self.chosen_obj = None
         self.hovered_obj = None
 
         self.notify_text_box.set_text("notification", "The username has been registered, please register another username")
-        self.HowToPlay()
+        
+        if self.is_first_time[0]:
+            self.HowToPlay()
+            self.is_first_time[0] = False
+
         running = True
         while running:
             events = pygame.event.get()
@@ -171,7 +174,11 @@ class LoginScreen:
                     if pressed == pygame.K_m:
                         self.sounds_handler.switch()
                         continue
-
+                    
+                    if pressed == pygame.K_SPACE:
+                        self.HowToPlay()
+                        continue
+                    
                     player_response = self.player.handle_event(pressed)
 
                     if player_response == "Move":
@@ -180,6 +187,7 @@ class LoginScreen:
                         pass  # Handle Interact Here
                     if player_response == "Door":
                         # self.panel_fl = True
+                        self.sounds_handler.play_sfx('door_open')
                         self.chosen_door = SCENES[SCENE_NAME]['DOORS'][self.player.get_current_door()]
                     # if self.player.handle_event(pressed):  # Handle interact from player
                     #     pass
