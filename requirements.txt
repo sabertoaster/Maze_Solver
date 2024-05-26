@@ -3,3 +3,4 @@ opencv-python
 pygame
 pygame-textinput
 thorpy
+pillow
