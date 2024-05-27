@@ -1,6 +1,6 @@
 # MazeSolver
 ##### This is the repo for my assignment in the 2nd semester of VNU - Unviversity of Science
-[Video demo of the project](https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUJcmljayByb2xs)
+[Video demo of the project](https://youtu.be/hs9YLck7dBo)
 
 ### Requirements:
 - Any library is okey-dokey
