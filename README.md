@@ -2,6 +2,18 @@
 ##### This is the repo for my assignment in the 2nd semester of VNU - Unviversity of Science
 [Video demo of the project](https://youtu.be/hs9YLck7dBo)
 
+### Participants:
+**Advisor:** MR. Nguyen Tran Duy Minh & Le Thanh Tung
+<br>
+__Leader:__ Mai Duc Minh Huy
+<br>
+**Visualize | Concept Writer:** Nguyen Thien An | Mai Duc Minh Huy
+<br>
+**Mechanic Developer:** Huynh Trung Kiet | Le Hoang Minh Huy
+<br>
+**Report Writer:** Nguyen Ngoc Khoa
+
+
 ### Requirements:
 - Any library is okey-dokey
 - Python based
@@ -33,24 +45,7 @@
 ### Future Updates:
 - Minimap
 - Bonus Energy Orbs Mechanic
-- Hint Mechanic
-
-
-### Participants:
-> **Advisor:** MR. Nguyen Tran Duy Minh & Le Thanh Tung
-
-> <br>
-> __Leader:__ Mai Duc Minh Huy
-> <br>
-> **Visualize | Concept Writer:** Nguyen Thien An | Mai Duc Minh Huy
-> <br>
-> **Mechanic Developer:** Huynh Trung Kiet | Le Hoang Minh Huy
-> <br>
-
-> **Report Writer:** Nguyen Ngoc Khoa
-
-
-    
+- Hint Mechanic   
 
 Project Hiearchy
 
