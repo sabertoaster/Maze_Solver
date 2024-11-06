@@ -6,7 +6,7 @@
 **Advisor:** MR. Nguyen Tran Duy Minh & Le Thanh Tung
 
 <br>
-<strong>Leader:</strong>strong> Mai Duc Minh Huy
+<strong>Leader</strong>:Mai Duc Minh Huy
 <br>
 Visualize | Concept Writer: Nguyen Thien An | Mai Duc Minh Huy
 <br>
