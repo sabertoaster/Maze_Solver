@@ -6,13 +6,13 @@
 **Advisor:** MR. Nguyen Tran Duy Minh & Le Thanh Tung
 
 <br>
-<strong>Leader:<strong> Mai Duc Minh Huy
+<strong>Leader:</strong>strong> Mai Duc Minh Huy
 <br>
 Visualize | Concept Writer: Nguyen Thien An | Mai Duc Minh Huy
 <br>
 Mechanic Developer: Huynh Trung Kiet | Le Hoang Minh Huy
 <br>
-Report Writer:** Nguyen Ngoc Khoa
+Report Writer: Nguyen Ngoc Khoa
 
 ### Requirements:
 - Any library is okey-dokey
