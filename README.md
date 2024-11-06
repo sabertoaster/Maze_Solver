@@ -6,11 +6,11 @@
 **Advisor:** MR. Nguyen Tran Duy Minh & Le Thanh Tung
 
 <br>
-<strong>Leader</strong>:Mai Duc Minh Huy
+<strong>Leader</strong>: Mai Duc Minh Huy
 <br>
-Visualize | Concept Writer: Nguyen Thien An | Mai Duc Minh Huy
+Visualize | Concept Writer: Nguyen Thien An and Mai Duc Minh Huy
 <br>
-Mechanic Developer: Huynh Trung Kiet | Le Hoang Minh Huy
+Mechanic Developer: Huynh Trung Kiet and Le Hoang Minh Huy
 <br>
 Report Writer: Nguyen Ngoc Khoa
 
