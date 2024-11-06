@@ -8,7 +8,7 @@
 <br>
 <strong>Leader</strong>: Mai Duc Minh Huy
 <br>
-Visualize | Concept Writer: Nguyen Thien An and Mai Duc Minh Huy
+Visualize and Concept Writer: Nguyen Thien An and Mai Duc Minh Huy
 <br>
 Mechanic Developer: Huynh Trung Kiet and Le Hoang Minh Huy
 <br>
